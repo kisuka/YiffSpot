@@ -21,19 +21,23 @@ exports.start = function(sockets) {
      * @param  Object preferences The yiffing preferences of the user.
      */
     socket.on('find partner', function (preferences) {
+      // Delete any existing match   
+      if (socket.partner) {
+        socket.broadcast.to(socket.partner.socketId).emit('partner disconnected');
+
+        // Disconnect user from partner.
+        delete clients[socket.partner.socketId].partner;
+
+        // Disconnect partner from user.
+        delete socket.partner;
+      }
+
       var user = {
         socketId: socket.id,
         info: preferences
       };
-
       var partner;
       var partnerSocket;
-
-      // Delete any existing match   
-      if (socket.partner) {
-        socket.broadcast.to(socket.partner.socketId).emit('partner disconnected');
-        delete socket.partner;
-      }
 
       // If user submitted any blank values, do not search for anything.
       if(user.info[0].gender === '' || user.info[1].species === '' || !user.info[3].matchGender ||
@@ -133,9 +137,13 @@ exports.start = function(sockets) {
     socket.on('disconnect', function() {
       var partner = socket.partner;
 
-      // Check if user as a partner
-      if (partner)
+      // Check if user has a partner
+      if (partner) {
+        // Disconnect user from partner.
+        delete clients[partner.socketId].partner;
+
         socket.broadcast.to(partner.socketId).emit('partner disconnected');
+      }
 
       // Remove disconnected user from clients list
       delete clients[socket.id];
