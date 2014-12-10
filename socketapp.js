@@ -35,6 +35,12 @@ exports.start = function(sockets) {
         delete socket.partner;
       }
 
+      // If user submitted any blank values, do not search for anything.
+      if(user.info[0].gender === '' || user.info[1].species === '' || !user.info[3].matchGender ||
+        !user.info[4].matchSpecies || !user.info[2].kinks) {
+        return false;
+      }
+
       // Look for a partner to yiff with in the list of pending users
       for (var i = 0; i < pendingUsers.length; i++) {
         var tmpUser = pendingUsers[i];

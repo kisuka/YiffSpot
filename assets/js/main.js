@@ -11,13 +11,30 @@ $(function() {
   $('#userSettings').submit(function(e) {
     e.preventDefault();
 
-    if ($('#userGender').val() === '') {
+    var gender        = $('#userGender').val();
+    var species       = $('#userSpecies').val();
+    var kinks         = $('#userKinks').val();
+    var matchGender   = $('#partnerGender').val();
+    var matchSpecies  = $('#partnerSpecies').val();
+
+    if (gender === '') {
       alert('Please select your gender.');
       return false;
     }
-
-    if ($('#userSpecies').val() === '') {
+    if (species === '') {
       alert('Please select your species.');
+      return false;
+    }
+    if (!matchGender) {
+      alert('Please select the gender your seeking.');
+      return false;
+    }
+    if (!matchSpecies) {
+      alert('Please select the species your seeking.');
+      return false;
+    }
+    if (!kinks) {
+      alert('Please select the kinks you are interested in.');
       return false;
     }
 
@@ -26,11 +43,11 @@ $(function() {
 
     // Tell the server to find the user a yiffing partner
     socket.emit('find partner', [
-      { 'gender':  $('#userGender').val() },
-      { 'species':  $('#userSpecies').val() },
-      { 'kinks':  $('#userKinks').val() },
-      { 'matchGender':  $('#partnerGender').val() },
-      { 'matchSpecies':  $('#partnerSpecies').val() }
+      { 'gender': gender },
+      { 'species': species },
+      { 'kinks': kinks },
+      { 'matchGender': matchGender },
+      { 'matchSpecies': matchSpecies }
     ]);
   });
 
@@ -56,7 +73,7 @@ $(function() {
 
     if (partner === false) {
       $('#message').val('');
-      
+
       alert('You are not connected to a partner yet.');
       return false;
     }

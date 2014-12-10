@@ -4,6 +4,7 @@ var compression = require('compression');
 var http        = require('http').Server(app);
 var io          = require('socket.io')(http);
 var cacheTime   = 0;
+var port		= process.env.PORT || 3000;
 
 // Configurations
 app.use(compression({ threshold: 512 }));
@@ -22,5 +23,5 @@ app.get('/humans.txt', function(req, res) {
 require('./socketapp').start(io.sockets);
 
 // Start the web server
-var activeServer = http.listen(process.env.PORT || 3000);
-console.log('YiffSpot is online and listening on port %d.', activeServer.address().port);
+var activeServer = http.listen(port);
+console.log('YiffSpot is online and listening on port %d.', port);
