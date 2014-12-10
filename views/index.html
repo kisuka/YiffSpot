@@ -1,0 +1,549 @@
+<!doctype html>
+<html class="no-js" lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Yiff Spot | Yiff With Random Furries!</title>
+        <meta name="description" content="Yiff Spot allows users to yiff anonymously with other furries in realtime.">
+        <meta name="keywords" content="Furries, Furry, Yiff, Chat, Random, Anonymously">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="author" href="humans.txt" type="text/plain">
+        <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="assets/css/main.css">
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">
+                You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
+            </p>
+        <![endif]-->
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2">
+                    <img src="assets/img/logo.png" class="logo" alt="Yiff Spot - Yiff With Random Furries">
+                </div>
+
+                <div class="col-lg-10">
+                    <div class="row">
+                        <form id="userSettings" action="/" method="post" role="form">
+                            <div class="col-xs-6 col-lg-2">
+                                <div class="form-group">
+                                    <label>Your Gender</label>
+                                    <select name="userGender" id="userGender" class="form-control selectpicker input-sm">
+                                        <option value="">Select Gender</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Herm</option>
+                                        <option>Transgender</option>
+                                        <option>Other</option>                    
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6 col-lg-2">
+                                <div class="form-group">
+                                    <label>Your Species</label>
+                                    <select name="userSpecies" id="userSpecies" class="form-control selectpicker input-sm">
+                                        <option value="">Select Species</option>
+                                        <optgroup label="Amphibian">
+                                            <option>Amphibian (Other)</option>
+                                            <option>Frog</option>
+                                            <option>Newt</option>
+                                            <option>Salamander</option>
+                                        </optgroup>
+                                        <optgroup label="Aquatic">
+                                            <option>Aquatic (Other)</option>
+                                            <option>Cephalopod</option>
+                                            <option>Cetacean - Dolphin</option>
+                                            <option>Cetacean - Whale</option>
+                                            <option>Cetacean (Other)</option>
+                                            <option>Fish (General)</option>
+                                            <option>Shark</option>
+                                        </optgroup>
+                                        <optgroup label="Avian">
+                                            <option>Avian (Other)</option>
+                                            <option>Corvid</option>
+                                            <option>Crow</option>
+                                            <option>Duck</option>
+                                            <option>Eagle</option>
+                                            <option>Falcon</option>
+                                            <option>Goose</option>
+                                            <option>Gryphon</option>
+                                            <option>Hawk</option>
+                                            <option>Owl</option>
+                                            <option>Phoenix</option>
+                                            <option>Swan</option>
+                                        </optgroup>
+                                        <optgroup label="Dragon">
+                                            <option>Dragon (Other)</option>
+                                            <option>Eastern</option>
+                                            <option>Hydra</option>
+                                            <option>Serpent</option>
+                                            <option>Western</option>
+                                            <option>Wyvern</option>
+                                        </optgroup>
+                                        <optgroup label="Exotic">
+                                            <option>Exotic (Other)</option>
+                                            <option>Alien</option>
+                                            <option>Argonian</option>
+                                            <option>Chakat</option>
+                                            <option>Chocobo</option>
+                                            <option>Citra</option>
+                                            <option>Crux</option>
+                                            <option>Daemon</option>
+                                            <option>Digimon</option>
+                                            <option>Dracat</option>
+                                            <option>Draenei</option>
+                                            <option>Elf</option>
+                                            <option>Gargoyle</option>
+                                            <option>Iksar</option>
+                                            <option>Langurhali</option>
+                                            <option>Monster</option>
+                                            <option>Naga</option>
+                                            <option>Moogle</option>
+                                            <option>Orc</option>
+                                            <option>Pokemon</option>
+                                            <option>Satyr</option>
+                                            <option>Sergal</option>
+                                            <option>Tanuki</option>
+                                            <option>Unicorn</option>
+                                            <option>Xenomorph</option>
+                                        </optgroup>
+                                        <optgroup label="Mammals">
+                                            <option>Mammals (Other)</option>
+                                            <option>Bat</option>
+                                            <option>Bear</option>
+                                            <option>Bovid - Bovines</option>
+                                            <option>Bovid - Antelope</option>
+                                            <option>Bovid - Gazelle</option>
+                                            <option>Bovid - Goat</option>
+                                            <option>Bovid (Other)</option>
+                                            <option>Canid - Coyote</option>
+                                            <option>Canid - Doberman</option>
+                                            <option>Canid - Dog</option>
+                                            <option>Canid - Dingo</option>
+                                            <option>Canid - German Shepherd</option>
+                                            <option>Canid - Jackal</option>
+                                            <option>Canid - Husky</option>
+                                            <option>Canid - Vulpine</option>
+                                            <option>Canid - Wolf</option>
+                                            <option>Canid (Other)</option>
+                                            <option>Cervine</option>
+                                            <option>Donkey</option>
+                                            <option>Feline - Cat</option>
+                                            <option>Feline - Cheetah</option>
+                                            <option>Feline - Cougar</option>
+                                            <option>Feline - Jaguar</option>
+                                            <option>Feline - Leopard</option>
+                                            <option>Feline - Lion</option>
+                                            <option>Feline - Lynx</option>
+                                            <option>Feline - Ocelot</option>
+                                            <option>Feline - Panther</option>
+                                            <option>Feline - Tiger</option>
+                                            <option>Feline (Other)</option>
+                                            <option>Giraffe</option>
+                                            <option>Hedgehog</option>
+                                            <option>Hippopotamus</option>
+                                            <option>Horse</option>
+                                            <option>Hyena</option>
+                                            <option>Llama</option>
+                                            <option>Marsupial - Opossum</option>
+                                            <option>Marsupial - Kangaroo</option>
+                                            <option>Marsupial - Koala</option>
+                                            <option>Marsupial - Quoll</option>
+                                            <option>Marsupial - Wallaby</option>
+                                            <option>Marsupial (Other)</option>
+                                            <option>Meerkat</option>
+                                            <option>Mongoose</option>
+                                            <option>Mustelid - Badger</option>
+                                            <option>Mustelid - Ferret</option>
+                                            <option>Mustelid - Otter</option>
+                                            <option>Mustelid - Mink</option>
+                                            <option>Mustelid - Weasel</option>
+                                            <option>Mustelid - Wolverine</option>
+                                            <option>Mustelid (Other)</option>
+                                            <option>Panda</option>
+                                            <option>Pig/Swine</option>
+                                            <option>Primate - Gorilla</option>
+                                            <option>Primate - Human</option>
+                                            <option>Primate - Lemur</option>
+                                            <option>Primate - Monkey</option>
+                                            <option>Primate (Other)</option>
+                                            <option>Rabbit</option>
+                                            <option>Raccoon</option>
+                                            <option>Red Panda</option>
+                                            <option>Rhinocerus</option>
+                                            <option>Rodent - Beaver</option>
+                                            <option>Rodent - Mouse</option>
+                                            <option>Rodent - Rat</option>
+                                            <option>Rodent (Other)</option>
+                                            <option>Seal</option>
+                                            <option>Skunk</option>
+                                            <option>Squirrel</option>
+                                            <option>Zebra</option>
+                                        </optgroup>
+                                        <optgroup label="Reptilian">
+                                            <option>Reptilian (Other)</option>
+                                            <option>Alligator</option>
+                                            <option>Crocodile</option>
+                                            <option>Gecko</option>
+                                            <option>Iguana</option>
+                                            <option>Lizard</option>
+                                            <option>Snake</option>
+                                            <option>Turtle</option>
+                                        </optgroup>
+                                        <optgroup label="Other">
+                                            <option>Arachnid</option>
+                                            <option>Dinosaur - Sauropod</option>
+                                            <option>Dinosaur - Theropod</option>
+                                            <option>Insect (Other)</option>
+                                            <option>Mantid</option>
+                                            <option>Scorpion</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6 col-lg-2">
+                                <div class="form-group">
+                                    <label>Partner's Gender</label>
+                                    <select name="partnerGender[]" id="partnerGender" class="form-control selectpicker input-sm" multiple="multiple">
+                                        <option value="any" selected>Any / All</option>
+                                        <option >Male</option>
+                                        <option>Female</option>
+                                        <option>Herm</option>
+                                        <option>Transgender</option>
+                                        <option>Other</option>                    
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6 col-lg-2">
+                                <div class="form-group">
+                                    <label>Partner's Species</label>
+                                    <select name="partnerSpecies[]" id="partnerSpecies" class="form-control selectpicker input-sm" multiple="multiple">
+                                        <option value="any" selected>Any / All</option>
+                                        <optgroup label="Amphibian">
+                                            <option>Amphibian (Other)</option>
+                                            <option>Frog</option>
+                                            <option>Newt</option>
+                                            <option>Salamander</option>
+                                        </optgroup>
+                                        <optgroup label="Aquatic">
+                                            <option>Aquatic (Other)</option>
+                                            <option>Cephalopod</option>
+                                            <option>Cetacean - Dolphin</option>
+                                            <option>Cetacean - Whale</option>
+                                            <option>Cetacean (Other)</option>
+                                            <option>Fish (General)</option>
+                                            <option>Shark</option>
+                                        </optgroup>
+                                        <optgroup label="Avian">
+                                            <option>Avian (Other)</option>
+                                            <option>Corvid</option>
+                                            <option>Crow</option>
+                                            <option>Duck</option>
+                                            <option>Eagle</option>
+                                            <option>Falcon</option>
+                                            <option>Goose</option>
+                                            <option>Gryphon</option>
+                                            <option>Hawk</option>
+                                            <option>Owl</option>
+                                            <option>Phoenix</option>
+                                            <option>Swan</option>
+                                        </optgroup>
+                                        <optgroup label="Dragon">
+                                            <option>Dragon (Other)</option>
+                                            <option>Eastern</option>
+                                            <option>Hydra</option>
+                                            <option>Serpent</option>
+                                            <option>Western</option>
+                                            <option>Wyvern</option>
+                                        </optgroup>
+                                        <optgroup label="Exotic">
+                                            <option>Exotic (Other)</option>
+                                            <option>Alien</option>
+                                            <option>Argonian</option>
+                                            <option>Chakat</option>
+                                            <option>Chocobo</option>
+                                            <option>Citra</option>
+                                            <option>Crux</option>
+                                            <option>Daemon</option>
+                                            <option>Digimon</option>
+                                            <option>Dracat</option>
+                                            <option>Draenei</option>
+                                            <option>Elf</option>
+                                            <option>Gargoyle</option>
+                                            <option>Iksar</option>
+                                            <option>Langurhali</option>
+                                            <option>Monster</option>
+                                            <option>Naga</option>
+                                            <option>Moogle</option>
+                                            <option>Orc</option>
+                                            <option>Pokemon</option>
+                                            <option>Satyr</option>
+                                            <option>Sergal</option>
+                                            <option>Tanuki</option>
+                                            <option>Unicorn</option>
+                                            <option>Xenomorph</option>
+                                        </optgroup>
+                                        <optgroup label="Mammals">
+                                            <option>Mammals (Other)</option>
+                                            <option>Bat</option>
+                                            <option>Bear</option>
+                                            <option>Bovid - Bovines</option>
+                                            <option>Bovid - Antelope</option>
+                                            <option>Bovid - Gazelle</option>
+                                            <option>Bovid - Goat</option>
+                                            <option>Bovid (Other)</option>
+                                            <option>Canid - Coyote</option>
+                                            <option>Canid - Doberman</option>
+                                            <option>Canid - Dog</option>
+                                            <option>Canid - Dingo</option>
+                                            <option>Canid - German Shepherd</option>
+                                            <option>Canid - Jackal</option>
+                                            <option>Canid - Husky</option>
+                                            <option>Canid - Vulpine</option>
+                                            <option>Canid - Wolf</option>
+                                            <option>Canid (Other)</option>
+                                            <option>Cervine</option>
+                                            <option>Donkey</option>
+                                            <option>Feline - Cat</option>
+                                            <option>Feline - Cheetah</option>
+                                            <option>Feline - Cougar</option>
+                                            <option>Feline - Jaguar</option>
+                                            <option>Feline - Leopard</option>
+                                            <option>Feline - Lion</option>
+                                            <option>Feline - Lynx</option>
+                                            <option>Feline - Ocelot</option>
+                                            <option>Feline - Panther</option>
+                                            <option>Feline - Tiger</option>
+                                            <option>Feline (Other)</option>
+                                            <option>Giraffe</option>
+                                            <option>Hedgehog</option>
+                                            <option>Hippopotamus</option>
+                                            <option>Horse</option>
+                                            <option>Hyena</option>
+                                            <option>Llama</option>
+                                            <option>Marsupial - Opossum</option>
+                                            <option>Marsupial - Kangaroo</option>
+                                            <option>Marsupial - Koala</option>
+                                            <option>Marsupial - Quoll</option>
+                                            <option>Marsupial - Wallaby</option>
+                                            <option>Marsupial (Other)</option>
+                                            <option>Meerkat</option>
+                                            <option>Mongoose</option>
+                                            <option>Mustelid - Badger</option>
+                                            <option>Mustelid - Ferret</option>
+                                            <option>Mustelid - Otter</option>
+                                            <option>Mustelid - Mink</option>
+                                            <option>Mustelid - Weasel</option>
+                                            <option>Mustelid - Wolverine</option>
+                                            <option>Mustelid (Other)</option>
+                                            <option>Panda</option>
+                                            <option>Pig/Swine</option>
+                                            <option>Primate - Gorilla</option>
+                                            <option>Primate - Human</option>
+                                            <option>Primate - Lemur</option>
+                                            <option>Primate - Monkey</option>
+                                            <option>Primate (Other)</option>
+                                            <option>Rabbit</option>
+                                            <option>Raccoon</option>
+                                            <option>Red Panda</option>
+                                            <option>Rhinocerus</option>
+                                            <option>Rodent - Beaver</option>
+                                            <option>Rodent - Mouse</option>
+                                            <option>Rodent - Rat</option>
+                                            <option>Rodent (Other)</option>
+                                            <option>Seal</option>
+                                            <option>Skunk</option>
+                                            <option>Squirrel</option>
+                                            <option>Zebra</option>
+                                        </optgroup>
+                                        <optgroup label="Reptilian">
+                                            <option>Reptilian (Other)</option>
+                                            <option>Alligator</option>
+                                            <option>Crocodile</option>
+                                            <option>Gecko</option>
+                                            <option>Iguana</option>
+                                            <option>Lizard</option>
+                                            <option>Snake</option>
+                                            <option>Turtle</option>
+                                        </optgroup>
+                                        <optgroup label="Other">
+                                            <option>Arachnid</option>
+                                            <option>Dinosaur - Sauropod</option>
+                                            <option>Dinosaur - Theropod</option>
+                                            <option>Insect (Other)</option>
+                                            <option>Mantid</option>
+                                            <option>Scorpion</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label>Kinks</label>
+                                    <select name="userKinks[]" id="userKinks" class="form-control selectpicker input-sm" multiple="multiple">
+                                        <option value="any" selected>Any / All</option>
+                                        <optgroup label="Body Builds">
+                                            <option>Average</option>
+                                            <option>Muscular</option>
+                                            <option>Petite</option>
+                                        </optgroup>
+                                        <optgroup label="Bodily Fluids">                             
+                                            <option>Blood</option>
+                                            <option>Saliva</option>
+                                            <option>Scat</option>
+                                            <option>Sweat</option>
+                                            <option>Watersports (Urine)</option>
+                                        </optgroup>
+                                        <optgroup label="Clothing">
+                                            <option>Blindfold</option>
+                                            <option>Crossdressing</option>
+                                            <option>Fishnets</option>
+                                            <option>Gags</option>
+                                            <option>Hand Cuffs</option>
+                                            <option>Latex / Rubber</option>
+                                            <option>Leather</option>
+                                            <option>Nylon</option>
+                                            <option>Sexy / Slutty</option>                                            
+                                            <option>Stockings</option>
+                                            <option>Swimsuit</option>
+                                            <option>Underwear</option>
+                                            <option>Uniforms</option>
+                                        </optgroup>
+                                        <optgroup label="Cum Related">
+                                            <option>Bukkake</option>
+                                            <option>Creampie</option>
+                                            <option>Cum Bath</option>
+                                            <option>Cum From Mouth / Nose</option>
+                                            <option>Cum Milking</option>
+                                            <option>Sloppy Seconds</option>
+                                            <option>Snowballing</option>
+                                            <option>Swallowing Cum</option>
+                                            <option>Think / Sticky Cum</option>
+                                        </optgroup>
+                                        <optgroup label="General">
+                                            <option>Anal</option>
+                                            <option>Biting</option>
+                                            <option>Condoms</option>
+                                            <option>Dirty Talking</option>
+                                            <option>Docking</option>
+                                            <option>Double Penetration</option>
+                                            <option>Drug / Alcohol Use</option>
+                                            <option>Ear Play</option>
+                                            <option>Electric Toys</option>
+                                            <option>Enamas</option>
+                                            <option>Fellatio</option>
+                                            <option>Femboys</option>
+                                            <option>Fisting</option>
+                                            <option>Flexibility</option>
+                                            <option>Foot Play</option>
+                                            <option>Frotting</option>
+                                            <option>Gender Transformation</option>
+                                            <option>Handjobs / Fingering</option>
+                                            <option>Heat</option>
+                                            <option>Hotdogging</option>
+                                            <option>Ice</option>
+                                            <option>Kissing</option>
+                                            <option>Knotting</option>
+                                            <option>Licking</option>
+                                            <option>Masturbation</option>
+                                            <option>Messy</option>                                        
+                                            <option>Musk</option>
+                                            <option>Navel Play</option>
+                                            <option>Oral Sex</option>
+                                            <option>Pegging</option>
+                                            <option>Photography/Videotaping</option>
+                                            <option>Piercings</option>
+                                            <option>Queefing</option>
+                                            <option>Rimming</option>
+                                            <option>Scissoring</option>
+                                            <option>Scratching</option>
+                                            <option>Sex Toys</option>
+                                            <option>Sheath Play</option>
+                                            <option>Smoking</option>
+                                            <option>Strap-ons</option>
+                                            <option>Strip Tease</option>                                            
+                                            <option>Tailsex</option>
+                                            <option>Teasing</option>
+                                            <option>Tickling</option>
+                                            <option>Tomboys</option>
+                                            <option>Transformation</option>
+                                            <option>Vanilla Sex</option>
+                                        </optgroup>
+                                        <optgroup label="Hardcore">
+                                            <option>3+ Penetration</option>
+                                            <option>Birthing</option>
+                                            <option>Bondage</option>
+                                            <option>Choking</option>
+                                            <option>Cock Fucking</option>
+                                            <option>Face Fucking</option>
+                                            <option>Face-Sitting</option>
+                                            <option>Forced Feeding</option>
+                                            <option>Forced Incest</option>
+                                            <option>Forced Nudity</option>
+                                            <option>Hair Pulling</option>
+                                            <option>Humiliation</option>
+                                            <option>Living Insertions</option>
+                                            <option>Macrophilia</option>
+                                            <option>Microphilia</option>
+                                            <option>Nipple Penetration</option>
+                                            <option>Orgasm Control</option>
+                                            <option>Oviposition</option>
+                                            <option>Pain</option>
+                                            <option>Pregnancy</option>
+                                            <option>Slapping</option>
+                                            <option>Tail Pulling</option>
+                                            <option>Urethra Play</option>
+                                            <option>Whipping</option>
+                                            <option>Zoophilia</option>
+                                        </optgroup>                      
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <button type="submit" class="btn btn-primary btn-block btn-sm" id="findBtn">Find Partner</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="chat">
+                <div class="col-lg-12">                    
+                    <ul id="messages" class="list-unstyled"></ul>
+
+                    <form action="" id="messageBox" role="form">
+                        <input name="message" id="message" type="text" class="form-control" placeholder="Enter your message..." autocomplete="off" required>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="//cdn.socket.io/socket.io-1.2.1.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/assets/js/jquery-1.11.1.min.js"><\/script>')</script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <script src="assets/js/bootstrap-select.min.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-57519723-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </body>
+</html>

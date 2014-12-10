@@ -1,0 +1,19 @@
+{
+  "name": "YiffSpot",
+  "version": "1.0.0",
+  "description": "A real-time web chat for yiffing with random furries.",
+  "keywords": [
+    "furry",
+    "yiff",
+    "chat",
+    "anthro"
+  ],
+  "author": "Taylor Locke <kisuka@kisuka.com>",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.2.1",
+    "express": "^4.10.4",
+    "socket.io": "^1.2.1"
+  }
+}

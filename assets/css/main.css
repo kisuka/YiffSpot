@@ -1,0 +1,88 @@
+body {
+	margin-top: 20px;
+}
+
+.logo {
+	padding-top: 10px;
+}
+
+#userSettings label {
+	display: block;
+}
+
+#messages {
+	border: 1px solid #eee;
+	padding: 10px;
+	height: 500px;
+	overflow-y: auto;
+	word-wrap: break-word
+}
+
+.message {
+	padding: 10px;
+	border-radius: 5px;
+	margin-bottom: 5px;
+	position: relative;
+}
+
+.message-partner {
+	background-color: #c7edfc;
+	margin-left: 20px;
+}
+
+.message-partner:before {
+	content: "Partner: ";
+	font-weight: bold;
+}
+
+.message-user {
+	background-color: #e5f7fd;
+	margin-right: 20px;
+}
+
+.message-user:before {
+	content: "You: ";
+	font-weight: bold;
+}
+
+.message-system {
+	background-color: #eee;
+}
+
+.message-partner:after {
+	content: "";
+	position: absolute;
+	border-style: solid;
+	display: block;
+	width: 0;
+	top: 5px;
+	left: -15px;
+	bottom: auto;
+	border-width: 15px 15px 15px 0;
+	border-color: transparent #c7edfc;
+}
+
+.message-user:after {
+	content: "";
+	position: absolute;
+	border-style: solid;
+	display: block;
+	width: 0;
+	top: 5px;
+	right: -15px;
+	bottom: auto;
+	border-width: 15px 0 15px 15px;
+	border-color: transparent #e5f7fd;
+}
+
+.input-sm button {
+	height: 30px;
+	padding: 5px 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+
+#findBtn {
+	margin-top: 25px;
+}

@@ -1,0 +1,14 @@
+ ____  __.__              __            
+|    |/ _|__| ________ __|  | _______   
+|      < |  |/  ___/  |  \  |/ /\__  \  
+|    |  \|  |\___ \|  |  /    <  / __ \_
+|____|__ \__/____  >____/|__|_ \(____  /
+        \/       \/           \/     \/ 
+
+/* MAIN */
+  Author: Taylor Locke
+  Twitter: @KisukaKiza
+  Site: http://www.kisuka.com
+
+
+What is this file about?: humanstxt.org
