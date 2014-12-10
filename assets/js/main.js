@@ -87,8 +87,8 @@ $(function() {
 
 
   /**
-   * Informs the user that they've been connected with a yiffing partner.
-   * @param  Object data The partner's yiffing preferences.
+   * Updates the users online count.
+   * @param  Integer count The amount of users online.
    */
   socket.on('update user count', function(count) {
     $('#userCount').text(count);
