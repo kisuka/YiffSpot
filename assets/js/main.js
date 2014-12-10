@@ -90,6 +90,15 @@ $(function() {
    * Informs the user that they've been connected with a yiffing partner.
    * @param  Object data The partner's yiffing preferences.
    */
+  socket.on('update user count', function(count) {
+    $('#userCount').text(count);
+  });
+
+
+  /**
+   * Informs the user that they've been connected with a yiffing partner.
+   * @param  Object data The partner's yiffing preferences.
+   */
   socket.on('partner connected', function(data) {
     newMessage('You have been connected with a yiffing partner!');
     newMessage("Your partner is a "+data.gender+" "+data.species+" interested in: "+data.kinks+".");

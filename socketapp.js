@@ -14,6 +14,8 @@ exports.start = function(sockets) {
 
     usersOnline++;
 
+    sockets.emit('update user count', usersOnline);
+
     console.log('User Connected! Total Users Online: %d', usersOnline);
 
     /**
@@ -149,6 +151,8 @@ exports.start = function(sockets) {
       delete clients[socket.id];
 
       usersOnline--;
+
+      sockets.emit('update user count', usersOnline);
 
       console.log('User Disconnected! Total Users Online: %d', usersOnline);
     });
