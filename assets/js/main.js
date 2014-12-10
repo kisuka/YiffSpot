@@ -130,6 +130,13 @@ $(function() {
    */
   socket.on('recieve message', function(data) {
     newMessage(data.message, 'partner');
+    
+    $.titleAlert("New Message!", {
+        requireBlur:true,
+        stopOnFocus:true,
+        duration:10000,
+        interval:500
+    });
   });
 });
 
@@ -140,6 +147,7 @@ $(function() {
 function autoScroll() {
   $("#messages").scrollTop($("#messages")[0].scrollHeight);
 }
+
 
 /**
  * Handles the creation of a new message in the chat window.
