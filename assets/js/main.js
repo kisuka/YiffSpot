@@ -38,6 +38,9 @@ $(function() {
       return false;
     }
 
+    $("#welcome").hide();
+    $("#chat").show();
+
     // Clear current message history
     $("#messages").empty();
 

@@ -86,3 +86,7 @@ body {
 p {
 	margin: 0 0 5px;
 }
+
+#chat {
+	display: none;
+}
