@@ -1,4 +1,4 @@
-var socket = io.connect('//localhost');
+var socket = io.connect();
 var partner = false;
 
 $(function() {
