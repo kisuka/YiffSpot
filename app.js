@@ -1,8 +1,9 @@
-var express     = require('express');
-var app         = express();
-var server      = require('http').createServer(app);
-var io          = require('socket.io')(server);
-var port		= process.env.PORT || 3000;
+var express = require('express');
+var app     = express();
+var server  = require('http').createServer(app);
+var io      = require('socket.io')(server);
+var string  = require('string');
+var port    = process.env.PORT || 3000;
 
 app.enable('trust proxy');
 
@@ -144,11 +145,12 @@ io.sockets.on('connection', function(socket)
    */
   socket.on('send message', function(message) {
     var partner = socket.partner;
+    var msg = string(message).stripTags().s;
 
     if(!partner)
       return false;
 
-    socket.broadcast.to(partner.socketId).emit('recieve message', { message: message });
+    socket.broadcast.to(partner.socketId).emit('receive message', { message: msg });
   });
 
 

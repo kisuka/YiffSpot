@@ -2,6 +2,10 @@ var socket = io.connect();
 var partner = false;
 
 $(function() {
+  $(window).on('beforeunload', function(e) {
+    return 'Are you sure you want to leave Yiff Spot?';
+  });
+
   $('.selectpicker').selectpicker();
 
   /**
@@ -10,6 +14,11 @@ $(function() {
    */
   $('#userSettings').submit(function(e) {
     e.preventDefault();
+
+    if (partner) {
+      if (!confirm('Are you sure you want to find a new partner?'))
+        return false;
+    }
 
     var gender        = $('#userGender').val();
     var species       = $('#userSpecies').val();
@@ -131,7 +140,7 @@ $(function() {
    * @param  String data The message contents.
    * @param  String type The type of message.
    */
-  socket.on('recieve message', function(data) {
+  socket.on('receive message', function(data) {
     newMessage(data.message, 'partner');
     
     $.titleAlert("New Message!", {
@@ -143,7 +152,6 @@ $(function() {
   });
 });
 
-
 /**
  * Auto scroll chat window to bottom.
  */
@@ -151,19 +159,50 @@ function autoScroll() {
   $("#messages").scrollTop($("#messages")[0].scrollHeight);
 }
 
-
 /**
  * Handles the creation of a new message in the chat window.
  * @param  String message The message to be displayed.
  * @param  String type    The type of message to display.
  */
 function newMessage(message, type) {
+  var msg = linkify(strip_tags(message));
+
   if(type === 'user')
-    $('#messages').append($('<li class="message message-user">').text(message));
+    $('#messages').append($('<li class="message message-user">').html(msg));
   else if (type === 'partner')
-    $('#messages').append($('<li class="message message-partner">').text(message));
+    $('#messages').append($('<li class="message message-partner">').html(msg));
   else
-    $('#messages').append($('<li class="message message-system">').text(message));
+    $('#messages').append($('<li class="message message-system">').html(msg));
 
   autoScroll();
+}
+
+/**
+ * Converts URLs to links.
+ * @param  String text The text to parse.
+ * @return String      The converted text.
+ */
+function linkify(text) {
+  if (text) {
+    text = text.replace(
+      /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
+      function(url){
+        var full_url = url;
+        if (!full_url.match('^https?:\/\/')) {
+            full_url = 'http://' + full_url;
+        }
+        return '<a href="' + full_url + '" target="_blank">' + url + '</a>';
+      }
+    );
+  }
+  return text;
+}
+
+/**
+ * Strips tags from string.
+ * @param  String text The raw string.
+ * @return String      The cleaned string.
+ */
+function strip_tags(text) {
+  return text.replace(/(<([^>]+)>)/ig, "");
 }
