@@ -315,9 +315,17 @@ io.sockets.on('connection', function(socket)
    * @param  String message The message to send.
    */
   socket.on('send message', function(message) {
+	
+	// Server side check of user messages
+	if(message === '' || messsage.length > 2000){
+		socket.emit('invalid message');
+		return false;
+	}
+		
     var partner = socket.partner;
     var msg = string(message).stripTags().s;
-
+	
+	// Check if the user is connected to a partner
     if(!partner)
       return false;
 
