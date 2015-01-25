@@ -317,7 +317,7 @@ io.sockets.on('connection', function(socket)
   socket.on('send message', function(message) {
 	
 	// Server side check of user messages
-	if(message === '' || messsage.length > 2000){
+	if(message === '' || message.length > 2000){
 		socket.emit('invalid message');
 		return false;
 	}
