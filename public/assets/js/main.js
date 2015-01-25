@@ -99,6 +99,14 @@ $(function() {
   });
 
   /**
+  *	Informs the user of an invalid message being submitted.
+  */
+  socket.on('invalid message',function(){
+	alert('The message you entered was invalid and was not sent to your chat partner.');
+	return false;
+  }
+  
+  /**
    * Informs the users of invalid values being submitted.
    */
   socket.on('invalid preferences', function() {
