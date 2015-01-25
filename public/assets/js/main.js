@@ -47,12 +47,6 @@ $(function() {
       return false;
     }
 
-    $("#welcome").hide();
-    $("#chat").show();
-
-    // Clear current message history
-    $("#messages").empty();
-
     // Tell the server to find the user a yiffing partner
     socket.emit('find partner', [
       { 'gender': gender },
@@ -62,7 +56,6 @@ $(function() {
       { 'matchSpecies': matchSpecies }
     ]);
   });
-
 
   /**
    * Handles the submission of a message using the chatbox
@@ -97,7 +90,6 @@ $(function() {
     $('#message').val('');
   });
 
-
   /**
    * Updates the users online count.
    * @param  Integer count The amount of users online.
@@ -106,17 +98,29 @@ $(function() {
     $('#userCount').text(count);
   });
 
+  /**
+   * Informs the users of invalid values being submitted.
+   */
+  socket.on('invalid preferences', function() {
+    alert('You have attempted to submit invalid preferences. Please check your preferences again.');
+    return false;
+  });
 
   /**
    * Informs the user that they've been connected with a yiffing partner.
    * @param  Object data The partner's yiffing preferences.
    */
   socket.on('partner connected', function(data) {
+    $("#welcome").hide();
+    $("#chat").show();
+
+    // Clear current message history
+    $("#messages").empty();
+
     newMessage('You have been connected with a yiffing partner!');
     newMessage("Your partner is a "+data.gender+" "+data.species+" interested in: "+data.kinks+".");
     partner = true;
   });
-
 
   /**
    * Informs the user that their yiffing partner has disconnected.
@@ -126,14 +130,18 @@ $(function() {
     partner = false;
   });
 
-
   /**
    * Informs the user that no yiffing partner has been found that matches their preferences.
    */
   socket.on('no match', function() {
+    $("#welcome").hide();
+    $("#chat").show();
+
+    // Clear current message history
+    $("#messages").empty();
+
     newMessage('Sorry, we are unable to match you with a partner. Please either continue to wait, or modify your yiffing preferences.');
   });
-
 
   /**
    * Handles the recieving of a message for the user.
