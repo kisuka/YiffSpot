@@ -65,7 +65,16 @@ $(function() {
     e.preventDefault();
 
     var message = $('#message').val();
+    if (message === '') {
+      alert('Please enter a message.');
+      return false;
+    }
 
+    if (message.length > 2000) {
+      alert('Are you trying to send a novel? Calm down and shorten your message.');
+      return false;
+    }
+	
     if (partner === false) {
       $('#message').val('');
 
