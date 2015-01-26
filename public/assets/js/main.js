@@ -66,16 +66,6 @@ $(function() {
 
     var message = $('#message').val();
 
-    if (message === '') {
-      alert('Please enter a message.');
-      return false;
-    }
-
-    if (message.length > 2000) {
-      alert('Are you trying to send a novel? Calm down and shorten your message.');
-      return false;
-    }
-
     if (partner === false) {
       $('#message').val('');
 
@@ -98,6 +88,30 @@ $(function() {
     $('#userCount').text(count);
   });
 
+  /**
+  * Informs the users of invalid messages being submitted.
+  */
+  socket.on('invalid message', function(Error) {
+	switch(Error){
+		case 1:
+			alert('Please enter a message.');
+			break;
+		case 2:
+			alert('Are you trying to send a novel? Calm down and shorten your message.');
+			break;
+		case 4:
+			alert('You are not connected to a partner yet.');
+			break;
+		case 5:
+			alert('Please enter a message, and you\'re also not connected to a partner.');
+			break;
+		case 6:
+			alert('Your message was too long, and you\'re also not connected to a partner.');
+			break;
+	}
+    return false;
+  });
+  
   /**
    * Informs the users of invalid values being submitted.
    */

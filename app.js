@@ -315,11 +315,22 @@ io.sockets.on('connection', function(socket)
    * @param  String message The message to send.
    */
   socket.on('send message', function(message) {
-    var partner = socket.partner;
-    var msg = string(message).stripTags().s;
-
-    if(!partner)
-      return false;
+  
+	var partner = socket.partner;
+	var msg = string(message).stripTags().s;
+	var messageErr = 0;
+	
+	if(message == '')
+		messageErr |= 1;
+	if(message.length > 2000)
+		messageErr |= 2;
+	if(!partner)
+		messageErr |= 4;
+		
+	if(messageErr > 0){
+		socket.emit('invalid message',messageErr);
+		return false;
+	}
 
     socket.broadcast.to(partner.socketId).emit('receive message', { message: msg });
   });
