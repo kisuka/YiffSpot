@@ -121,6 +121,7 @@ var kinks = [
   'Masturbation',
   'Messy',
   'Microphilia',
+  'Mind Control',
   'Musk',
   'Navel Play',
   'Oviposition',
