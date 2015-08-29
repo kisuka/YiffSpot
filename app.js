@@ -20,6 +20,7 @@ var species = [
   'Bat',
   'Bear',
   'Bird',
+  'Bovine',
   'Cat',
   'Cheetah',
   'Corvid',
@@ -100,6 +101,7 @@ var kinks = [
   'Electric Toys',
   'Enemas',
   'Face Sitting',
+  'Farting',
   'Fellatio',
   'Femboys',
   'Fisting',
@@ -310,6 +312,17 @@ io.sockets.on('connection', function(socket)
     }
   });
 
+  /**
+   * Handles telling the partner that their partner is typing or has finished typing.
+   * @param Boolean isTyping True/False for if the user is typing or stopped.
+   */
+  socket.on('typing', function(isTyping) {
+    var partner = socket.partner;
+
+    if (partner) {
+      socket.broadcast.to(partner.socketId).emit('partner typing', {status: isTyping});
+    }
+  });
 
   /**
    * Handles sending a message to the user's partner.
@@ -319,12 +332,10 @@ io.sockets.on('connection', function(socket)
     var partner = socket.partner;
     var msg = string(message).stripTags().s;
 
-    if(!partner)
-      return false;
+    if (!partner) return false;
 
     socket.broadcast.to(partner.socketId).emit('receive message', { message: msg });
   });
-
 
   /**
    * Handles the disconnection of a user.

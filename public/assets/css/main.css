@@ -1,23 +1,13 @@
-html {
-	position: relative;
-	min-height: 100%;
-}
+html { position: relative; min-height: 100%; }
+body { margin-top: 20px; }
 
-body {
-	margin-top: 20px;
-}
+.logo { padding-top: 10px; }
 
-.logo {
-	padding-top: 10px;
-}
+#userSettings label { display: block; }
 
-#userSettings label {
-	display: block;
-}
+#welcome { margin-top: 5%; }
 
-#welcome {
-	margin-top: 5%;
-}
+#typing { display: none; }
 
 #messages {
 	border: 1px solid #eee;
@@ -34,29 +24,12 @@ body {
 	position: relative;
 }
 
-.message-partner {
-	background-color: #c7edfc;
-	margin-left: 20px;
-}
+.message-partner { background-color: #c7edfc; margin-left: 20px; }
+.message-partner:before { content: "Partner: "; font-weight: bold; }
+.message-user { background-color: #e5f7fd; margin-right: 20px; }
+.message-user:before { content: "You: "; font-weight: bold; }
 
-.message-partner:before {
-	content: "Partner: ";
-	font-weight: bold;
-}
-
-.message-user {
-	background-color: #e5f7fd;
-	margin-right: 20px;
-}
-
-.message-user:before {
-	content: "You: ";
-	font-weight: bold;
-}
-
-.message-system {
-	background-color: #eee;
-}
+.message-system { background-color: #eee; }
 
 .message-partner:after {
 	content: "";
@@ -92,22 +65,9 @@ body {
 	border-radius: 3px;
 }
 
-p {
-	margin: 0 0 5px;
-}
+p { margin: 0 0 5px; }
 
-#chat {
-	display: none;
-}
+#chat { display: none; }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background-color: #f5f5f5;
-}
-
-.footer > .container {
-	width: auto;
-	padding: 10px 15px;
-}
+.footer { background-color: #f5f5f5; word-wrap: break-word; }
+.footer > .container { margin-top: 2%; width: auto; padding: 10px 15px; }

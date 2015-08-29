@@ -1,7 +1,10 @@
 var socket = io.connect();
 var partner = false;
+var typingTimer;
 
 $(function() {
+  var messageBox = document.getElementById("messageBox");
+
   $(window).on('beforeunload', function(e) {
     return 'Are you sure you want to leave Yiff Spot?';
   });
@@ -16,8 +19,9 @@ $(function() {
     e.preventDefault();
 
     if (partner) {
-      if (!confirm('Are you sure you want to find a new partner?'))
-        return false;
+      if (!confirm('Are you sure you want to find a new partner?')) return false;
+
+      newMessage('You have disconnected from your yiffing partner!');
     }
 
     var gender        = $('#userGender').val();
@@ -58,6 +62,23 @@ $(function() {
   });
 
   /**
+   * Handles if user is typing in the message box to send 'partner is typing' status.
+   */
+  messageBox.addEventListener("input", function(e) {
+    if (partner == true) {
+      clearTimeout(typingTimer);
+
+      typingTimer = setTimeout(stoppedTyping, 2000);
+
+      socket.emit('typing', true);
+    }
+  });
+
+  function stoppedTyping() {
+    socket.emit('typing', false);
+  }
+
+  /**
    * Handles the submission of a message using the chatbox
    * and informs the server to send a message to the partner.
    */
@@ -88,6 +109,20 @@ $(function() {
     newMessage(message, 'user');
 
     $('#message').val('');
+
+    stoppedTyping();
+  });
+
+  /**
+   * Displays partner is typing status.
+   * @param Boolean data True/False if the partner is typing or has stopped.
+   */
+  socket.on('partner typing', function(data) {
+    if (data.status) {
+      $('#typing').show();
+    } else {
+      $('#typing').hide();
+    }
   });
 
   /**
@@ -114,9 +149,6 @@ $(function() {
     $("#welcome").hide();
     $("#chat").show();
 
-    // Clear current message history
-    $("#messages").empty();
-
     newMessage('You have been connected with a yiffing partner!');
     newMessage("Your partner is a "+data.gender+" "+data.species+" interested in: "+data.kinks+".");
     partner = true;
@@ -137,9 +169,6 @@ $(function() {
     $("#welcome").hide();
     $("#chat").show();
 
-    // Clear current message history
-    $("#messages").empty();
-
     newMessage('Sorry, we are unable to match you with a partner. Please either continue to wait, or modify your yiffing preferences.');
   });
 
@@ -157,6 +186,9 @@ $(function() {
         duration:10000,
         interval:500
     });
+
+    var notification = new Audio('/assets/notification.mp3');
+    notification.play();
   });
 });
 
@@ -175,12 +207,15 @@ function autoScroll() {
 function newMessage(message, type) {
   var msg = linkify(strip_tags(message));
 
-  if(type === 'user')
-    $('#messages').append($('<li class="message message-user">').html(msg));
-  else if (type === 'partner')
-    $('#messages').append($('<li class="message message-partner">').html(msg));
-  else
-    $('#messages').append($('<li class="message message-system">').html(msg));
+  if(type === 'user') {
+    $('#messages li:last').before($('<li class="message message-user">').html(msg));
+  }
+  else if (type === 'partner') {
+    $('#messages li:last').before($('<li class="message message-partner">').html(msg));
+  }
+  else {
+    $('#messages li:last').before($('<li class="message message-system">').html(msg));
+  }
 
   autoScroll();
 }

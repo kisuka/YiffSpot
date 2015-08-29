@@ -81,11 +81,12 @@ html(class='no-js', lang='en-US')
       div(class='row' id='chat')
         div(class='col-lg-12')
           ul(id='messages' class='list-unstyled')
+            li(id='typing' class='message message-system') Your partner is typing...
 
           form(action='', id='messageBox', role='form')
             input(name='message', id='message', type='text' class='form-control', placeholder='Enter your message...', autocomplete='off', required='required')
 
-    footer(class='footer hidden-xs')
+    footer(class='footer')
       div(class='container')
         div(class='col-lg-6 text-center text-muted')
           strong Donate via Bitcoin to help support Yiff Spot
