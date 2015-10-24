@@ -53,6 +53,7 @@ var species = [
   'Lion',
   'Lizard',
   'Lynx',
+  'Mouse',
   'Newt',
   'Ocelot',
   'Other',
