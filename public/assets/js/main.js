@@ -152,6 +152,8 @@ $(function() {
     newMessage('You have been connected with a yiffing partner!');
     newMessage("Your partner is a "+data.gender+" "+data.species+" interested in: "+data.kinks+".");
     partner = true;
+    
+    alertUser("Partner Connected!");
   });
 
   /**
@@ -179,18 +181,27 @@ $(function() {
    */
   socket.on('receive message', function(data) {
     newMessage(data.message, 'partner');
-    
-    $.titleAlert("New Message!", {
-        requireBlur:true,
-        stopOnFocus:true,
-        duration:10000,
-        interval:500
-    });
-
-    var notification = new Audio('/assets/notification.mp3');
-    notification.play();
+    alertUser("New Message!");
   });
 });
+
+/**
+ * Plays a sound and adds an alert message to browser tab.
+ * 
+ * @param  string message The text for the alert message.
+ * @return void
+ */
+function alertUser(message) {
+  $.titleAlert(message, {
+    requireBlur:true,
+    stopOnFocus:true,
+    duration:10000,
+    interval:500
+  });
+
+  var notification = new Audio('/assets/notification.mp3');
+  notification.play();
+}
 
 /**
  * Auto scroll chat window to bottom.
