@@ -159,7 +159,6 @@ var kinks = [
   'Tickling',
   'Tomboys',
   'Transformation',
-  'Transformation',
   'Urethra Play',
   'Urine',
   'Vanilla Sex',
