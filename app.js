@@ -172,6 +172,7 @@ app.enable('trust proxy');
 app.set('view engine', 'jade');
 
 // Routes
+app.use(express.static(__dirname + '/public'));
 app.use('/assets', express.static(__dirname + '/public/assets'));
 
 app.get('/', function(req, res) {
@@ -201,9 +202,10 @@ io.sockets.on('connection', function(socket)
 {
   clients[socket.id] = socket;
 
-  usersOnline++;
+  ++usersOnline;
 
   io.sockets.emit('update user count', usersOnline);
+  socket.broadcast.emit('update user count', usersOnline);
 
   console.log('User Connected! Total Users Online: %d', usersOnline);
 
@@ -359,9 +361,9 @@ io.sockets.on('connection', function(socket)
     // Remove disconnected user from clients list
     delete clients[socket.id];
 
-    usersOnline--;
+    --usersOnline;
 
-    io.sockets.emit('update user count', usersOnline);
+    socket.broadcast.emit('update user count', usersOnline);
 
     console.log('User Disconnected! Total Users Online: %d', usersOnline);
   });
