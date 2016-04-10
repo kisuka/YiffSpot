@@ -13,6 +13,12 @@ var genders = [
   'Other'
 ];
 
+var roles = [
+  'Dominant',
+  'Submissive',
+  'Switch'
+];
+
 var species = [
   'Alligator',
   'Arachnid',
@@ -180,7 +186,8 @@ app.get('/', function(req, res) {
     pageTitle: 'Yiff Spot | Yiff With Random Furries!',
     genders: genders,
     breeds: species,
-    kinks: kinks
+    kinks: kinks,
+    roles: roles
   });
 });
 
@@ -216,16 +223,18 @@ io.sockets.on('connection', function(socket)
   socket.on('find partner', function (preferences) {
 
     // If user submitted any blank values, do not search for anything.
-    if (preferences[0].gender.length === 0 || preferences[1].species.length === 0 || preferences[3].matchGender.length === 0 ||
-      preferences[4].matchSpecies.length === 0 || preferences[2].kinks.length === 0) {
+    if (preferences[0].gender.length === 0 || preferences[1].species.length === 0  || preferences[2].kinks.length === 0 ||
+      preferences[3].matchGender.length === 0 || preferences[4].matchSpecies.length === 0 || preferences[5].role.length === 0 ||
+      preferences[6].matchRole.length === 0) {
       socket.emit('invalid preferences');
       return false;
     }
 
     // Make sure user didn't try to submit any values not allowed.
     if (genders.indexOf(preferences[0].gender, genders) === -1 || species.indexOf(preferences[1].species, species) === -1 ||
-      hasInvalidValues(preferences[3].matchGender, genders) || hasInvalidValues(preferences[4].matchSpecies, species) ||
-      hasInvalidValues(preferences[2].kinks, kinks)) {
+      hasInvalidValues(preferences[2].kinks, kinks) || hasInvalidValues(preferences[3].matchGender, genders) ||
+      hasInvalidValues(preferences[4].matchSpecies, species) || roles.indexOf(preferences[5].role, roles) === -1 ||
+      roles.indexOf(preferences[6].matchRole, roles) === -1) {
       socket.emit('invalid preferences');
       return false;
     }
@@ -259,31 +268,37 @@ io.sockets.on('connection', function(socket)
         if((user.info[3].matchGender.indexOf(tmpUser.info[0].gender) !== -1 || user.info[3].matchGender[0] == 'any') &&
           (tmpUser.info[3].matchGender.indexOf(user.info[0].gender) !== -1 || tmpUser.info[3].matchGender[0] == 'any')) {
 
-          // Check if user and partner are capable on species preferences.
-          if((user.info[4].matchSpecies.indexOf(tmpUser.info[1].species) !== -1 || user.info[4].matchSpecies[0] == 'any') &&
-            (tmpUser.info[4].matchSpecies.indexOf(user.info[1].species) !== -1 || tmpUser.info[4].matchSpecies[0] == 'any')) {
+          // Check if user and partner are capable on role preferences.
+          if ((user.info[6].matchRole.indexOf(tmpUser.info[5].role) !== -1 || user.info[6].matchRole == 'Switch') &&
+            (tmpUser.info[6].matchRole.indexOf(user.info[5].role) !== -1 || tmpUser.info[6].matchRole == 'Switch')) {
 
-            // Check if user and partner share at least one similar kink.
-            if((user.info[2].kinks[0] == 'any' || tmpUser.info[2].kinks[0] == 'any') ||
-                similiarKinks(user.info[2].kinks, tmpUser.info[2].kinks, 1)) {
+            // Check if user and partner are capable on species preferences.
+            if((user.info[4].matchSpecies.indexOf(tmpUser.info[1].species) !== -1 || user.info[4].matchSpecies[0] == 'any') &&
+              (tmpUser.info[4].matchSpecies.indexOf(user.info[1].species) !== -1 || tmpUser.info[4].matchSpecies[0] == 'any')) {
 
-              // Get the socket client for this partner
-              partnerSocket = clients[tmpUser.socketId];
+              // Check if user and partner share at least one similar kink.
+              if((user.info[2].kinks[0] == 'any' || tmpUser.info[2].kinks[0] == 'any') ||
+                  similiarKinks(user.info[2].kinks, tmpUser.info[2].kinks, 1)) {
 
-              // Remove the partner we found from the list of users looking for a partner
-              pendingUsers.splice(i, 1);
+                // Get the socket client for this partner
+                partnerSocket = clients[tmpUser.socketId];
 
-              // If the partner we found exists / hasn't disconnected
-              if (partnerSocket) {
-                partner = tmpUser;
+                // Remove the partner we found from the list of users looking for a partner
+                pendingUsers.splice(i, 1);
 
-                socket.emit('partner connected', {
-                  gender: partner.info[0].gender,
-                  species: partner.info[1].species,
-                  kinks: partner.info[2].kinks.join(", ")
-                });
+                // If the partner we found exists / hasn't disconnected
+                if (partnerSocket) {
+                  partner = tmpUser;
 
-                break;
+                  socket.emit('partner connected', {
+                    gender: partner.info[0].gender,
+                    species: partner.info[1].species,
+                    kinks: partner.info[2].kinks.join(", "),
+                    role: partner.info[5].role
+                  });
+
+                  break;
+                }
               }
             }
           }
@@ -305,7 +320,8 @@ io.sockets.on('connection', function(socket)
       socket.broadcast.to(partner.socketId).emit('partner connected', {
         gender: user.info[0].gender,
         species: user.info[1].species,
-        kinks: user.info[2].kinks.join(", ")
+        kinks: user.info[2].kinks.join(", "),
+        role: user.info[5].role,
       });
     } else {
       // Add user to pending users list

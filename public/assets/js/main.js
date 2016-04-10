@@ -26,28 +26,44 @@ $(function() {
 
     var gender        = $('#userGender').val();
     var species       = $('#userSpecies').val();
+    var role          = $('#userRole').val();
     var kinks         = $('#userKinks').val();
     var matchGender   = $('#partnerGender').val();
     var matchSpecies  = $('#partnerSpecies').val();
+    var matchRole     = $('#partnerRole').val();
 
     if (gender === '') {
       alert('Please select your gender.');
       return false;
     }
+
     if (species === '') {
       alert('Please select your species.');
       return false;
     }
+
+    if (role === '') {
+      alert('Please select your role.');
+      return false;
+    }
+
     if (!matchGender) {
-      alert('Please select the gender your seeking.');
+      alert("Please select the gender you're seeking.");
       return false;
     }
+
     if (!matchSpecies) {
-      alert('Please select the species your seeking.');
+      alert("Please select the species you're seeking.");
       return false;
     }
+
+    if (!matchRole) {
+      alert("Please select the role you're seeking.");
+      return false;
+    }
+
     if (!kinks) {
-      alert('Please select the kinks you are interested in.');
+      alert("Please select the kinks you're interested in.");
       return false;
     }
 
@@ -57,7 +73,9 @@ $(function() {
       { 'species': species },
       { 'kinks': kinks },
       { 'matchGender': matchGender },
-      { 'matchSpecies': matchSpecies }
+      { 'matchSpecies': matchSpecies },
+      { 'role': role },
+      { 'matchRole': matchRole }
     ]);
   });
 
@@ -150,7 +168,7 @@ $(function() {
     $("#chat").show();
 
     newMessage('You have been connected with a yiffing partner!');
-    newMessage("Your partner is a "+data.gender+" "+data.species+" interested in: "+data.kinks+".");
+    newMessage("Your partner is a "+data.role+", "+data.gender+", "+data.species+" interested in: "+data.kinks+".");
     partner = true;
     
     alertUser("Partner Connected!");
