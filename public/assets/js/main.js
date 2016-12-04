@@ -3,6 +3,8 @@ var partner = false;
 var typingTimer;
 
 $(function() {
+  loadSavedPreferences();
+
   var messageBox = document.getElementById("messageBox");
 
   $(window).on('beforeunload', function(e) {
@@ -68,15 +70,19 @@ $(function() {
     }
 
     // Tell the server to find the user a yiffing partner
-    socket.emit('find partner', [
-      { 'gender': gender },
-      { 'species': species },
-      { 'kinks': kinks },
-      { 'matchGender': matchGender },
-      { 'matchSpecies': matchSpecies },
-      { 'role': role },
-      { 'matchRole': matchRole }
-    ]);
+    socket.emit('find partner', {
+      'user': {
+        'gender': gender,
+        'species': species,
+        'role': role
+      },
+      'partner': {
+        'gender': matchGender,
+        'species': matchSpecies,
+        'role': matchRole
+      },
+      'kinks': kinks,
+    });
   });
 
   /**
@@ -129,6 +135,26 @@ $(function() {
     $('#message').val('');
 
     stoppedTyping();
+  });
+
+  $('#savePref').on('click', function(e) {
+    var gender       = $('#userGender').val();
+    var species      = $('#userSpecies').val();
+    var role         = $('#userRole').val();
+    var kinks        = $('#userKinks').val();
+    var matchGender  = $('#partnerGender').val();
+    var matchSpecies = $('#partnerSpecies').val();
+    var matchRole    = $('#partnerRole').val();
+
+    localStorage['gender'] = gender;
+    localStorage['species'] = species;
+    localStorage['role'] = role;
+    localStorage['partnerGender'] = matchGender;
+    localStorage['partnerSpecies'] = matchSpecies;
+    localStorage['partnerRole'] = matchRole;
+    localStorage['kinks'] = kinks;
+
+    alert('Preferences have been saved.');
   });
 
   /**
@@ -277,4 +303,37 @@ function linkify(text) {
  */
 function strip_tags(text) {
   return text.replace(/(<([^>]+)>)/ig, "");
+}
+
+/**
+ * Select default options from localStorage saved options.
+ */
+function loadSavedPreferences() {
+  if (localStorage['gender']) {
+    $('#userGender').val(localStorage['gender']);
+  }
+
+  if (localStorage['species']) {
+    $('#userSpecies').val(localStorage['species']);
+  }
+
+  if (localStorage['role']) {
+    $('#userRole').val(localStorage['role']);
+  }
+
+  if (localStorage['partnerGender']) {
+    $('#partnerGender').val(localStorage['partnerGender'].split(','));
+  }
+
+  if (localStorage['partnerSpecies']) {
+    $('#partnerSpecies').val(localStorage['partnerSpecies'].split(','));
+  }
+
+  if (localStorage['partnerRole']) {
+    $('#partnerRole').val(localStorage['partnerRole']);
+  }
+
+  if (localStorage['kinks']) {
+    $('#userKinks').val(localStorage['kinks'].split(','));
+  }
 }

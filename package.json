@@ -12,8 +12,8 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "express": "^4.10.4",
-    "socket.io": "^1.2.1",
+    "express": "^4.14.*",
+    "socket.io": "^1.4.*",
     "string": "~3.0.0",
     "jade": "~1.9.1"
   }
