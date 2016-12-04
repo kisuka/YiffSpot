@@ -10,7 +10,7 @@ var species = require("../models/species");
 /* GET index */
 router.get('/', function(req, res) {
   res.render('home', {
-    title: 'Yiff Spot | Yiff With Random Furries!',
+    pageTitle: 'Yiff Spot | Yiff With Random Furries!',
     breeds: species.getAll(),
     genders: gender.getAll(),
     kinks: kinks.getAll(),
