@@ -206,6 +206,7 @@ $(function() {
   socket.on('partner disconnected', function() {
     newMessage('Your partner has disconnected!');
     partner = false;
+    $('#typing').hide();    // If the partener gets disconnected while typing, the typing status should be hidden
   });
 
   /**
