@@ -2,7 +2,7 @@ var validLinks = [
   'imgur.com',
   'e621.net',
   'furaffinity.net',
-  'd.facdn.net',
+  'facdn.net',
 ];
 
 module.exports = {
