@@ -12,19 +12,13 @@ $(function() {
   });
 
   $('.selectpicker').selectpicker();
-
+  
   /**
-   * Handles the submission of the user's yiffing preferences
-   * and informs the server to find a partner.
+   * Function that controls launching the find partner event.
+   * @return void
    */
-  $('#userSettings').submit(function(e) {
-    e.preventDefault();
-
-    if (partner) {
-      if (!confirm('Are you sure you want to find a new partner?')) return false;
-
-      newMessage('You have disconnected from your yiffing partner!');
-    }
+  function findPartner() {
+    partner = false;
 
     var gender        = $('#userGender').val();
     var species       = $('#userSpecies').val();
@@ -83,6 +77,22 @@ $(function() {
       },
       'kinks': kinks,
     });
+  }
+
+  /**
+   * Handles the submission of the user's yiffing preferences
+   * and informs the server to find a partner.
+   */
+  $('#userSettings').submit(function(e) {
+    e.preventDefault();
+
+    if (partner) {
+      if (!confirm('Are you sure you want to find a new partner?')) return false;
+
+      newMessage('You have disconnected from your yiffing partner!');
+    }
+
+    findPartner();
   });
 
   /**
@@ -156,6 +166,16 @@ $(function() {
 
     alert('Preferences have been saved.');
   });
+  
+  $('#block-partner').on('click', function(e) {
+    e.preventDefault();
+
+    if (!confirm('Are you sure you want to block this partner?')) {
+      return false;
+    }
+
+    socket.emit('block partner');
+  });
 
   /**
    * Displays partner is typing status.
@@ -184,6 +204,14 @@ $(function() {
     alert('You have attempted to submit invalid preferences. Please check your preferences again.');
     return false;
   });
+  
+  /**
+   * Informs the users of invalid links being submitted.
+   */
+  socket.on('invalid links', function() {
+    alert('You have attempted to submit a possible malicious link. Please only use known image sites.');
+    return false;
+  });
 
   /**
    * Informs the user that they've been connected with a yiffing partner.
@@ -206,7 +234,21 @@ $(function() {
   socket.on('partner disconnected', function() {
     newMessage('Your partner has disconnected!');
     partner = false;
-    $('#typing').hide();    // If the partener gets disconnected while typing, the typing status should be hidden
+    $('#typing').hide();
+  });
+  
+  /**
+   * Informs the user that their yiffing partner has blocked.
+   */
+  socket.on('partner blocked', function() {
+    if (partner) {
+      partner = false;
+      newMessage('Your partner has been blocked and disconnected from you!');
+    } else {
+      newMessage('Your previous partner has been blocked!');
+    }
+    
+    $('#typing').hide();
   });
 
   /**

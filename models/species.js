@@ -76,7 +76,7 @@ module.exports = {
     return species;
   },
   find: function(value) {
-    var result = species.indexOf(value)
+    var result = species.indexOf(value);
 
     if (result === -1) {
       return false;

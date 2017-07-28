@@ -11,7 +11,7 @@ module.exports = {
     return genders;
   },
   find: function(value) {
-    var result = genders.indexOf(value)
+    var result = genders.indexOf(value);
 
     if (result === -1) {
       return false;

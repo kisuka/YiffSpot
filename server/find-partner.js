@@ -2,6 +2,7 @@ var gender  = require("../models/gender");
 var kinks   = require("../models/kinks");
 var role    = require("../models/role");
 var species = require("../models/species");
+var users   = require("../models/users");
 
 module.exports = function (socket, users) {
   /**
@@ -47,26 +48,29 @@ module.exports = function (socket, users) {
 
       // Make sure our current partner is not our new partner and is not ourselves.
       if (socket.partner != tmpUser && socket.id != tmpUser.socketId) {
+        // Make sure not on blocked list for user.
+        if (users.checkBlocks(socket.id, tmpUser.socketId) === false && users.checkBlocks(tmpUser.socketId, socket.id) === false) {
+          if (matchedDesires(preferences.kinks, tmpUser.info.kinks) && matchedPreferences(preferences, tmpUser.info)) {
+            // Get the socket client for this partner
+            partnerSocket = users.findClient(tmpUser.socketId);
 
-        if (matchedDesires(preferences.kinks, tmpUser.info.kinks) && matchedPreferences(preferences, tmpUser.info)) {
-          // Get the socket client for this partner
-          partnerSocket = users.findClient(tmpUser.socketId);
+            // Remove the partner we found from the list of users looking for a partner
+            pendingUsers.splice(i, 1);
 
-          // Remove the partner we found from the list of users looking for a partner
-          pendingUsers.splice(i, 1);
+            // If the partner we found exists / hasn't disconnected
+            if (partnerSocket) {
+              partner = tmpUser;
+              users.addPartner(socket.id, partner);
 
-          // If the partner we found exists / hasn't disconnected
-          if (partnerSocket) {
-            partner = tmpUser;
+              socket.emit('partner connected', {
+                gender: partner.info.user.gender,
+                species: partner.info.user.species,
+                kinks: partner.info.kinks.join(", "),
+                role: partner.info.user.role
+              });
 
-            socket.emit('partner connected', {
-              gender: partner.info.user.gender,
-              species: partner.info.user.species,
-              kinks: partner.info.kinks.join(", "),
-              role: partner.info.user.role
-            });
-
-            break;
+              break;
+            }
           }
         }
       }

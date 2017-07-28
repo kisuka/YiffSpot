@@ -103,7 +103,7 @@ module.exports = {
     return kinks;
   },
   find: function(value) {
-    var result = kinks.indexOf(value)
+    var result = kinks.indexOf(value);
 
     if (result === -1) {
       return false;

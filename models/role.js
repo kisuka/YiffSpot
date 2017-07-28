@@ -9,7 +9,7 @@ module.exports = {
     return roles;
   },
   find: function(value) {
-    var result = roles.indexOf(value)
+    var result = roles.indexOf(value);
 
     if (result === -1) {
       return false;
