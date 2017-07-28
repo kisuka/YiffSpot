@@ -27,7 +27,9 @@ module.exports = function (socket) {
     if (links.length > 0) {
       for (link in links) {
         var a = url.parse(links[link], true, true);
-        if (validLinks.find(a.hostname) === false) {
+        var domain = getDomain(a.hostname);
+
+        if (validLinks.find(domain) === false) {
           invalidLinks = true;
         }
       }
@@ -40,4 +42,23 @@ module.exports = function (socket) {
 
     socket.broadcast.to(partner.socketId).emit('receive message', { message: msg });
   });
+}
+
+function getDomain(url) {
+  var hostName = url;
+  var domain = url;
+    
+  if (hostName != null) {
+    var parts = hostName.split('.').reverse();
+
+    if (parts != null && parts.length > 1) {
+      domain = parts[1] + '.' + parts[0];
+
+      if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2) {
+        domain = parts[2] + '.' + domain;
+      }
+    }
+  }
+
+  return domain;
 }
