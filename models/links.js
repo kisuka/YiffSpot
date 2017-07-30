@@ -4,6 +4,7 @@ var validLinks = [
   'furaffinity.net',
   'facdn.net',
   'f-list.net',
+  'unsee.cc',
 ];
 
 module.exports = {
