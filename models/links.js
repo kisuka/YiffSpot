@@ -3,6 +3,7 @@ var validLinks = [
   'e621.net',
   'furaffinity.net',
   'facdn.net',
+  'f-list.net',
 ];
 
 module.exports = {
