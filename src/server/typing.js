@@ -7,7 +7,7 @@ module.exports = function (socket) {
     var partner = socket.partner;
 
     if (partner) {
-      socket.broadcast.to(partner.socketId).emit('partner typing', {status: isTyping});
+      socket.broadcast.to(partner.socketId).emit('partner_typing', {status: isTyping});
     }
   });
 }

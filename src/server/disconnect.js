@@ -6,13 +6,13 @@ module.exports = function (socket, users) {
     if (partner) {
       // Disconnect user from partner.
       users.removePartner(partner.socketId);
-      socket.broadcast.to(partner.socketId).emit('partner disconnected');
+      socket.broadcast.to(partner.socketId).emit('partner_disconnected');
     }
 
     // Remove disconnected user from clients list
     users.removeClient(socket.id);
     users.decrementOnline();
-    socket.broadcast.emit('update user count', users.getOnline());
+    socket.broadcast.emit('update_user_count', users.getOnline());
 
     console.log('User Disconnected! Total Users Online: %d', users.getOnline());
   });

@@ -8,8 +8,8 @@ module.exports = function (io) {
     users.addClient(socket);
     users.incrementOnline();
 
-    io.sockets.emit('update user count', users.getOnline());
-    socket.broadcast.emit('update user count', users.getOnline());
+    io.sockets.emit('update_user_count', users.getOnline());
+    socket.broadcast.emit('update_user_count', users.getOnline());
     console.log('User Connected! Total Users Online: %d', users.getOnline());
 
     // Events

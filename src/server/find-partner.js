@@ -9,7 +9,7 @@ module.exports = function (socket, users) {
    * Handles connecting two users together for a yiffing session.
    * @param  Object preferences The yiffing preferences of the user.
    */
-  socket.on('find partner', function (preferences) {
+  socket.on('find_partner', function (preferences) {
     var user = {
       socketId: socket.id,
       info: preferences
@@ -20,20 +20,20 @@ module.exports = function (socket, users) {
 
     // If user submitted any blank values, do not search for anything.
     if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
-      socket.emit('invalid preferences');
+      socket.emit('invalid_preferences');
       return false;
     }
 
     // Make sure user didn't try to submit any values not allowed.
     if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({kinks: preferences.kinks})) {
-      socket.emit('invalid preferences');
+      socket.emit('invalid_preferences');
       return false;
     }
 
     // User is looking for a new partner, therefore delete any existing paired partner.
     if (socket.partner) {
       // Send message to the partner that the user has disconnected.
-      socket.broadcast.to(socket.partner.socketId).emit('partner disconnected');
+      socket.broadcast.to(socket.partner.socketId).emit('partner_left');
 
       // Disconnect user from partner.
       users.removePartner(socket.partner.socketId);
@@ -62,7 +62,7 @@ module.exports = function (socket, users) {
               partner = tmpUser;
               users.addPartner(socket.id, partner);
 
-              socket.emit('partner connected', {
+              socket.emit('partner_connected', {
                 gender: partner.info.user.gender,
                 species: partner.info.user.species,
                 kinks: partner.info.kinks.join(", "),
@@ -87,7 +87,7 @@ module.exports = function (socket, users) {
       partnerSocket.inlist = false;
 
       // Inform partner of match
-      socket.broadcast.to(partner.socketId).emit('partner connected', {
+      socket.broadcast.to(partner.socketId).emit('partner_connected', {
         gender: user.info.user.gender,
         species: user.info.user.species,
         kinks: user.info.kinks.join(", "),
@@ -101,7 +101,7 @@ module.exports = function (socket, users) {
       }
 
       // Inform the user that the system is still waiting for a match.
-      socket.emit('no match');
+      socket.emit('partner_pending');
     }
   });
 }

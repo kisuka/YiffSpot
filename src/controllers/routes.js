@@ -2,10 +2,10 @@ var express = require('express');
 var app = express();
 var router  = express.Router();
 
-var gender  = require("../models/gender");
-var kinks   = require("../models/kinks");
-var role    = require("../models/role");
-var species = require("../models/species");
+var gender  = require("./../models/gender");
+var kinks   = require("./../models/kinks");
+var role    = require("./../models/role");
+var species = require("./../models/species");
 
 /* GET index */
 router.get('/', function(req, res) {
