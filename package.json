@@ -17,7 +17,7 @@
     "watch.js": "watchify src/client/js/index.js -o public/assets/app.js -dv",
     "watch.sass": "node-sass -w src/client/scss/app.scss -o public/assets",
     "launch": "node app.js",
-    "build": "npm-run-all --parallel build.js build.sass launch",
+    "build": "npm-run-all --parallel build.js build.sass",
     "dev": "npm-run-all --parallel watch.js watch.sass launch"
   },
   "dependencies": {
