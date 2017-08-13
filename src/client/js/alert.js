@@ -32,7 +32,6 @@ window.onblur = function() {
  * Clear any alerts when window is active.
  */
 window.onfocus = function() {
-  console.log('test');
   windowFocus = true;
 
   if (flashingTitle == true) {
