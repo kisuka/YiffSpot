@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.5.1] - 2017.10.24
+### Changed
+- Fixed issue with Any / All always being selected.
+
 ## [2.5.0] - 2017.10.24
 ### Added
 - Changelog file for easier reading of what has changed.

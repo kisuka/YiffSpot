@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
  * Load preferences from local storage.
  */
 function loadSavedPreferences() {
+  var gendersSelect = document.getElementById('partnerGender');
+  var kinksSelect = document.getElementById('userKinks');
+  var speciesSelect = document.getElementById('partnerSpecies');
+
   if (localStorage['gender']) {
     document.getElementById('userGender').value = localStorage['gender'];
   }
@@ -61,7 +65,6 @@ function loadSavedPreferences() {
   }
 
   if (localStorage['partnerGender']) {
-    var gendersSelect = document.getElementById('partnerGender');
     var genders = localStorage['partnerGender'].split(',');
     
     for(var count=0; count < gendersSelect.options.length; count++) {
@@ -69,10 +72,11 @@ function loadSavedPreferences() {
         gendersSelect.options[count].selected = "selected";
       }
     }
+  } else {
+    gendersSelect.options[0].selected = "selected";
   }
 
   if (localStorage['partnerSpecies']) {
-    var speciesSelect = document.getElementById('partnerSpecies');
     var species = localStorage['partnerSpecies'].split(',');
     
     for(var count=0; count < speciesSelect.options.length; count++) {
@@ -80,6 +84,8 @@ function loadSavedPreferences() {
         speciesSelect.options[count].selected = "selected";
       }
     }
+  } else {
+    speciesSelect.options[0].selected = "selected";
   }
 
   if (localStorage['partnerRole']) {
@@ -87,7 +93,6 @@ function loadSavedPreferences() {
   }
 
   if (localStorage['kinks']) {
-    var kinksSelect = document.getElementById('userKinks');
     var kinks = localStorage['kinks'].split(',');
 
     for(var count=0; count < kinksSelect.options.length; count++) {
@@ -95,6 +100,8 @@ function loadSavedPreferences() {
         kinksSelect.options[count].selected = "selected";
       }
     }
+  } else {
+    kinksSelect.options[0].selected = "selected";
   }
 }
 
@@ -133,9 +140,12 @@ function listen(socket, user) {
     }
 
     const data = partner.findPartner();
-    user.hasPartner = false;
-    socket.emit('find_partner', data);
-    chat.showChatBox();
+
+    if (data) {
+      user.hasPartner = false;
+      socket.emit('find_partner', data);
+      chat.showChatBox();
+    }
   });
   
   /**
