@@ -2,7 +2,6 @@
 
 module.exports = function (socket, users, token) {
   socket.on('disconnect', function(reason) {
-    console.log(reason);
     var currentUser = users.findClient(token);
     var partner = users.findClient(currentUser.partner);
 

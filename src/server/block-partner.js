@@ -10,13 +10,14 @@ module.exports = function (socket, users, token) {
 
       // Check if user has a partner
       if (currentUser.prevPartner != null) {
-        if (clients[partner.id] != null && clients[partner.id].partner != null) {
-          socket.broadcast.to(partner.socket.id).emit('partner_disconnected');
-        }
-        
         // Block partner
-        users.blockPartner(token, partner.id);
         users.removePartner(currentUser.id);
+        users.blockPartner(token, partner.id);
+
+        // Send generic left message to partner.
+        if (clients[partner.id] != null && clients[partner.id].partner != null) {
+          socket.broadcast.to(partner.socket.id).emit('partner_left');
+        }
 
         socket.emit('partner_blocked');
       }
