@@ -1,17 +1,22 @@
-module.exports = function (socket, users) {
-  socket.on('disconnect', function() {
-    var partner = socket.partner;
+'use strict';
+
+module.exports = function (socket, users, token) {
+  socket.on('disconnect', function(reason) {
+    console.log(reason);
+    var currentUser = users.findClient(token);
+    var partner = users.findClient(currentUser.partner);
 
     // Check if user has a partner
     if (partner) {
       // Disconnect user from partner.
-      users.removePartner(partner.socketId);
-      socket.broadcast.to(partner.socketId).emit('partner_disconnected');
+      users.removePartner(currentUser.id);
+      socket.broadcast.to(partner.socket.id).emit('partner_disconnected');
     }
 
     // Remove disconnected user from clients list
-    users.removeClient(socket.id);
+    users.removeClient(currentUser.id);
     users.decrementOnline();
+    socket.broadcast.to(currentUser.id).emit('update_user_count', users.getOnline());
     socket.broadcast.emit('update_user_count', users.getOnline());
 
     console.log('User Disconnected! Total Users Online: %d', users.getOnline());

@@ -1,25 +1,12 @@
 'use strict';
 
-var notify;
-var chat;
-var system;
-var user;
-var socket;
-
-/**
- * Hides welcome message and displays chat box.
- */
-function showChatBox() {
-  document.getElementById('welcome').style.display = 'none';
-  document.getElementById('chat').style.display = 'block';
-}
+var notify = require('./alert');
+var chat = require('./chat');
 
 /**
  * Submits user's preferences to server and starts partner search.
  */
 function findPartner() {
-  user.data.hasPartner = false;
-
   var gender       = document.getElementById('userGender').value;
   var species      = document.getElementById('userSpecies').value;
   var role         = document.getElementById('userRole').value;
@@ -85,7 +72,7 @@ function findPartner() {
     }
   }
 
-  socket.emit('find_partner', {
+  return {
     'user': {
       'gender': gender,
       'species': species,
@@ -97,9 +84,7 @@ function findPartner() {
       'role': matchRole
     },
     'kinks': selectedKinks,
-  });
-  
-  showChatBox();
+  };
 }
 
 
@@ -107,19 +92,13 @@ function findPartner() {
 // Event Listeners
 // =============================================================================
 
-function init() {
-  notify = require('./alert');
-  chat = require('./chat');
-  system = require('./system');
-  user = require('./user');
-  socket = system.io;
-
+function listen(socket, user) {
   /**
    * Displays to user that they have been connected to a partner and
    * their information.
    */
   socket.on('partner_connected', (data) => {
-    showChatBox();
+    chat.showChatBox();
 
     chat.addChatMessage('You have been connected with a yiffing partner.', {
       class: 'message-system'
@@ -130,7 +109,7 @@ function init() {
       'interested in: '+data.kinks+'.',
     {class: 'message-system'});
     
-    user.data.hasPartner = true;
+    user.hasPartner = true;
    
     notify.alertUser("Partner Connected");
   });
@@ -145,7 +124,7 @@ function init() {
 
     chat.hideChatTyping();
     notify.alertUser("Partner Disconnected");
-    user.data.hasPartner = false;
+    user.hasPartner = false;
   });
 
   /**
@@ -158,15 +137,15 @@ function init() {
 
     chat.hideChatTyping();
     notify.alertUser("Partner Left");
-    user.data.hasPartner = false;
+    user.hasPartner = false;
   });
 
   /**
    * Displays to user that their partner has been successfully blocked.
    */
   socket.on('partner_blocked', () => {
-    if (user.data.hasPartner == true) {
-      user.data.hasPartner = false;
+    if (user.hasPartner == true) {
+      user.hasPartner = false;
 
       chat.addChatMessage('Your partner has been blocked and disconnected from you.', {
         class: 'message-system'
@@ -184,7 +163,7 @@ function init() {
    * Displays message to user that system is looking for a partner.
    */
   socket.on('partner_pending', () => {
-    showChatBox();
+    chat.showChatBox();
 
     chat.addChatMessage(''+
     'We are looking for a partner to match you with. '+
@@ -210,7 +189,6 @@ function init() {
 }
 
 module.exports = {
-	init: init,
-  findPartner: findPartner,
-  showChatBox: showChatBox
+  listen: listen,
+  findPartner: findPartner
 };

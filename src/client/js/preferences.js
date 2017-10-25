@@ -1,11 +1,9 @@
 'use strict';
 
+var chat    = require('./chat');
+var partner = require('./partner');
+
 var SlimSelect = require('./../../../node_modules/slim-select/dist/index');
-var system;
-var chat;
-var partner;
-var user;
-var socket;
 
 /**
  * Initial things to do for prefences such as loading saved preferences
@@ -100,18 +98,14 @@ function loadSavedPreferences() {
   }
 }
 
+function listen(socket, user) {
+  /**
+   * Off Canvas Preferences
+   */
+  document.getElementById("menu").onclick = function(e) {
+    document.getElementById("sidebar").classList.toggle('active-sidebar');
+  };
 
-
-// =============================================================================
-// Event Listeners
-// =============================================================================
-function init() {
-  system = require('./system');
-  chat = require('./chat');
-  partner = require('./partner');
-  user = require('./user');
-  socket = system.io;
-  
   /**
    * Find a partner.
    * 
@@ -124,7 +118,11 @@ function init() {
       document.getElementById("sidebar").classList.toggle('active-sidebar');
     }
 
-    if (user.data.hasPartner) {
+    if (user.allow == false) {
+      return false;
+    }
+
+    if (user.hasPartner) {
       if (!confirm('Are you sure you want to find a new partner?')) {
         return false;
       }
@@ -134,7 +132,10 @@ function init() {
       });
     }
 
-    partner.findPartner();
+    const data = partner.findPartner();
+    user.hasPartner = false;
+    socket.emit('find_partner', data);
+    chat.showChatBox();
   });
   
   /**
@@ -194,16 +195,9 @@ function init() {
     alert('You have attempted to submit invalid preferences. Please check your preferences again.');
     return false;
   });
-  
-  /**
-   * Off Canvas
-   */
-  document.getElementById("menu").onclick = function(e) {
-    document.getElementById("sidebar").classList.toggle('active-sidebar');
-  };
 }
 
 module.exports = {
-	init: init,
+  listen: listen,
   loadSavedPreferences: loadSavedPreferences,
 };

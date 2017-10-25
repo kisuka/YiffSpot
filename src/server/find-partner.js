@@ -1,22 +1,23 @@
+'use strict';
+
 var gender  = require("../models/gender");
 var kinks   = require("../models/kinks");
 var role    = require("../models/role");
 var species = require("../models/species");
 var users   = require("../models/users");
 
-module.exports = function (socket, users) {
+module.exports = function (socket, users, token) {
   /**
    * Handles connecting two users together for a yiffing session.
    * @param  Object preferences The yiffing preferences of the user.
    */
   socket.on('find_partner', function (preferences) {
-    var user = {
-      socketId: socket.id,
-      info: preferences
-    };
-    var partner;
-    var partnerSocket;
-    var pendingUsers = users.getPendingUsers();
+    // Update user's preferences.
+    users.addPreferences(token, preferences);
+
+    var partner = null;
+    var currentUser = users.findClient(token);
+    var clients = users.getAllClients();
 
     // If user submitted any blank values, do not search for anything.
     if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
@@ -31,76 +32,50 @@ module.exports = function (socket, users) {
     }
 
     // User is looking for a new partner, therefore delete any existing paired partner.
-    if (socket.partner) {
+    if (currentUser.partner != null) {
+      var currentPartner = users.findClient(currentUser.partner);
+
       // Send message to the partner that the user has disconnected.
-      socket.broadcast.to(socket.partner.socketId).emit('partner_left');
+      socket.broadcast.to(currentPartner.socket.id).emit('partner_left');
 
-      // Disconnect user from partner.
-      users.removePartner(socket.partner.socketId);
-
-      // Disconnect partner from user.
-      delete socket.partner;
+      // Disconnect partners from each other.
+      users.removePartner(currentUser.id);
     }
 
     // Look for a partner to yiff with in the list of pending users
-    for (var i = 0; i < pendingUsers.length; i++) {
-      var tmpUser = pendingUsers[i];
+    for (var client in clients) {
+      var client = clients[client];
 
       // Make sure our current partner is not our new partner and is not ourselves.
-      if (socket.partner != tmpUser && socket.id != tmpUser.socketId) {
+      if (client.partner == null && client.preferences != null && currentUser.id != client.id) {
         // Make sure not on blocked list for user.
-        if (users.checkBlocks(socket.id, tmpUser.socketId) === false && users.checkBlocks(tmpUser.socketId, socket.id) === false) {
-          if (matchedDesires(preferences.kinks, tmpUser.info.kinks) && matchedPreferences(preferences, tmpUser.info)) {
-            // Get the socket client for this partner
-            partnerSocket = users.findClient(tmpUser.socketId);
+        if (users.checkBlocks(currentUser.id, client.id) === false && users.checkBlocks(client.id, currentUser.id) === false) {
+          // Match based off preferences.
+          if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences)) {
+            partner = client;
+            users.pairPartners(currentUser.id, client.id);
 
-            // Remove the partner we found from the list of users looking for a partner
-            pendingUsers.splice(i, 1);
+            socket.emit('partner_connected', {
+              gender: partner.preferences.user.gender,
+              species: partner.preferences.user.species,
+              kinks: partner.preferences.kinks.join(", "),
+              role: partner.preferences.user.role
+            });
 
-            // If the partner we found exists / hasn't disconnected
-            if (partnerSocket) {
-              partner = tmpUser;
-              users.addPartner(socket.id, partner);
-
-              socket.emit('partner_connected', {
-                gender: partner.info.user.gender,
-                species: partner.info.user.species,
-                kinks: partner.info.kinks.join(", "),
-                role: partner.info.user.role
-              });
-
-              break;
-            }
+            break;
           }
         }
       }
     }
 
-    // User found a partner
-    if (partner) {
-      // Match user and partner as yiffing partners
-      socket.partner = partner;
-      partnerSocket.partner = user;
-
-      // Remove user and partner from pending users
-      socket.inlist = false;
-      partnerSocket.inlist = false;
-
-      // Inform partner of match
-      socket.broadcast.to(partner.socketId).emit('partner_connected', {
-        gender: user.info.user.gender,
-        species: user.info.user.species,
-        kinks: user.info.kinks.join(", "),
-        role: user.info.user.role,
+    if (partner != null) {
+      socket.broadcast.to(partner.socket.id).emit('partner_connected', {
+        gender: currentUser.preferences.user.gender,
+        species: currentUser.preferences.user.species,
+        kinks: currentUser.preferences.kinks.join(", "),
+        role: currentUser.preferences.user.role,
       });
     } else {
-      // Add user to pending users list
-      if (!socket.inlist) {
-        socket.inlist = true;
-        pendingUsers.push(user);
-      }
-
-      // Inform the user that the system is still waiting for a match.
       socket.emit('partner_pending');
     }
   });
