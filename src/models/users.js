@@ -1,4 +1,3 @@
-var pendingUsers  = [];
 var clients       = {};
 var usersOnline   = 0;
 
@@ -15,9 +14,20 @@ module.exports = {
   getAllClients: function() {
     return clients;
   },
-  addClient: function(socket) {
-    clients[socket.id] = socket;
-    clients[socket.id].blocks = new Array;
+  addClient: function(socket, token) {
+    clients[token] = {
+      id: token,
+      socket: socket,
+      preferences: null,
+      partner: null,
+      prevPartner: null,
+      blocks: [],
+    }
+
+    this.currentToken = token;
+  },
+  addPreferences: function(id, preferences) {
+    clients[id].preferences = preferences;
   },
   removeClient: function(id) {
     delete clients[id];
@@ -25,15 +35,18 @@ module.exports = {
   findClient: function(id) {
     return clients[id];
   },
-  addPartner: function(id, partner) {
+  pairPartners: function(id, partner) {
     clients[id].partner = partner;
+    clients[partner].partner = id;
+
     clients[id].prevPartner = partner;
+    clients[partner].prevPartner = id;
   },
   removePartner: function(id) {
-    delete clients[id].partner;
-  },
-  getPendingUsers: function() {
-    return pendingUsers;
+    var partner = clients[id].partner;
+
+    clients[id].partner = null;
+    clients[partner].partner = null;
   },
   blockPartner: function(id, partner) {
     clients[id].blocks.push(partner);

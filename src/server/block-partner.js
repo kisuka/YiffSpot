@@ -1,24 +1,25 @@
-var users = require("../models/users");
+'use strict';
 
-module.exports = function (socket) {
+module.exports = function (socket, users, token) {
   socket.on('block_partner', function () {
-    var partner = socket.prevPartner;
-    var clients = users.getAllClients();
+    var currentUser = users.findClient(token);
+    var partner = users.findClient(currentUser.prevPartner);
 
-    // Check if user has a partner
     if (partner) {
-      if (clients[partner.socketId] != undefined &&
-        clients[partner.socketId].partner != undefined &&
-        clients[partner.socketId].partner.socketId == socket.id) {
-        socket.broadcast.to(partner.socketId).emit('partner_disconnected');
-      }
-      
-      // Block partner
-      users.blockPartner(socket.id, partner.socketId);
-      users.removePartner(partner.socketId);
-      delete socket.partner;
+      var clients = users.getAllClients();
 
-      socket.emit('partner_blocked');
+      // Check if user has a partner
+      if (currentUser.prevPartner != null) {
+        if (clients[partner.id] != null && clients[partner.id].partner != null) {
+          socket.broadcast.to(partner.socket.id).emit('partner_disconnected');
+        }
+        
+        // Block partner
+        users.blockPartner(token, partner.id);
+        users.removePartner(currentUser.id);
+
+        socket.emit('partner_blocked');
+      }
     }
   });
 }

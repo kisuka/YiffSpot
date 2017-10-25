@@ -1,11 +1,17 @@
 'use strict';
 
-var notify = require('./alert');
-var chat = require('./chat');
-var user = require('./user');
-var socket = io();
+var Cookies = require('./../../../node_modules/js-cookie/src/js.cookie');
 
-function init() {
+var chat = require("./chat");
+
+/**
+ * System Listeners
+ * 
+ * @param  {[type]} socket [description]
+ * @param  {[type]} user   [description]
+ * @return {[type]}        [description]
+ */
+function listen(socket, user) {
   socket.on('update_user_count', (count) => {
     document.getElementById('userCount').innerText = count;
   });
@@ -34,24 +40,32 @@ function init() {
     });
   });
 
+  socket.on('connection_established', (id) => {
+    Cookies.set('token', id, {expires: 1});
+  });
+
+  socket.on('connection_exists', () => {
+    alert('You already have an active session on Yiff Spot.');
+    user.allow = false;
+  });
+
   socket.on('reconnecting', (attemptNumber) => {
     chat.addChatMessage('Please wait... Attempting to reconnect you to Yiff Spot.', {
       class: 'message-system'
     });
   });
-  
+
   socket.on('disconnect', (reason) => {
     chat.addChatMessage('You have disconnected from Yiff Spot.', {
       class: 'message-system'
     });
     
-    user.data.hasPartner = false;
+    user.hasPartner = false;
 
     console.log(reason);
   });
 }
 
 module.exports = {
-	init: init,
-  io: socket,
+  listen: listen,
 };

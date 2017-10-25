@@ -1,37 +1,6 @@
 'use strict';
 
-var notify;
-var system;
-var partner;
-var socket;
-
-/**
- * Sends message to server to send it to partner.
- */
-function sendMessage() {
-  var message = document.getElementById('message');
-  
-  if (message.value.length <= 0) {
-    alert('Please enter a message.');
-    return false;
-  }
-
-  if (message.value.length >= 3000) {
-    alert('Please shorten the length of your message.');
-    return false;
-  }
-  
-  if (partner.hasPartner === false) {
-    message.value = '';
-    alert('You are not connected to a partner yet.');
-    return false;
-  }
-
-  socket.emit('typing', false);
-  socket.emit('send_message', message.value);
-  addChatMessage(message.value, {class: 'message-user'});
-  message.value = '';
-}
+var notify = require("./alert");
 
 /**
  * Append message to chat box.
@@ -97,31 +66,56 @@ function strip_tags(text) {
   return text.replace(/(<([^>]+)>)/ig, "");
 }
 
+/**
+ * Hides welcome message and displays chat box.
+ */
+function showChatBox() {
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('chat').style.display = 'block';
+}
 
-// =============================================================================
-// Event Listeners
-// =============================================================================
-
-function init() {
-  notify = require('./alert');
-  system = require('./system');
-  partner = require('./partner');
-  socket = system.io;
-  
-  var messageBoxElement = document.getElementById("messageBox");
-
+/**
+ * Chat Listeners
+ * 
+ * @param  {[type]} socket [description]
+ * @param  {[type]} user   [description]
+ * @return {[type]}        [description]
+ */
+function listen(socket, user) {
   /**
    * Listen for when user submits their message.
    */
-  messageBoxElement.addEventListener("submit", function(e) {
+  document.getElementById("messageBox").addEventListener("submit", function(e) {
     e.preventDefault();
-    sendMessage();
+
+    var message = document.getElementById('message');
+  
+    if (message.value.length <= 0) {
+      alert('Please enter a message.');
+      return false;
+    }
+
+    if (message.value.length >= 3000) {
+      alert('Please shorten the length of your message.');
+      return false;
+    }
+    
+    if (user.hasPartner === false) {
+      message.value = '';
+      alert('You are not connected to a partner yet.');
+      return false;
+    }
+
+    socket.emit('typing', false);
+    socket.emit('send_message', message.value);
+    addChatMessage(message.value, {class: 'message-user'});
+    message.value = '';
   });
 
   /**
    * Listen for when user begins typing in message box.
    */
-  messageBoxElement.addEventListener("input", function(e) {
+  document.getElementById("messageBox").addEventListener("input", function(e) {
     socket.emit('typing', true);
   });
 
@@ -158,8 +152,9 @@ function init() {
 }
 
 module.exports = {
-	init: init,
+  listen: listen,
   addChatMessage: addChatMessage,
   showChatTyping: showChatTyping,
   hideChatTyping: hideChatTyping,
+  showChatBox: showChatBox,
 };
