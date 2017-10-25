@@ -23,8 +23,6 @@ module.exports = {
       prevPartner: null,
       blocks: [],
     }
-
-    this.currentToken = token;
   },
   addPreferences: function(id, preferences) {
     clients[id].preferences = preferences;
@@ -46,7 +44,10 @@ module.exports = {
     var partner = clients[id].partner;
 
     clients[id].partner = null;
-    clients[partner].partner = null;
+
+    if (this.findClient(partner)) {
+      clients[partner].partner = null;
+    }
   },
   blockPartner: function(id, partner) {
     clients[id].blocks.push(partner);
