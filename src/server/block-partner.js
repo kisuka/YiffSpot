@@ -3,13 +3,13 @@
 module.exports = function (socket, users, token) {
   socket.on('block_partner', function () {
     var currentUser = users.findClient(token);
-    var partner = users.findClient(currentUser.prevPartner);
+    var partner = users.findClient(currentUser.partner);
 
     if (partner) {
       var clients = users.getAllClients();
 
       // Check if user has a partner
-      if (currentUser.prevPartner != null) {
+      if (currentUser.partner != null) {
         // Block partner
         users.removePartner(currentUser.id);
         users.blockPartner(token, partner.id);

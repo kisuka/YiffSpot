@@ -35,8 +35,10 @@ module.exports = function (socket, users, token) {
     if (currentUser.partner != null) {
       var currentPartner = users.findClient(currentUser.partner);
 
-      // Send message to the partner that the user has disconnected.
-      socket.broadcast.to(currentPartner.socket.id).emit('partner_left');
+      if (currentPartner && currentUser.id == currentPartner.partner) {
+        // Send message to the partner that the user has disconnected.
+        socket.broadcast.to(currentPartner.socket.id).emit('partner_left');
+      }
 
       // Disconnect partners from each other.
       users.removePartner(currentUser.id);

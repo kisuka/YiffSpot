@@ -116,7 +116,9 @@ function listen(socket, user) {
    * Listen for when user begins typing in message box.
    */
   document.getElementById("messageBox").addEventListener("input", function(e) {
-    socket.emit('typing', true);
+    if (user.hasPartner) {
+      socket.emit('typing', true);
+    }
   });
 
   /**

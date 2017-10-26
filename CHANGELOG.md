@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.5.2] - 2017.10.26
+### Changed
+- Fixed issue where partner typing was showing after leaving a partner.
+- No longer automatically try to find a new partner after disconnect, block or leave.
+
 ## [2.5.1] - 2017.10.24
 ### Changed
 - Fixed issue with Any / All always being selected.

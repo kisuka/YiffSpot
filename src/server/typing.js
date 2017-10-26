@@ -9,7 +9,7 @@ module.exports = function (socket, users, token) {
     var currentUser = users.findClient(token);
     var partner = users.findClient(currentUser.partner);
 
-    if (partner) {
+    if (partner && partner.partner == currentUser.id) {
       socket.broadcast.to(partner.socket.id).emit('partner_typing', {status: isTyping});
     }
   });
