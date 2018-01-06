@@ -1,87 +1,10 @@
 'use strict';
 
-var gender  = require("../models/gender");
-var kinks   = require("../models/kinks");
-var role    = require("../models/role");
-var species = require("../models/species");
-var users   = require("../models/users");
-
-module.exports = function (socket, users, token) {
-  /**
-   * Handles connecting two users together for a yiffing session.
-   * @param  Object preferences The yiffing preferences of the user.
-   */
-  socket.on('find_partner', function (preferences) {
-    // Update user's preferences.
-    users.addPreferences(token, preferences);
-
-    var partner = null;
-    var currentUser = users.findClient(token);
-    var clients = users.getAllClients();
-
-    // If user submitted any blank values, do not search for anything.
-    if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
-      socket.emit('invalid_preferences');
-      return false;
-    }
-
-    // Make sure user didn't try to submit any values not allowed.
-    if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({kinks: preferences.kinks})) {
-      socket.emit('invalid_preferences');
-      return false;
-    }
-
-    // User is looking for a new partner, therefore delete any existing paired partner.
-    if (currentUser.partner != null) {
-      var currentPartner = users.findClient(currentUser.partner);
-
-      if (currentPartner && currentUser.id == currentPartner.partner) {
-        // Send message to the partner that the user has disconnected.
-        socket.broadcast.to(currentPartner.socket.id).emit('partner_left');
-      }
-
-      // Disconnect partners from each other.
-      users.removePartner(currentUser.id);
-    }
-
-    // Look for a partner to yiff with in the list of pending users
-    for (var client in clients) {
-      var client = clients[client];
-
-      // Make sure our current partner is not our new partner and is not ourselves.
-      if (client.partner == null && client.preferences != null && currentUser.id != client.id) {
-        // Make sure not on blocked list for user.
-        if (users.checkBlocks(currentUser.id, client.id) === false && users.checkBlocks(client.id, currentUser.id) === false) {
-          // Match based off preferences.
-          if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences)) {
-            partner = client;
-            users.pairPartners(currentUser.id, client.id);
-
-            socket.emit('partner_connected', {
-              gender: partner.preferences.user.gender,
-              species: partner.preferences.user.species,
-              kinks: partner.preferences.kinks.join(", "),
-              role: partner.preferences.user.role
-            });
-
-            break;
-          }
-        }
-      }
-    }
-
-    if (partner != null) {
-      socket.broadcast.to(partner.socket.id).emit('partner_connected', {
-        gender: currentUser.preferences.user.gender,
-        species: currentUser.preferences.user.species,
-        kinks: currentUser.preferences.kinks.join(", "),
-        role: currentUser.preferences.user.role,
-      });
-    } else {
-      socket.emit('partner_pending');
-    }
-  });
-}
+const gender  = require("../models/gender");
+const kinks   = require("../models/kinks");
+const role    = require("../models/role");
+const species = require("../models/species");
+const users   = require("../models/users");
 
 /**
  * Checks for any empty fields.
@@ -191,4 +114,87 @@ function similiarKinks(userKinks, partnerKinks, similarities) {
     }
   }
   return false;
+}
+
+module.exports = function (users, token, preferences) {
+	// Update user's preferences.
+    users.addPreferences(token, preferences);
+
+    var partner = null;
+    var currentUser = users.findClient(token);
+    var clients = users.getAllClients();
+
+    // If user submitted any blank values, do not search for anything.
+    if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
+      if (currentUser.socket.readyState == 1) {
+        currentUser.socket.send(JSON.stringify({type:'invalid_preferences', data: true}));
+      }
+      return false;
+    }
+
+    // Make sure user didn't try to submit any values not allowed.
+    if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({kinks: preferences.kinks})) {
+      if (currentUser.socket.readyState == 1) {
+        currentUser.socket.send(JSON.stringify({type:'invalid_preferences', data: true}));
+      }
+      return false;
+    }
+
+    // User is looking for a new partner, therefore delete any existing paired partner.
+    if (currentUser.partner != null) {
+      var currentPartner = users.findClient(currentUser.partner);
+
+      if (currentPartner && currentUser.id == currentPartner.partner) {
+        // Send message to the partner that the user has disconnected.
+        if (currentPartner.socket.readyState == 1) {
+          currentPartner.socket.send(JSON.stringify({type:'partner_left', data: true}));
+        }
+      }
+
+      // Disconnect partners from each other.
+      users.removePartner(currentUser.id);
+    }
+
+    // Look for a partner to yiff with in the list of pending users
+    for (var client in clients) {
+      var client = clients[client];
+
+      // Make sure our current partner is not our new partner and is not ourselves.
+      if (client.partner == null && client.preferences != null && currentUser.id != client.id) {
+        // Make sure not on blocked list for user.
+        if (users.checkBlocks(currentUser.id, client.id) === false && users.checkBlocks(client.id, currentUser.id) === false) {
+          // Match based off preferences.
+          if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences)) {
+            partner = client;
+            users.pairPartners(currentUser.id, client.id);
+
+            if (currentUser.socket.readyState == 1) {
+              currentUser.socket.send(JSON.stringify({type:'partner_connected', data: {
+                gender: partner.preferences.user.gender,
+                species: partner.preferences.user.species,
+                kinks: partner.preferences.kinks.join(", "),
+                role: partner.preferences.user.role
+              }}));
+            }
+
+            break;
+          }
+        }
+      }
+    }
+
+    if (partner != null) {
+      if (partner.socket.readyState == 1) {
+        partner.socket.send(JSON.stringify({type: 'partner_connected', data: {
+          gender: currentUser.preferences.user.gender,
+          species: currentUser.preferences.user.species,
+          kinks: currentUser.preferences.kinks.join(", "),
+          role: currentUser.preferences.user.role,
+        }}));
+      }
+    } else {
+      if (currentUser.socket.readyState == 1) {
+    	 currentUser.socket.send(JSON.stringify({type:'partner_pending', data: true}));
+      }
+    }
 }

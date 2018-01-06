@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.0] - 2018.01.06
+### Changed
+- Replaced socket.io on server with ws.
+- Replaced socket.io on client with native WebSockets.
+
+### Removed
+- js-cookie dependency.
+
 ## [2.5.2] - 2017.10.26
 ### Changed
 - Fixed issue where partner typing was showing after leaving a partner.

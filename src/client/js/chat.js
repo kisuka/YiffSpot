@@ -1,6 +1,6 @@
 'use strict';
 
-var notify = require("./alert");
+const user = require('./user');
 
 /**
  * Append message to chat box.
@@ -75,88 +75,61 @@ function showChatBox() {
 }
 
 /**
- * Chat Listeners
- * 
- * @param  {[type]} socket [description]
- * @param  {[type]} user   [description]
- * @return {[type]}        [description]
+ * [invalidLinkMessage description]
+ * @return {[type]} [description]
  */
-function listen(socket, user) {
-  /**
-   * Listen for when user submits their message.
-   */
-  document.getElementById("messageBox").addEventListener("submit", function(e) {
-    e.preventDefault();
+function invalidLinkMessage() {
+	alert('You have attempted to submit a possible malicious link.');
+  return false;
+}
 
-    var message = document.getElementById('message');
-  
-    if (message.value.length <= 0) {
-      alert('Please enter a message.');
-      return false;
-    }
+/**
+ * [sendMessage description]
+ * @param  {[type]} e [description]
+ * @return {[type]}   [description]
+ */
+function sendMessage(socket) {
+  var message = document.getElementById('message');
 
-    if (message.value.length >= 3000) {
-      alert('Please shorten the length of your message.');
-      return false;
-    }
-    
-    if (user.hasPartner === false) {
-      message.value = '';
-      alert('You are not connected to a partner yet.');
-      return false;
-    }
-
-    socket.emit('typing', false);
-    socket.emit('send_message', message.value);
-    addChatMessage(message.value, {class: 'message-user'});
-    message.value = '';
-  });
-
-  /**
-   * Listen for when user begins typing in message box.
-   */
-  document.getElementById("messageBox").addEventListener("input", function(e) {
-    if (user.hasPartner) {
-      socket.emit('typing', true);
-    }
-  });
-
-  /**
-   * User's partner is currently typing.
-   */
-  socket.on('partner_typing', (data) => {
-    if (data.status) {
-      showChatTyping();
-    } else {
-      hideChatTyping();
-    }
-  });
-
-  /**
-   * User has received a new message from their partner.
-   */
-  socket.on('receive_message', (data) => {
-    addChatMessage(data.message, {class: 'message-partner'});
-    notify.alertUser("New Message");
-  });
-
-  /**
-   * Displays error message that user tried to submit malicious links.
-   */
-  socket.on('invalid_links', () => {
-    alert(''+
-      'You have attempted to submit a possible malicious link. '+
-      'Please only use known image sites.'
-    );
-
+  if (message.value.length <= 0) {
+    alert('Please enter a message.');
     return false;
-  });
+  }
+
+  if (message.value.length >= 3000) {
+    alert('Please shorten the length of your message.');
+    return false;
+  }
+
+  if (user.getPartner() === false) {
+    message.value = '';
+    alert('You are not connected to a partner yet.');
+    return false;
+  }
+
+  sendTypingStatus(socket, false);
+  socket.send(JSON.stringify({type:'send_message', data: message.value}));
+
+  addChatMessage(message.value, {class: 'message-user'});
+  message.value = '';
+}
+
+/**
+ * [sendTypingStatus description]
+ * @return {[type]} [description]
+ */
+function sendTypingStatus(socket, status = true) {
+  if (user.getPartner()) {
+    socket.send(JSON.stringify({type:'typing', data: status}));
+  }
 }
 
 module.exports = {
-  listen: listen,
-  addChatMessage: addChatMessage,
-  showChatTyping: showChatTyping,
-  hideChatTyping: hideChatTyping,
-  showChatBox: showChatBox,
+	addChatMessage: addChatMessage,
+	showChatTyping: showChatTyping,
+	hideChatTyping: hideChatTyping,
+	showChatBox: showChatBox,
+  invalid: invalidLinkMessage,
+  sendMessage: sendMessage,
+  sendTypingStatus: sendTypingStatus,
 };
