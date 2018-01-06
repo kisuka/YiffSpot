@@ -1,6 +1,6 @@
 {
   "name": "YiffSpot",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "A real-time web chat for yiffing with random furries.",
   "keywords": [
     "furry",
@@ -10,7 +10,6 @@
   ],
   "main": "app.js",
   "author": "Kisuka <kisuka@kisuka.com>",
-  "private": true,
   "license": "MIT",
   "scripts": {
     "build.sass": "node-sass --output-style compressed -o public/assets src/client/scss",
@@ -23,13 +22,12 @@
   },
   "dependencies": {
     "express": "^4.14.*",
-    "js-cookie": "^2.1.4",
     "marked": "^0.3.6",
     "pug": "^2.0.0-rc.4",
+    "redis": "^2.8.0",
     "slim-select": "^1.1.2",
-    "socket.io": "^2.0.4",
-    "socket.io-redis": "^5.2.0",
-    "string": "^3.3.3"
+    "string": "^3.3.3",
+    "ws": "^3.3.3"
   },
   "devDependencies": {
     "browserify": "^14.5.0",

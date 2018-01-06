@@ -1,52 +1,74 @@
 'use strict';
 
-var config = require('./config');
+const express = require('express'),
+      http    = require('http'),
+      https   = require('https'),
+      ws      = require('ws'),
+      fs      = require('fs'),
+      config  = require('./config'),
+      routes  = require('./routes'),
+      init    = require('./src/server/init.js');
 
-var express = require('express');
-var app     = express();
-var server  = require('http').createServer(app);
-var io      = require('socket.io')(server, {cookie: false, transports: ['websocket']});
-var redis   = require('socket.io-redis');
-var marked  = require('marked');
-var fs      = require('fs');
+var credentials = undefined,
+    sslServer   = undefined,
+    wss         = undefined;
 
-var gender  = require("./src/models/gender");
-var kinks   = require("./src/models/kinks");
-var role    = require("./src/models/role");
-var species = require("./src/models/species");
+if (config.ssl_enabled == true) {
+	credentials = {
+	  key: fs.readFileSync(config.ssl_key),
+	  cert: fs.readFileSync(config.ssl_crt),
+	};
+}
 
-var connection = require('./src/server/connection.js');
+// Initalize Express
+const app = express();
 
+// Express View Engine
 app.enable('trust proxy');
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/src/views');
 
-/* Static */
+// Express Routing
 app.use(express.static(__dirname + '/public'));
 app.use('/assets', express.static(__dirname + '/public/assets'));
 
-// Http routing
-app.get('/', function(req, res) {
-  res.render('home', {
-    pageTitle: config.pageTitle,
-    breeds: species.getAll(),
-    genders: gender.getAll(),
-    kinks: kinks.getAll(),
-    roles: role.getAll(),
+// HTTPS redirection if ssl is enabled
+if (config.ssl_enabled == true) {
+  app.use(function requireHTTPS(req, res, next) {
+    if (!req.secure) {
+      return res.redirect('https://' + req.headers.host + req.url);
+    }
+    next();
   });
-});
-
-app.get('/changes', function(req, res) {
-  var file = fs.readFileSync('./CHANGELOG.md', 'utf8');
-  res.send(marked(file.toString()));
-});
-
-if (config.cluster == true) {
-  io.adapter(redis());
 }
 
-server.listen(config.port);
+app.use(routes);
 
-connection(io);
+// Create HTTP + Web Socket server
+const server = http.createServer(app);
 
-console.log('Listening on port %d', config.port);
+// Create HTTPS server if enabled
+if (config.ssl_enabled == true) {
+	sslServer = https.createServer(credentials, app);
+}
+
+// Create Web Socket server
+if (config.ssl_enabled == true) {
+	wss = new ws.Server({server: sslServer});
+} else {
+	wss = new ws.Server({server: server});
+}
+
+// Initalize socket listeners
+init(wss);
+
+// Listen on specified port / App Start
+server.listen(config.http_port, function listening() {
+  console.log('Listening on port %d', server.address().port);
+});
+
+if (config.ssl_enabled == true) {
+	sslServer.listen(config.https_port, function listening() {
+	  console.log('Listening on port %d', sslServer.address().port);
+	});
+}
