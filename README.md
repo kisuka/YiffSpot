@@ -6,7 +6,7 @@
 
 ## About
 
-A real-time web chat utilizing [Socket.io](http://socket.io/) for "yiffing" with furries anonymously and randomly.
+A real-time web chat utilizing web sockets for "yiffing" with furries anonymously and randomly.
 
 ## Installation
 
