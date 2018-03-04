@@ -24,9 +24,11 @@
   },
   "engines": { "node": "9.x" },
   "dependencies": {
+    "buttplug": "^0.6.1",
     "express": "^4.16.*",
     "marked": "^0.3.17",
     "pug": "^2.0.1",
+    "nouislider": "^11.0.3",
     "redis": "^2.8.0",
     "slim-select": "^1.11.2",
     "string": "^3.3.3",

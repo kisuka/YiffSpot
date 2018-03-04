@@ -4,6 +4,7 @@ const chat = require('./chat');
 const partner = require('./partner');
 const preferences = require('./preferences');
 const user = require('./user');
+const buttplug = require('./buttplug');
 
 // Initalize user client information
 user.init();
@@ -20,7 +21,7 @@ socket.addEventListener('error', function (event) {
   console.log('Error: '+event);
 });
 
-socket.addEventListener('message', function (event) {
+socket.addEventListener('message', async function (event) {
   const response = JSON.parse(event.data);
 
   switch(response.type) {
@@ -35,8 +36,9 @@ socket.addEventListener('message', function (event) {
       document.getElementById('userCount').innerText = response.data;
     break;
     case 'receive_message':
-      chat.addChatMessage(response.data, {class: 'message-partner'});
-    break;
+      if (!(await buttplug.parseMessage(response.data))) {
+        chat.addChatMessage(response.data, {class: 'message-partner'});
+      }
       break;
     case 'connection_exists':
       alert('You already have an active session.');
@@ -44,9 +46,6 @@ socket.addEventListener('message', function (event) {
       break;
     case 'update_user_count':
       document.getElementById('userCount').innerText = response.data;
-      break;
-    case 'receive_message':
-      chat.addChatMessage(response.data, {class: 'message-partner'});
       break;
     case 'partner_typing':
       if (response.data == true) {
@@ -57,18 +56,32 @@ socket.addEventListener('message', function (event) {
       break;
     case 'partner_connected':
       partner.connected(response.data);
+      // All Buttplug calls in this function are considered noops if
+      // buttplug.init() has not been called.
+      buttplug.enableDeviceSharing();
       break;
     case 'partner_disconnected':
-      partner.disconnected();
+		  partner.disconnected();
+      // Here and below, whenever a partner leaves for some reason, we need to
+      // make sure Buttplug cleans up its device UI, stops devices, and disables sharing
+      // until we reconnect.
+      buttplug.removeDeviceControls();
+      buttplug.disableDeviceSharing();
       break;
     case 'partner_left':
       partner.left();
+      buttplug.removeDeviceControls();
+      buttplug.disableDeviceSharing();
       break;
     case 'partner_blocked':
       partner.blocked();
+      buttplug.removeDeviceControls();
+      buttplug.disableDeviceSharing();
       break;
     case 'partner_pending':
       partner.pending();
+      buttplug.removeDeviceControls();
+      buttplug.disableDeviceSharing();
       break;
     case 'invalid_links':
       chat.invalid();
@@ -77,8 +90,8 @@ socket.addEventListener('message', function (event) {
       preferences.invalid();
       break;
     case 'ping':
-  		break;
-	}
+      break;
+  }
 });
 
 /**
@@ -137,3 +150,8 @@ document.getElementById('saveSettings').addEventListener('click', preferences.sa
 window.addEventListener('beforeunload', function () {
   socket.close();
 });
+
+// Initialize Buttplug. To remove access to buttplug from the client, just
+// comment out this line.
+
+buttplug.init(socket);

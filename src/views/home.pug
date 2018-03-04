@@ -16,6 +16,7 @@ html(class='no-js', lang='en-US')
 
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
     link(rel='stylesheet', href='/assets/slimselect.min.css')
+    link(rel='stylesheet', href='/assets/nouislider.min.css')
     link(rel='stylesheet', href='/assets/app.css')
   body
     | <!--[if lt IE 8]>
@@ -112,6 +113,23 @@ html(class='no-js', lang='en-US')
                     button(type='button' class='btn btn-default btn-sm' id='settings') Settings
                     button(type='button' class='btn btn-default btn-sm' id='savePref') Save Preferences
 
+            div(class='row buttplug-hide' id='buttplugPanel')
+              div(class='col-lg-12')
+                label Buttplug
+                div(class='buttplug-doc-link')
+                  a(href='https://metafetish.club/t/using-buttplug-with-yiffspot/267' target="_blank") oWo What's This?
+                div(class='' id='buttplugConnect')
+                  input(id='buttplug-websocket-address', type='text', value='wss://localhost:12345/buttplug', class='form-control')
+                  button(type='button' class='btn btn-primary btn-block btn-sm' id='buttplugConnectWebsocket') Connect Websocket
+                  button(type='button' class='btn btn-primary btn-block btn-sm' id='buttplugConnectLocal') Connect Local
+                  button(type='button' class='btn btn-primary btn-block btn-sm' id='buttplugConnectDevTools') Connect Simulator
+                div(class='buttplug-hide' id='buttplugDevice')
+                  div(class='buttplug-hide' id='buttplugSimulator')
+                    button(type='button' class='btn btn-primary btn-block btn-sm' id='buttplugShowSimulator') Show Simulator
+                  button(type='button' class='btn btn-primary btn-block btn-sm' id='buttplugScanning') Start Scanning
+                  ul(id="buttplugDeviceList")
+                  button(type='button' class='btn btn-primary btn-block btn-sm' id='buttplugDisconnect') Disconnect
+
           div(id='siteSettings' class='userSettings hide-ele')
             div(class='row')
                 div(class='col-lg-12')
@@ -124,7 +142,7 @@ html(class='no-js', lang='en-US')
                 div(class='col-lg-12')
                   div(class='btn-group partner-actions')
                     button(type='button' class='btn btn-default btn-sm' id='preferences') Preferences
-                    button(type='button' class='btn btn-default btn-sm' id='saveSettings') Save Settings              
+                    button(type='button' class='btn btn-default btn-sm' id='saveSettings') Save Settings
 
           div(class='row credit')
             div(class='col-lg-12 text-muted')
@@ -142,11 +160,13 @@ html(class='no-js', lang='en-US')
         div(class='col-sm-offset-4 col-lg-offset-2 col-lg-10')
           ul(id='messages' class='list-unstyled messages')
             li(id='typing' class='typing message message-system') Your partner is typing...
-
+          div(id='buttplug-controls')
           form(action='', id='messageBox', role='form')
             p
               input(name='message', id='message', type='text' class='form-control', placeholder='Enter your message...', autocomplete='off', required='required')
 
+    script(src='//cdn.jsdelivr.net/npm/buttplug@0.8.2/dist/web/buttplug.min.js')
+    script(src='//cdn.jsdelivr.net/npm/buttplug@0.8.2/dist/web/buttplug-devtools.min.js')
     script(src='/assets/app.js')
     script.
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
