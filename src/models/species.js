@@ -1,6 +1,7 @@
 var species = [
   'Alligator',
   'Arachnid',
+  'Arctic Fox',
   'Badger',
   'Bat',
   'Bear',
