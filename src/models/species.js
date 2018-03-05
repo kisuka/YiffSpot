@@ -63,6 +63,7 @@ var species = [
   'Sheep',
   'Skunk',
   'Snake',
+  'Snow Leopard',
   'Squirrel',
   'Tiger',
   'Turtle',
