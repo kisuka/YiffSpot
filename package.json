@@ -19,8 +19,10 @@
     "watch.sass": "node-sass -w src/client/scss/app.scss -o public/assets",
     "launch": "node app.js",
     "build": "npm-run-all --parallel build.js build.sass copy",
-    "dev": "npm-run-all --parallel watch.js watch.sass copy launch"
+    "dev": "npm-run-all --parallel watch.js watch.sass copy launch",
+    "start": "npm run build && npm run launch"
   },
+  "engines": { "node": "9.x" },
   "dependencies": {
     "express": "^4.16.*",
     "marked": "^0.3.17",
