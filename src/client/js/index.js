@@ -37,38 +37,48 @@ socket.addEventListener('message', function (event) {
     case 'receive_message':
       chat.addChatMessage(response.data, {class: 'message-partner'});
     break;
+      break;
+    case 'connection_exists':
+      alert('You already have an active session.');
+      return false;
+      break;
+    case 'update_user_count':
+      document.getElementById('userCount').innerText = response.data;
+      break;
+    case 'receive_message':
+      chat.addChatMessage(response.data, {class: 'message-partner'});
+      break;
     case 'partner_typing':
       if (response.data == true) {
         chat.showChatTyping();
       } else {
         chat.hideChatTyping();
       }
-    break;
+      break;
     case 'partner_connected':
       partner.connected(response.data);
-    break;
+      break;
     case 'partner_disconnected':
       partner.disconnected();
-    break;
+      break;
     case 'partner_left':
       partner.left();
-    break;
+      break;
     case 'partner_blocked':
       partner.blocked();
-    break;
+      break;
     case 'partner_pending':
       partner.pending();
-    break;
+      break;
     case 'invalid_links':
       chat.invalid();
-    break;
+      break;
     case 'invalid_preferences':
       preferences.invalid();
-    break;
+      break;
     case 'ping':
-
-    break;
-  }
+  		break;
+	}
 });
 
 /**
