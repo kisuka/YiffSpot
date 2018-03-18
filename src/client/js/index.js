@@ -9,7 +9,7 @@ const user = require('./user');
 user.init();
 
 // Create connection to server
-const socket = new WebSocket(''+(location.protocol == 'https' ? 'wss' : 'ws')+'://'+location.hostname+(location.port ? ':'+location.port : '')+'?id='+user.getId());
+const socket = new WebSocket(''+(location.protocol.indexOf('https') === 0 ? 'wss' : 'ws')+'://'+location.hostname+(location.port ? ':'+location.port : '')+'?id='+user.getId());
 
 // Server responses
 socket.addEventListener('close', function (event) {
