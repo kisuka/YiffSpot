@@ -12,13 +12,14 @@
   "author": "Kisuka <kisuka@kisuka.com>",
   "license": "MIT",
   "scripts": {
+    "copy": "cp node_modules/slim-select/dist/slimselect.min.css node_modules/nouislider/distribute/nouislider.min.css public/assets",
     "build.sass": "node-sass --output-style compressed -o public/assets src/client/scss",
     "build.js": "browserify src/client/js/index.js -o public/assets/app.js",
     "watch.js": "watchify src/client/js/index.js -o public/assets/app.js -dv",
     "watch.sass": "node-sass -w src/client/scss/app.scss -o public/assets",
     "launch": "node app.js",
-    "build": "npm-run-all --parallel build.js build.sass",
-    "dev": "npm-run-all --parallel watch.js watch.sass launch"
+    "build": "npm-run-all --parallel build.js build.sass copy",
+    "dev": "npm-run-all --parallel watch.js watch.sass copy launch"
   },
   "dependencies": {
     "express": "^4.14.*",
