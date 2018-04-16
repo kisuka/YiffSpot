@@ -1,7 +1,7 @@
 const config  = require('./config');
 
 const express = require('express');
-const fs      = require('fs');
+const fs      = require('graceful-fs');
 const marked  = require('marked');
 
 const gender  = require("./src/models/gender");
