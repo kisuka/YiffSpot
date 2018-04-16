@@ -79,7 +79,7 @@ function showChatBox() {
  * @return {[type]} [description]
  */
 function invalidLinkMessage() {
-	alert('You have attempted to submit a possible malicious link.');
+  alert('You have attempted to submit a possible malicious link.');
   return false;
 }
 
@@ -125,10 +125,10 @@ function sendTypingStatus(socket, status = true) {
 }
 
 module.exports = {
-	addChatMessage: addChatMessage,
-	showChatTyping: showChatTyping,
-	hideChatTyping: hideChatTyping,
-	showChatBox: showChatBox,
+  addChatMessage: addChatMessage,
+  showChatTyping: showChatTyping,
+  hideChatTyping: hideChatTyping,
+  showChatBox: showChatBox,
   invalid: invalidLinkMessage,
   sendMessage: sendMessage,
   sendTypingStatus: sendTypingStatus,

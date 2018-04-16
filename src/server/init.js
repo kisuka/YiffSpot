@@ -66,7 +66,10 @@ module.exports = function (wss) {
     });
 
     // Error
-    ws.on('error', function error(e) {
+    ws.on('error', (e) => {
+      // Ignore network errors like ECONNRESET, EPIPE, etc
+      if (e.errno) return;
+      throw e;
     });
 
     // Closed

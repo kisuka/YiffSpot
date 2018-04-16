@@ -6,12 +6,12 @@
  * @return {[type]}    [description]
  */
 function init() {
-	if (getData() === false) {
-		localStorage.setItem("user", JSON.stringify({
-			id: null,
-			hasPartner: false
-		}));
-	}
+  if (getData() === false) {
+    localStorage.setItem("user", JSON.stringify({
+      id: null,
+      hasPartner: false
+    }));
+  }
 }
 
 /**
@@ -19,13 +19,13 @@ function init() {
  * @return {[type]} [description]
  */
 function getData() {
-	const user = localStorage.getItem("user");
+  const user = localStorage.getItem("user");
 
-	if (user === null) {
-		return false;
-	}
+  if (user === null) {
+    return false;
+  }
 
-	return JSON.parse(user);
+  return JSON.parse(user);
 }
 
 /**
@@ -33,13 +33,13 @@ function getData() {
  * @return {[type]} [description]
  */
 function getPartner() {
-	const user = getData();
+  const user = getData();
 
-	if (user === false) {
-		return false;
-	}
+  if (user === false) {
+    return false;
+  }
 
-	return user.hasPartner;
+  return user.hasPartner;
 }
 
 /**
@@ -47,30 +47,30 @@ function getPartner() {
  * @param {[type]} value [description]
  */
 function setPartner(value) {
-	var user = JSON.parse(localStorage.getItem("user"));
-	user.hasPartner = value;
-	localStorage.setItem("user", JSON.stringify(user));
+  var user = JSON.parse(localStorage.getItem("user"));
+  user.hasPartner = value;
+  localStorage.setItem("user", JSON.stringify(user));
 }
 
 function getId() {
-	const user = getData();
+  const user = getData();
 
-	if (user === false) {
-		return false;
-	}
+  if (user === false) {
+    return false;
+  }
 
-	return user.id;
+  return user.id;
 }
 
 function setId(value) {
-	var user = JSON.parse(localStorage.getItem("user"));
-	user.id = value;
-	localStorage.setItem("user", JSON.stringify(user));
+  var user = JSON.parse(localStorage.getItem("user"));
+  user.id = value;
+  localStorage.setItem("user", JSON.stringify(user));
 }
 
 module.exports = {
-	init: init,
-	getData: getData,
+  init: init,
+  getData: getData,
   getPartner: getPartner,
   setPartner: setPartner,
   getId: getId,

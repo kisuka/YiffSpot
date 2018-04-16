@@ -27,15 +27,15 @@ function getDomain(url) {
 }
 
 module.exports = function (users, token, message) {
-	var msg = string(message).stripTags().s;
-	var links = new Array;
-	var matches;
-	var invalidLinks = false;
+  var msg = string(message).stripTags().s;
+  var links = new Array;
+  var matches;
+  var invalidLinks = false;
 
-	var currentUser = users.findClient(token);
-	var partner = users.findClient(currentUser.partner);
+  var currentUser = users.findClient(token);
+  var partner = users.findClient(currentUser.partner);
 
-	if (!partner) {
+  if (!partner) {
       return false;
     }
 
@@ -46,7 +46,7 @@ module.exports = function (users, token, message) {
       links.push(matches[0]);
     }
 
-	// Check all links in message for possible malicious links.
+  // Check all links in message for possible malicious links.
     if (links.length > 0) {
       for (var link in links) {
         var domain = links[link];

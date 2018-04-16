@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (users, token) {
-	const currentUser = users.findClient(token);
+  const currentUser = users.findClient(token);
     const partner = users.findClient(currentUser.partner);
 
     // Check if user has a partner
@@ -10,7 +10,7 @@ module.exports = function (users, token) {
       users.removePartner(currentUser.id);
 
       if (partner.socket.readyState == 1) {
-      	partner.socket.send(JSON.stringify({type: 'partner_disconnected', data: true}));
+        partner.socket.send(JSON.stringify({type: 'partner_disconnected', data: true}));
       }
     }
 
