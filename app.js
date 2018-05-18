@@ -72,3 +72,8 @@ if (config.ssl_enabled == true) {
 	  console.log('Listening on port %d', sslServer.address().port);
 	});
 }
+
+process.on('uncaughtException', function(err) {
+    console.log('Uncaught Error: ');
+    console.log(err);
+});
