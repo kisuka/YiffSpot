@@ -39,6 +39,8 @@ function connected(data) {
   user.setPartner(true);
 
   notify.alertUser("Partner Connected");
+
+  document.getElementById('block-partner').classList.remove("hide-ele");
 }
 
 /**

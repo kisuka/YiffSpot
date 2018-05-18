@@ -106,6 +106,23 @@ document.getElementById('block-partner').addEventListener('click', function(e) {
   partner.block(socket);
 });
 
+// Show Site Settings
+document.getElementById('settings').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('userPrefs').classList.toggle("hide-ele");
+  document.getElementById('siteSettings').classList.toggle("hide-ele");
+});
+
+// Show Preferences Settings
+document.getElementById('preferences').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('siteSettings').classList.toggle("hide-ele");
+  document.getElementById('userPrefs').classList.toggle("hide-ele");
+});
+
+// When save settings button is clicked
+document.getElementById('saveSettings').addEventListener('click', preferences.saveSettings);
+
 // Handle when window is closed
 window.addEventListener('beforeunload', function () {
   socket.close();

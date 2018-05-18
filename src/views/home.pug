@@ -41,83 +41,95 @@ html(class='no-js', lang='en-US')
            span(id='userCount') 0
            |  Users Online
 
-          form(id='userSettings', class='userSettings', action='/', method='post', role='form')
-            div(class='row')
-              div(class='col-lg-12')
-                label Your Gender
-                select(name='userGender', id='userGender')
-                  option(value='') Select Gender
+          div(id='userPrefs')
+            form(id='userSettings', class='userSettings', action='/', method='post', role='form')
+              div(class='row')
+                div(class='col-lg-12')
+                  label Your Gender
+                  select(name='userGender', id='userGender')
+                    option(value='') Select Gender
+                      for gender in genders
+                        option #{gender}
+
+              div(class='row')
+                div(class='col-lg-12')
+                  label Your Species
+                  select(name='userSpecies', id='userSpecies')
+                    option(value='') Select Species
+                    for breed in breeds
+                      option #{breed}
+
+              div(class='row')
+                div(class='col-lg-12')
+                  label Your Role
+                  select(name='userRole', id='userRole')
+                    option(value='') Select Role
+                    for role in roles
+                      option #{role}
+
+              div(class='row')
+                div(class='col-lg-12')
+                  label Partner's Gender
+                  select(name='partnerGender[]', id='partnerGender', multiple='multiple')
+                    option(value='any') Any / All
                     for gender in genders
                       option #{gender}
 
-            div(class='row')
-              div(class='col-lg-12')
-                label Your Species
-                select(name='userSpecies', id='userSpecies')
-                  option(value='') Select Species
-                  for breed in breeds
-                    option #{breed}
+              div(class='row')
+                div(class='col-lg-12')
+                  label Partner's Species
+                  select(name='partnerSpecies[]', id='partnerSpecies', multiple='multiple')
+                    option(value='any') Any / All
+                    for breed in breeds
+                      option #{breed}
 
-            div(class='row')
-              div(class='col-lg-12')
-                label Your Role
-                select(name='userRole', id='userRole')
-                  option(value='') Select Role
-                  for role in roles
-                    option #{role}
+              div(class='row')
+                div(class='col-lg-12')
+                  label Partner's Role
+                  select(name='partnerRole', id='partnerRole')
+                    option(value='') Select Role
+                    for role in roles
+                      option #{role}
 
-            div(class='row')
-              div(class='col-lg-12')
-                label Partner's Gender
-                select(name='partnerGender[]', id='partnerGender', multiple='multiple')
-                  option(value='any') Any / All
-                  for gender in genders
-                    option #{gender}
+              div(class='row')
+                div(class='col-lg-12')
+                  label Kinks
+                  select(name='userKinks[]', id='userKinks', multiple='multiple')
+                    option(value='any') Any / All
+                    for kink in kinks
+                      option #{kink}
 
-            div(class='row')
-              div(class='col-lg-12')
-                label Partner's Species
-                select(name='partnerSpecies[]', id='partnerSpecies', multiple='multiple')
-                  option(value='any') Any / All
-                  for breed in breeds
-                    option #{breed}
+              div(class='row')
+                div(class='col-lg-12')
+                  div(class='btn-group partner-actions')
+                    button(type='submit' class='btn btn-primary btn-sm') Find Partner
+                    button(id='block-partner' type='submit' class='btn btn-danger btn-sm hide-ele') Block Partner
 
-            div(class='row')
-              div(class='col-lg-12')
-                label Partner's Role
-                select(name='partnerRole', id='partnerRole')
-                  option(value='') Select Role
-                  for role in roles
-                    option #{role}
+              div(class='row')
+                div(class='col-lg-12')
+                  div(class='btn-group partner-actions')
+                    button(type='button' class='btn btn-default btn-sm' id='settings') Settings
+                    button(type='button' class='btn btn-default btn-sm' id='savePref') Save Preferences
 
+          div(id='siteSettings' class='userSettings hide-ele')
             div(class='row')
-              div(class='col-lg-12')
-                label Kinks
-                select(name='userKinks[]', id='userKinks', multiple='multiple')
-                  option(value='any') Any / All
-                  for kink in kinks
-                    option #{kink}
+                div(class='col-lg-12')
+                  label Theme
+                  select(name='siteTheme', id='siteTheme', class='form-control')
+                    option(value='light') Light
+                    option(value='dark') Dark
 
             div(class='row')
-              div(class='col-lg-12')
-                button(type='submit' class='btn btn-primary btn-block btn-sm') Find Partner
+                div(class='col-lg-12')
+                  div(class='btn-group partner-actions')
+                    button(type='button' class='btn btn-default btn-sm' id='preferences') Preferences
+                    button(type='button' class='btn btn-default btn-sm' id='saveSettings') Save Settings              
 
-            div(class='row')
-              div(class='col-lg-12')
-                button(type='button' class='btn btn-default btn-block btn-sm' id='savePref') Save Preferences
-
-            div(class='row credit')
-              div(class='col-lg-12 text-muted')
-                p
-                  script(type='text/javascript', src='https://ko-fi.com/widgets/widget_2.js')
-                  script(type='text/javascript').
-                    kofiwidget2.init('Donate to Support', '#17a1bf', 'A253212C');kofiwidget2.draw();
-                p
-                  | Created by 
-                  a(href='https://twitter.com/KisukaKiza' target='_blank') @KisukaKiza
-                p
-                  a(href='/changes' target='_blank') Changelog
-
+          div(class='row credit')
+            div(class='col-lg-12 text-muted')
+              p
+                | Created by 
+                a(href='https://twitter.com/KisukaKiza' target='_blank') @KisukaKiza
 
       div(id='welcome' class='row')
         div(class='col-sm-offset-4 col-lg-offset-2 col-lg-10')
@@ -133,8 +145,6 @@ html(class='no-js', lang='en-US')
           form(action='', id='messageBox', role='form')
             p
               input(name='message', id='message', type='text' class='form-control', placeholder='Enter your message...', autocomplete='off', required='required')
-            p
-              a(id='block-partner' href='' class='btn btn-xs btn-danger') Block Partner
 
     script(src='/assets/app.js')
     script.

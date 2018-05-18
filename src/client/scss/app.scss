@@ -1,4 +1,5 @@
-@import "./../../../node_modules/slim-select/dist/slimselect";
+@import "./../../../node_modules/slim-select/src/slim-select/slimselect.scss";
+@import "dark";
 
 // Global
 p { margin: 0 0 5px; }
@@ -12,66 +13,68 @@ p { margin: 0 0 5px; }
 // Sidebar
 .active-sidebar { display: block !important; }
 .sidebar { display: none; }
-.sidebar .credit { margin-top: 20px; font-size: 9px; }
-.logo { padding: 10px 0; width: 100%; text-align: center; border-bottom: 1px solid #ddd; }
-a.kofi-button {
-  background-color: #17a1bf;
-  padding: 0px 10px !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-  border-radius: 3px !important;
-  width: 100%;
+
+.sidebar .credit {
+	margin-top: 20px;
+	font-size: 11px;
+}
+
+.logo {
+	padding: 10px 0;
+	width: 100%; 
+	text-align: center;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 5px;
 }
 
 .userSettings .row { margin-bottom: 20px; }
+
 .userSettings label { display: block; }
+
 .chat { display: none; }
+
 .typing { display: none; }
+
 .messages {
-	border: 1px solid #eee;
-	border-top: none;
-	padding: 10px;
-	height: 90vh;
+	padding: 5px;
+	height: 94vh;
 	overflow-y: auto;
 	word-wrap: break-word
 }
 
+.partner-actions {
+	display: flex;
+    flex-wrap: wrap;
+}
+
+.partner-actions button {
+	flex-grow: 1;
+}
+
+.hide-ele {
+	display: none;
+}
+
 // Chat & Messages
 .message {
-	padding: 10px;
-	border-radius: 5px;
-	margin-bottom: 5px;
 	position: relative;
+	border-bottom: 1px solid #ddd;
+	padding: 1.5rem 0;
 }
-.message-partner { background-color: #c7edfc; margin-left: 20px; }
-.message-partner:before { content: "Partner: "; font-weight: bold; }
-.message-user { background-color: #e5f7fd; margin-right: 20px; }
-.message-user:before { content: "You: "; font-weight: bold; }
-.message-system { background-color: #eee; }
-.message-partner:after {
-	content: "";
-	position: absolute;
-	border-style: solid;
+
+.message-partner:before {
+	content: "Partner";
+	font-weight: bold;
 	display: block;
-	width: 0;
-	top: 5px;
-	left: -15px;
-	bottom: auto;
-	border-width: 15px 15px 15px 0;
-	border-color: transparent #c7edfc;
 }
-.message-user:after {
-	content: "";
-	position: absolute;
-	border-style: solid;
+
+.message-user:before {
+	content: "You";
+	font-weight: bold;
 	display: block;
-	width: 0;
-	top: 5px;
-	right: -15px;
-	bottom: auto;
-	border-width: 15px 0 15px 15px;
-	border-color: transparent #e5f7fd;
 }
+
+.message-system { font-weight: 600; color: #949494; }
 
 // Desktop
 @media (min-width: 768px) {

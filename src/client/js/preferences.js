@@ -8,6 +8,8 @@ const SlimSelect = require('./../../../node_modules/slim-select/dist/slimselect'
  */
 function initPreferences() {
   loadPreferences();
+  loadSettings();
+  loadTheme();
 
   new SlimSelect({select: '#userGender', showSearch: false});
   new SlimSelect({select: '#userSpecies'});
@@ -133,6 +135,42 @@ function savePreferences(e) {
 }
 
 /**
+ * [saveSettings description]
+ * @return {[type]} [description]
+ */
+function saveSettings(e) {
+  e.preventDefault();
+
+  var theme = document.getElementById('siteTheme').value;
+
+  localStorage['theme'] = theme;
+
+  loadTheme();
+
+  alert('Site Settings have been saved.');
+}
+
+/**
+ * [loadSettings description]
+ * @return {[type]} [description]
+ */
+function loadSettings() {
+  var themeSelect = document.getElementById('siteTheme');
+
+  if (localStorage['theme']) {
+    document.getElementById('siteTheme').value = localStorage['theme'];
+  }
+}
+
+function loadTheme() {
+  if (localStorage['theme'] && localStorage['theme'] == 'dark') {
+    document.body.classList.add("dark");
+  } else {
+    document.body.classList.remove("dark");
+  }
+}
+
+/**
  * [invalid description]
  * @return {[type]} [description]
  */
@@ -242,4 +280,7 @@ module.exports = {
   validate: validatePreferences,
   invalid: invalidPreferences,
   toggleMenu: toggleMenu,
+  saveSettings: saveSettings,
+  loadSettings: loadSettings,
+  loadTheme: loadTheme,
 };
