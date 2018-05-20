@@ -40,7 +40,7 @@ module.exports = function (users, token, message) {
     }
 
     // Extract any links
-    var regexp = /(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+/gm;
+    var regexp = /(?:(?:https?|ftp):\/\/)?[\w/\-?=%]+\.[\w/\-?=%.]+/gm;
 
     while (matches = regexp.exec(msg)) {
       links.push(matches[0]);
