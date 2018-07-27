@@ -1,6 +1,7 @@
 'use strict';
 
 const string = require('string');
+const getUrls = require('get-urls');
 const url = require('url');
 
 const validLinks = require("../models/links");
@@ -28,47 +29,33 @@ function getDomain(url) {
 
 module.exports = function (users, token, message) {
   var msg = string(message).stripTags().s;
-  var links = new Array;
-  var matches;
   var invalidLinks = false;
 
   var currentUser = users.findClient(token);
   var partner = users.findClient(currentUser.partner);
 
   if (!partner) {
-      return false;
-    }
+    return false;
+  }
 
-    // Extract any links
-    var regexp = /(?:(?:https?|ftp):\/\/)?[\w/\-?=%]+\.[\w/\-?=%.]+/gm;
+  var urlList = getUrls(msg);
 
-    while (matches = regexp.exec(msg)) {
-      links.push(matches[0]);
+  urlList.forEach(function(link) {
+    const urlToCheck = url.parse(link);
+    
+    if (validLinks.find(getDomain(urlToCheck.hostname)) === false) {
+      invalidLinks = true;
     }
+  });
 
-  // Check all links in message for possible malicious links.
-    if (links.length > 0) {
-      for (var link in links) {
-        var domain = links[link];
-        if (!/^(?:f|ht)tps?\:\/\//.test(domain)) {
-          domain = "http://" + domain;
-        }
-        
-        var a = url.parse(domain, true, true);
-        if (validLinks.find(getDomain(a.hostname)) === false) {
-          invalidLinks = true;
-        }
-      }
+  if (invalidLinks === true) {
+    if (currentUser.socket.readyState == 1) {
+      currentUser.socket.send(JSON.stringify({type:'invalid_links', data: true}));
     }
+    return false;
+  }
 
-    if (invalidLinks === true) {
-      if (currentUser.socket.readyState == 1) {
-        currentUser.socket.send(JSON.stringify({type:'invalid_links', data: true}));
-      }
-      return false;
-    }
-
-    if (partner.socket.readyState == 1) {
-      partner.socket.send(JSON.stringify({type:'receive_message', data: msg}));
-    }
+  if (partner.socket.readyState == 1) {
+    partner.socket.send(JSON.stringify({type:'receive_message', data: msg}));
+  }
 }
