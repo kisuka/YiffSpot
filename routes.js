@@ -2,7 +2,6 @@ const config  = require('./config');
 
 const express = require('express');
 const fs      = require('graceful-fs');
-const marked  = require('marked');
 
 const gender  = require("./src/models/gender");
 const kinks   = require("./src/models/kinks");
@@ -20,12 +19,6 @@ router.get('/', function(req, res) {
     kinks: kinks.getAll(),
     roles: role.getAll(),
   });
-});
-
-// Changelog
-router.get('/changes', function(req, res) {
-  const file = fs.readFileSync('./CHANGELOG.md', 'utf8');
-  res.send(marked(file.toString()));
 });
 
 module.exports = router;

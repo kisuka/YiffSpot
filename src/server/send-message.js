@@ -1,6 +1,5 @@
 'use strict';
 
-const string = require('string');
 const getUrls = require('get-urls');
 const url = require('url');
 
@@ -28,7 +27,7 @@ function getDomain(url) {
 }
 
 module.exports = function (users, token, message) {
-  var msg = string(message).stripTags().s;
+  var msg = message.replace(/(<([^>]+)>)/gi, "");
   var invalidLinks = false;
 
   var currentUser = users.findClient(token);
