@@ -12,27 +12,35 @@
   "author": "Kisuka <kisuka@kisuka.com>",
   "license": "MIT",
   "scripts": {
+    "copy": "cp node_modules/slim-select/dist/slimselect.min.css node_modules/nouislider/distribute/nouislider.min.css public/assets",
     "build.sass": "node-sass --output-style compressed -o public/assets src/client/scss",
     "build.js": "browserify src/client/js/index.js -o public/assets/app.js",
     "watch.js": "watchify src/client/js/index.js -o public/assets/app.js -dv",
     "watch.sass": "node-sass -w src/client/scss/app.scss -o public/assets",
     "launch": "node app.js",
-    "build": "npm-run-all --parallel build.js build.sass",
-    "dev": "npm-run-all --parallel watch.js watch.sass launch"
+    "build": "npm-run-all --parallel build.js build.sass copy",
+    "dev": "npm-run-all --parallel watch.js watch.sass copy launch",
+    "start": "npm run build && npm run launch"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "dependencies": {
-    "express": "^4.14.*",
+    "buttplug": "^0.6.1",
+    "express": "^4.16.*",
     "get-urls": "^7.2.0",
-    "graceful-fs": "^4.1.11",
-    "pug": "^2.0.0-rc.4",
+    "marked": "^0.3.17",
+    "nouislider": "^11.0.3",
+    "pug": "^2.0.1",
     "redis": "^2.8.0",
-    "slim-select": "^1.1.2",
-    "ws": "^5.1.1"
+    "slim-select": "^1.11.2",
+    "string": "^3.3.3",
+    "ws": "^4.1.0"
   },
   "devDependencies": {
-    "browserify": "^16.2.0",
-    "node-sass": "^4.5.3",
-    "npm-run-all": "^4.0.2",
-    "watchify": "^3.9.0"
+    "browserify": "^16.1.1",
+    "node-sass": "^4.7.2",
+    "npm-run-all": "^4.1.2",
+    "watchify": "^3.11.0"
   }
 }
