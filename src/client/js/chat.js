@@ -1,6 +1,7 @@
 'use strict';
 
 const user = require('./user');
+const util = require('./util');
 
 /**
  * Append message to chat box.
@@ -9,7 +10,7 @@ const user = require('./user');
  * @param Object options Various options.
  */
 function addChatMessage(message, options)  {
-  var msg = linkify(strip_tags(message));
+  var msg = util.linkify(util.strip_tags(message));
   var messages = document.getElementById('messages');
   var newMessage = document.createElement("li");
 
@@ -33,37 +34,6 @@ function showChatTyping() {
  */
 function hideChatTyping() {
   document.getElementById('typing').style.display = 'none';
-}
-
-/**
- * Converts URLs to links.
- * @param  String text The text to parse.
- * @return String      The converted text.
- */
-function linkify(text) {
-  if (text) {
-    text = text.replace(
-      /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
-      function(url){
-        var full_url = url;
-        if (!full_url.match('^https?:\/\/')) {
-            full_url = 'http://' + full_url;
-        }
-        return '<a href="' + full_url + '" target="_blank">' + url + '</a>';
-      }
-    );
-  }
-
-  return text;
-}
-
-/**
- * Strips tags from string.
- * @param  String text The raw string.
- * @return String      The cleaned string.
- */
-function strip_tags(text) {
-  return text.replace(/(<([^>]+)>)/ig, "");
 }
 
 /**
@@ -114,6 +84,27 @@ function sendMessage(socket) {
   message.value = '';
 }
 
+function sendStatusMessage(socket, message) {
+  if (user.getPartner() === false) {
+    return false;
+  }
+
+  sendTypingStatus(socket, false);
+  socket.send(JSON.stringify({type:'send_message', data: message}));
+
+  addChatMessage(message, {class: 'message-user'});
+}
+
+function sendButtplugMessage(socket, message) {
+  // Valid buttplug commands shouldn't be shown in chat on either side.
+  if (user.getPartner() === false) {
+    return false;
+  }
+
+  sendTypingStatus(socket, false);
+  socket.send(JSON.stringify({type:'send_message', data: message}));
+}
+
 /**
  * [sendTypingStatus description]
  * @return {[type]} [description]
@@ -131,5 +122,7 @@ module.exports = {
   showChatBox: showChatBox,
   invalid: invalidLinkMessage,
   sendMessage: sendMessage,
+  sendStatusMessage: sendStatusMessage,
+  sendButtplugMessage: sendButtplugMessage,
   sendTypingStatus: sendTypingStatus,
 };
