@@ -22,11 +22,11 @@
   },
   "dependencies": {
     "express": "^4.14.*",
-    "get-urls": "^7.2.0",
+    "get-urls": "^8.0.0",
     "graceful-fs": "^4.1.11",
     "pug": "^2.0.0-rc.4",
     "slim-select": "^1.1.2",
-    "ws": "^5.1.1"
+    "ws": "^6.0.0"
   },
   "devDependencies": {
     "browserify": "^16.2.0",
