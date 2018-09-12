@@ -16,16 +16,15 @@
     "build.js": "browserify src/client/js/index.js -o public/assets/app.js",
     "watch.js": "watchify src/client/js/index.js -o public/assets/app.js -dv",
     "watch.sass": "node-sass -w src/client/scss/app.scss -o public/assets",
-    "launch": "node app.js",
+    "start": "node app.js",
     "build": "npm-run-all --parallel build.js build.sass",
-    "dev": "npm-run-all --parallel watch.js watch.sass launch"
+    "dev": "npm-run-all --parallel watch.js watch.sass start"
   },
   "dependencies": {
     "express": "^4.14.*",
     "get-urls": "^7.2.0",
     "graceful-fs": "^4.1.11",
     "pug": "^2.0.0-rc.4",
-    "redis": "^2.8.0",
     "slim-select": "^1.1.2",
     "ws": "^5.1.1"
   },
