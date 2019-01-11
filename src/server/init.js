@@ -4,7 +4,6 @@ const users = require('../models/users');
 const uuid = require('uuid');
 const url = require('url');
 
-const config  = require('./../../config');
 const broadcast = require('./broadcast');
 const send_message = require('./send-message');
 const typing = require('./is-typing');
@@ -15,7 +14,7 @@ const disconnect = require('./disconnect');
 module.exports = function (wss) {
   // Establish web socket connection
   wss.on('connection', function(ws, req) {
-    if (req.headers.origin != config.host) {
+    if (req.headers.origin != process.env.HOST) {
       return ws.terminate();
     }
 

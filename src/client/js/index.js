@@ -1,5 +1,12 @@
 'use strict';
 
+import './../scss/app.scss';
+
+import './../assets/apple-touch-icon.png';
+import './../assets/favicon.ico';
+import './../assets/logo.png';
+import './../assets/notification.mp3';
+
 const chat = require('./chat');
 const partner = require('./partner');
 const preferences = require('./preferences');
@@ -66,7 +73,6 @@ socket.addEventListener('message', function (event) {
       preferences.invalid();
     break;
     case 'ping':
-
     break;
   }
 });
@@ -74,56 +80,58 @@ socket.addEventListener('message', function (event) {
 /**
  * Event Listeners
  */
-document.addEventListener('DOMContentLoaded', preferences.init);
+document.addEventListener('DOMContentLoaded', function() {
+  preferences.init();
 
-// When preferences menu button is clicked
-document.getElementById('menu').addEventListener('click', preferences.toggleMenu);
+  // When preferences menu button is clicked
+  document.getElementById('menu').addEventListener('click', preferences.toggleMenu);
 
-// When save preferences button is clicked
-document.getElementById('savePref').addEventListener('click', preferences.save);
+  // When save preferences button is clicked
+  document.getElementById('savePref').addEventListener('click', preferences.save);
 
-// When message is submitted into chat
-document.getElementById('messageBox').addEventListener('submit', function(e) {
-  e.preventDefault();
-  chat.sendMessage(socket);
-});
+  // When message is submitted into chat
+  document.getElementById('messageBox').addEventListener('submit', function(e) {
+    e.preventDefault();
+    chat.sendMessage(socket);
+  });
 
-// When key is pressed in message box / typing
-document.getElementById('messageBox').addEventListener('input', function(e) {
-  e.preventDefault();
-  chat.sendTypingStatus(socket);
-});
+  // When key is pressed in message box / typing
+  document.getElementById('messageBox').addEventListener('input', function(e) {
+    e.preventDefault();
+    chat.sendTypingStatus(socket);
+  });
 
-// When user requests to find partner by submitting preferences
-document.getElementById('userSettings').addEventListener('submit', function(e) {
-  e.preventDefault();
-  partner.find(socket);
-});
+  // When user requests to find partner by submitting preferences
+  document.getElementById('userSettings').addEventListener('submit', function(e) {
+    e.preventDefault();
+    partner.find(socket);
+  });
 
-// When block partner button is clicked
-document.getElementById('block-partner').addEventListener('click', function(e) {
-  e.preventDefault();
-  partner.block(socket);
-});
+  // When block partner button is clicked
+  document.getElementById('block-partner').addEventListener('click', function(e) {
+    e.preventDefault();
+    partner.block(socket);
+  });
 
-// Show Site Settings
-document.getElementById('settings').addEventListener('click', function(e) {
-  e.preventDefault();
-  document.getElementById('userPrefs').classList.toggle("hide-ele");
-  document.getElementById('siteSettings').classList.toggle("hide-ele");
-});
+  // Show Site Settings
+  document.getElementById('settings').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('userPrefs').classList.toggle("hide-ele");
+    document.getElementById('siteSettings').classList.toggle("hide-ele");
+  });
 
-// Show Preferences Settings
-document.getElementById('preferences').addEventListener('click', function(e) {
-  e.preventDefault();
-  document.getElementById('siteSettings').classList.toggle("hide-ele");
-  document.getElementById('userPrefs').classList.toggle("hide-ele");
-});
+  // Show Preferences Settings
+  document.getElementById('preferences').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('siteSettings').classList.toggle("hide-ele");
+    document.getElementById('userPrefs').classList.toggle("hide-ele");
+  });
 
-// When save settings button is clicked
-document.getElementById('saveSettings').addEventListener('click', preferences.saveSettings);
+  // When save settings button is clicked
+  document.getElementById('saveSettings').addEventListener('click', preferences.saveSettings);
 
-// Handle when window is closed
-window.addEventListener('beforeunload', function () {
-  socket.close();
+  // Handle when window is closed
+  window.addEventListener('beforeunload', function () {
+    socket.close();
+  });
 });

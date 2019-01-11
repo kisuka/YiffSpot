@@ -1,6 +1,10 @@
 'use strict';
 
-const SlimSelect = require('./../../../node_modules/slim-select/dist/slimselect');
+const SlimSelect  = require('./../../../node_modules/slim-select/dist/slimselect');
+const genderRepo  = require("./../../models/gender");
+const kinksRepo   = require("./../../models/kinks");
+const roleRepo    = require("./../../models/role");
+const speciesRepo = require("./../../models/species");
 
 /**
  * [initPreferences description]
@@ -11,13 +15,60 @@ function initPreferences() {
   loadSettings();
   loadTheme();
 
-  new SlimSelect({select: '#userGender', showSearch: false});
-  new SlimSelect({select: '#userSpecies'});
-  new SlimSelect({select: '#userRole', showSearch: false});
-  new SlimSelect({select: '#userKinks'});
-  new SlimSelect({select: '#partnerGender'});
-  new SlimSelect({select: '#partnerRole', showSearch: false});
-  new SlimSelect({select: '#partnerSpecies'});
+  new SlimSelect({
+    select: '#userGender',
+    showSearch: false,
+    data: [{value: '', text: 'Select Gender'}, ...genderRepo.getAll().map(item => {
+      return {text: item};
+    })],
+    placeholder: true
+  });
+
+  new SlimSelect({
+    select: '#userSpecies',
+    data: [{value: '', text: 'Select Species'}, ...speciesRepo.getAll().map(item => {
+      return {text: item};
+    })],
+    placeholder: true
+  });
+
+  new SlimSelect({
+    select: '#userRole',
+    showSearch: false,
+    data: [{value: '', text: 'Select Role'}, ...roleRepo.getAll().map(item => {
+      return {text: item};
+    })],
+    placeholder: true
+  });
+
+  new SlimSelect({
+    select: '#userKinks',
+    data: [{value: 'any', text: 'Any / All', selected: true}, ...kinksRepo.getAll().map(item => {
+      return {text: item};
+    })]
+  });
+
+  new SlimSelect({
+    select: '#partnerGender',
+    data: [{value: 'any', text: 'Any / All', selected: true}, ...genderRepo.getAll().map(item => {
+      return {text: item};
+    })]
+  });
+
+  new SlimSelect({
+    select: '#partnerRole',
+    showSearch: false,
+    data: [{value: '', text: 'Select Role'}, ...roleRepo.getAll().map(item => {
+      return {text: item};
+    })]
+  });
+
+  new SlimSelect({
+    select: '#partnerSpecies',
+    data: [{value: 'any', text: 'Any / All', selected: true}, ...speciesRepo.getAll().map(item => {
+      return {text: item};
+    })]
+  });
 }
 
 /**

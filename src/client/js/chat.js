@@ -17,7 +17,7 @@ function addChatMessage(message, options)  {
   newMessage.className += options.class;
   newMessage.innerHTML = msg;
 
-  messages.insertBefore(newMessage, messages.lastChild);
+  messages.insertBefore(newMessage, document.getElementById('typing'));
   messages.scrollTop = messages.scrollHeight;
 }
 

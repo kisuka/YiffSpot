@@ -1,4 +1,5 @@
 /node_modules
-/public
+/dist
 npm_debug*
-config.js
+.env
+docker-compose.*.yml

@@ -1,39 +1,38 @@
 'use strict';
 
-const express = require('express'),
-      http    = require('http'),
-      https   = require('https'),
-      ws      = require('ws'),
-      fs      = require('graceful-fs'),
-      config  = require('./config'),
-      routes  = require('./routes'),
-      init    = require('./src/server/init.js');
+require('dotenv').config();
 
-var credentials = undefined,
-    sslServer   = undefined,
-    wss         = undefined;
+var express = require('express');
+var http    = require('http');
+var https   = require('https');
+var ws      = require('ws');
+var fs      = require('graceful-fs');
+var init    = require('./src/server/init.js');
+var path    = require('path');
 
-if (config.ssl_enabled == true) {
+var credentials = undefined;
+var sslServer   = undefined;
+var wss         = undefined;
+
+if (process.env.SSL_ENABLED == true) {
 	credentials = {
-	  key: fs.readFileSync(config.ssl_key),
-	  cert: fs.readFileSync(config.ssl_crt),
+	  key: fs.readFileSync(process.env.SSL_KEY_PATH),
+	  cert: fs.readFileSync(process.env.SSL_CRT_PATH),
 	};
 }
 
 // Initalize Express
-const app = express();
+var app = express();
 
 // Express View Engine
 app.enable('trust proxy');
-app.set('view engine', 'pug');
-app.set('views', __dirname + '/src/views');
 
 // Express Routing
-app.use(express.static(__dirname + '/public'));
-app.use('/assets', express.static(__dirname + '/public/assets'));
+app.use(express.static(path.join(__dirname, '/dist')));
+app.use('/assets', express.static(path.join(__dirname, '/dist/assets')));
 
 // HTTPS redirection if ssl is enabled
-if (config.ssl_enabled == true) {
+if (process.env.SSL_ENABLED == true) {
   app.use(function requireHTTPS(req, res, next) {
     if (!req.secure) {
       return res.redirect('https://' + req.headers.host + req.url);
@@ -42,18 +41,16 @@ if (config.ssl_enabled == true) {
   });
 }
 
-app.use(routes);
-
 // Create HTTP + Web Socket server
-const server = http.createServer(app);
+var server = http.createServer(app);
 
 // Create HTTPS server if enabled
-if (config.ssl_enabled == true) {
+if (process.env.SSL_ENABLED == true) {
 	sslServer = https.createServer(credentials, app);
 }
 
 // Create Web Socket server
-if (config.ssl_enabled == true) {
+if (process.env.SSL_ENABLED == true) {
 	wss = new ws.Server({server: sslServer});
 } else {
 	wss = new ws.Server({server: server});
@@ -63,12 +60,12 @@ if (config.ssl_enabled == true) {
 init(wss);
 
 // Listen on specified port / App Start
-server.listen(config.http_port, function listening() {
+server.listen(process.env.HTTP_PORT, function listening() {
   console.log('Listening on port %d', server.address().port);
 });
 
-if (config.ssl_enabled == true) {
-	sslServer.listen(config.https_port, function listening() {
+if (process.env.SSL_ENABLED == true) {
+	sslServer.listen(process.env.HTTPS_PORT, function listening() {
 	  console.log('Listening on port %d', sslServer.address().port);
 	});
 }

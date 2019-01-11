@@ -19,7 +19,7 @@ npm install
 ### Production
 
 ```bash
-npm run launch
+npm run start
 ```
 
 ### Development
