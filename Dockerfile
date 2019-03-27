@@ -4,12 +4,10 @@ WORKDIR /app
 
 COPY package*.json ./
 
+Copy . ./
+
 RUN npm install
 
-Copy . .
-
-RUN npm run build
+ENTRYPOINT [ "sh", "/app/run.sh" ]
 
 EXPOSE 3000
-
-CMD [ "npm", "run", "server" ]
