@@ -18,7 +18,6 @@ module.exports = function (users, token) {
 
     // Remove disconnected user from clients list
     users.removeClient(currentUser.id);
+    users.decrementOnline();
   }
-  
-  users.decrementOnline();
 }
