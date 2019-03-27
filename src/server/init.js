@@ -18,20 +18,22 @@ module.exports = function (wss) {
       return ws.terminate();
     }
 
-    ws.isAlive = true;
-
     var request = url.parse(req.url, true);
   	var token = (request.query.id != undefined && request.query.id != "null" && request.query.id) || uuid.v4();
 
+    ws.isAlive = true;
+    ws.clientId = token;
+
+    var existingUser = users.findClient(token);
+
     // Check if user already has an established connection
-    if (users.findClient(token)) {
+    if (existingUser) {
       if (ws.readyState == 1) {
         ws.send(JSON.stringify({type: 'connection_exists', data: true}));
       }
       return false;
     }
-
-    ws.clientId = token;
+    
   	users.addClient(ws, token);
   	users.incrementOnline();
 
@@ -88,6 +90,7 @@ module.exports = function (wss) {
   const interval = setInterval(function ping() {
     wss.clients.forEach(function each(ws) {
       if (ws.isAlive === false) {
+        disconnect(users, ws.clientId);
         return ws.terminate();
       }
       

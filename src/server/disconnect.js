@@ -2,6 +2,8 @@
 
 module.exports = function (users, token) {
   const currentUser = users.findClient(token);
+
+  if (currentUser) {
     const partner = users.findClient(currentUser.partner);
 
     // Check if user has a partner
@@ -16,5 +18,7 @@ module.exports = function (users, token) {
 
     // Remove disconnected user from clients list
     users.removeClient(currentUser.id);
-    users.decrementOnline();
+  }
+  
+  users.decrementOnline();
 }
