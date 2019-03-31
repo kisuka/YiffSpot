@@ -11,10 +11,6 @@ const speciesRepo = require("./../../models/species");
  * @return {[type]} [description]
  */
 function initPreferences() {
-  loadPreferences();
-  loadSettings();
-  loadTheme();
-
   new SlimSelect({
     select: '#userGender',
     showSearch: false,
@@ -69,6 +65,10 @@ function initPreferences() {
       return {text: item};
     })]
   });
+
+  loadPreferences();
+  loadSettings();
+  loadTheme();
 }
 
 /**
