@@ -61,7 +61,7 @@ module.exports = function (wss) {
           typing(users, token, data.data);
         break;
         case "send_message":
-          send_message(users, token, data.data);
+          send_message(users, token, data.data, data["@extra"]);
         break;
       }
     });

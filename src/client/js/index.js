@@ -72,6 +72,10 @@ socket.addEventListener('message', function (event) {
     case 'invalid_preferences':
       preferences.invalid();
     break;
+    case 'message_sent':
+    break;
+    case 'message_failed_to_send':
+    break;
     case 'ping':
     break;
   }
