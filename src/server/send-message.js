@@ -49,16 +49,20 @@ module.exports = function (users, token, message, extra) {
 
   if (invalidLinks === true) {
     if (currentUser.socket.readyState == 1) {
-      currentUser.socket.send(JSON.stringify({type:'invalid_links', data: true, "@extra": extra}));
+      currentUser.socket.send(JSON.stringify({type:'invalid_links', data: true, '@extra': extra}));
     }
     return false;
   }
 
   if (partner.socket.readyState == 1) {
-    partner.socket.send(JSON.stringify({type:'receive_message', data: msg}));
-    currentUser.socket.send(JSON.stringify({type: 'message_sent', "@extra": extra}));
+    partner.socket.send(JSON.stringify({type:'receive_message', data: msg, '@extra': extra}));
+    if (currentUser.socket.readyState == 1 && extra) {
+      currentUser.socket.send(JSON.stringify({type: 'message_sent', '@extra': extra}));
+    }
   }
   else {
-    currentUser.socket.send(JSON.stringify({type: 'message_failed_to_send', "@extra": extra}));
+    if (currentUser.socket.readyState == 1 && extra) {
+      currentUser.socket.send(JSON.stringify({type: 'message_failed_to_send', '@extra': extra}));
+    }
   }
 }
