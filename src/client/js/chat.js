@@ -8,8 +8,10 @@ const user = require('./user');
  * @param String message The message to append.
  * @param Object options Various options.
  */
-function addChatMessage(message, options)  {
-  var msg = linkify(strip_tags(message));
+function addChatMessage(message, options) {
+  var msg = options.alreadyStripped
+    ? linkify(message)
+    : linkify(strip_tags(message));
   var messages = document.getElementById('messages');
   var newMessage = document.createElement("li");
 
@@ -132,4 +134,5 @@ module.exports = {
   invalid: invalidLinkMessage,
   sendMessage: sendMessage,
   sendTypingStatus: sendTypingStatus,
+  stripTags: strip_tags,
 };

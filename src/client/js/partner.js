@@ -31,10 +31,20 @@ function connected(data) {
     class: 'message-system'
   });
 
+  const userKinks = preferences.validate().kinks;
+  const partnerKinks = data.kinks.split(", ").map(chat.stripTags);
+  const formattedPartnerKinks = partnerKinks.map(function (kink) {
+    if (userKinks.indexOf(kink) === -1) {
+      return kink;
+    }
+    return '<span class="common_kink">' + kink + '</span>';
+  });
+
   chat.addChatMessage(''+
-    'Your partner is a '+data.role+', '+data.gender+', '+data.species+' '+
-    'interested in: '+data.kinks+'.',
-  {class: 'message-system'});
+    'Your partner is a ' + chat.stripTags(data.role) + ', ' + chat.stripTags(data.gender) +
+    ', ' + chat.stripTags(data.species) + ' ' +
+    'interested in: ' + formattedPartnerKinks.join(", ") + '.',
+    { class: 'message-system', alreadyStripped: true});
 
   user.setPartner(true);
 
