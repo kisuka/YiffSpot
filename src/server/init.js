@@ -6,6 +6,7 @@ const url = require('url');
 
 const broadcast = require('./broadcast');
 const send_message = require('./send-message');
+const message_delivered = require('./message-delivered');
 const typing = require('./is-typing');
 const find_partner = require('./find-partner');
 const block_partner = require('./block-partner');
@@ -61,7 +62,10 @@ module.exports = function (wss) {
           typing(users, token, data.data);
         break;
         case "send_message":
-          send_message(users, token, data.data);
+          send_message(users, token, data.data, data['@extra']);
+        break;
+        case "message_delivered":
+          message_delivered(users, token, data['@extra']);
         break;
       }
     });

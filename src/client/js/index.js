@@ -43,6 +43,9 @@ socket.addEventListener('message', function (event) {
     break;
     case 'receive_message':
       chat.addChatMessage(response.data, {class: 'message-partner'});
+      if (response['@extra']) {
+        socket.send(JSON.stringify({type: 'message_delivered', '@extra': response['@extra']}));
+      }
     break;
     case 'partner_typing':
       if (response.data == true) {
@@ -71,6 +74,12 @@ socket.addEventListener('message', function (event) {
     break;
     case 'invalid_preferences':
       preferences.invalid();
+    break;
+    case 'message_sent':
+    break;
+    case 'message_failed_to_send':
+    break;
+    case 'message_delivered':
     break;
     case 'ping':
     break;

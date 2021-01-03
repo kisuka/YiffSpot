@@ -26,7 +26,7 @@ function getDomain(url) {
   }
 }
 
-module.exports = function (users, token, message) {
+module.exports = function (users, token, message, extra) {
   var msg = message.replace(/(<([^>]+)>)/gi, "");
   var invalidLinks = false;
 
@@ -49,12 +49,20 @@ module.exports = function (users, token, message) {
 
   if (invalidLinks === true) {
     if (currentUser.socket.readyState == 1) {
-      currentUser.socket.send(JSON.stringify({type:'invalid_links', data: true}));
+      currentUser.socket.send(JSON.stringify({type:'invalid_links', data: true, '@extra': extra}));
     }
     return false;
   }
 
   if (partner.socket.readyState == 1) {
-    partner.socket.send(JSON.stringify({type:'receive_message', data: msg}));
+    partner.socket.send(JSON.stringify({type:'receive_message', data: msg, '@extra': extra}));
+    if (currentUser.socket.readyState == 1 && extra) {
+      currentUser.socket.send(JSON.stringify({type: 'message_sent', '@extra': extra}));
+    }
+  }
+  else {
+    if (currentUser.socket.readyState == 1 && extra) {
+      currentUser.socket.send(JSON.stringify({type: 'message_failed_to_send', '@extra': extra}));
+    }
   }
 }
