@@ -34,7 +34,7 @@
     "node-sass": "^4.9.3",
     "npm-run-all": "^4.0.2",
     "path": "^0.12.7",
-    "pug": "^2.0.0-rc.4",
+    "pug": "^3.0.1",
     "pug-html-loader": "^1.1.5",
     "sass-loader": "^7.1.0",
     "slim-select": "^1.1.2",
