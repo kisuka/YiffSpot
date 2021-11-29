@@ -29,7 +29,7 @@ module.exports = {
   removePartner: (id) => {
     if (clients[id].partner) {
       if (clients[clients[id].partner]) {
-        clients[clients[id].partner].partner = id;
+        clients[clients[id].partner].partner = null;
       }
       clients[id].partner = null;
     }
