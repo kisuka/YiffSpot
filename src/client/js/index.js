@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('disconnect').addEventListener('click', e => {
     e.preventDefault();
 
-    if (!document.getElementById('disconnect').classList.contains('hide-ele')) {
-      document.getElementById('disconnect').classList.add('hide-ele');
+    if (!document.getElementById('disconnect-row').classList.contains('hide-ele')) {
+      document.getElementById('disconnect-row').classList.add('hide-ele');
     }
 
     partner.disconnect(socket);
