@@ -93,6 +93,15 @@ socket.onmessage = (event) => {
     case 'invalid_preferences':
       preferences.invalid();
       break;
+    case 'client_disconnect':
+      if (!document.getElementById("disconnect-row").classList.contains("hide-ele") {
+          document.getElementById("disconnect-row").classList.add("hide-ele");
+      }
+      chat.addChatMessage('You have disconnected from your partner.', {
+          class: 'message-system'
+      });
+      user.setPartner(false);
+      break;
   }
 };
 
@@ -133,11 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('disconnect').addEventListener('click', e => {
     e.preventDefault();
-
-    if (!document.getElementById('disconnect-row').classList.contains('hide-ele')) {
-      document.getElementById('disconnect-row').classList.add('hide-ele');
-    }
-
     partner.disconnect(socket);
   });
 
