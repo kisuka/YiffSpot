@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en-US">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Yiff Spot allows users to yiff anonymously with other furries in real-time.">
     <meta name="keywords" content="Furries, Furry, Yiff, Chat, Online, Random, Anonymously">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <title><%= process.env.APP_TITLE %></title>
+    
     <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<%=htmlWebpackPlugin.files.chunks.main.css %>">
-    <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+
+    <script src="<%= htmlWebpackPlugin.files.js %>"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<%= process.env.GA_ID %>"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag(){ dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', '<%= process.env.GA_ID %>');
     </script>
@@ -25,159 +26,174 @@
 		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com">upgrade your browser</a> to improve your experience.</p>
 	<![endif]-->
 
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
         <div class="container-fluid">
-            <div class="navbar-header">
-            	<button class="navbar-toggle collapsed" id="menu" type="button" aria-expanded="false">
-            		<span class="sr-only">Toggle navigation</span>
-            		<span class="icon-bar"></span>
-            		<span class="icon-bar"></span>
-            		<span class="icon-bar"></span>
-            	</button>
-            	<a class="navbar-brand" href="/">Yiff Spot</a>
-            </div>
+            <label class="navbar-brand">Yiff Spot</label>
+            <button id="menu" class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-2 sidebar" id="sidebar">
-                <div class="logo">
-                	<img src="/assets/logo.png" alt="Yiff Spot - Yiff With Random Furries">
-                </div>
+    <div id="sidebar" class="sidebar container-fluid col-lg-2">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Yiff Spot - Yiff With Random Furries">
+        </div>
 
-                <p class="text-center text-muted">
-                	<span id="userCount">0</span> Users Online
-                </p>
+        <ul class="nav mb-auto">
+            <div class="container-fluid">
+                <p class="text-center text-muted" style="float: none;"> <span id="userCount">0</span> Users Online</p>
+            </div>
 
-                <div id="userPrefs">
-                    <form class="userSettings" id="userSettings" action="/" method="post" role="form">
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Your Gender</label>
-                            	<select name="userGender" id="userGender"></select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Your Species</label>
-                            	<select name="userSpecies" id="userSpecies"></select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Your Role</label>
-                            	<select name="userRole" id="userRole"></select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Partner's Gender</label>
-                            	<select name="partnerGender[]" id="partnerGender" multiple="multiple">
-                            		<option value="any">Any / All</option>
-                            	</select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Partner's Species</label>
-                            	<select name="partnerSpecies[]" id="partnerSpecies" multiple="multiple">
-                            		<option value="any">Any / All</option>
-                            	</select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Partner's Role</label>
-                            	<select name="partnerRole" id="partnerRole"></select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                            	<label>Kinks</label>
-                            	<select name="userKinks[]" id="userKinks" multiple="multiple">
-                            		<option value="any">Any / All</option>
-                            	</select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="btn-group partner-actions">
-                                	<button class="btn btn-primary btn-sm" type="submit">
-                                		Find Partner
-                                	</button>
-
-                                	<button class="btn btn-danger btn-sm hide-ele" id="block-partner" type="submit">
-                                		Block Partner
-                                	</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="btn-group partner-actions">
-                                	<button class="btn btn-default btn-sm" type="button" id="settings">
-                                		Settings
-                                	</button>
-                                	<button class="btn btn-default btn-sm" type="button" id="savePref">
-                                		Save Preferences
-                                	</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="userSettings hide-ele" id="siteSettings">
-                    <div class="row">
-                        <div class="col-lg-12">
-                        	<label>Theme</label>
-                        	<select class="form-control" name="siteTheme" id="siteTheme">
-                        		<option value="light">Light</option>
-                        		<option value="dark">Dark</option>
-                        	</select>
+            <div class="container-fluid">
+                <form id="userPrefs" class="userSettings" onsubmit="return false;">
+                     <div class="row">
+                        <div class="col-xl-12">
+                            <label>Your Gender</label>
+                            <select name="userGender" id="userGender"></select>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-12">
-                            <div class="btn-group partner-actions">
-                            	<button class="btn btn-default btn-sm" type="button" id="preferences">
-                            		Preferences
-                            	</button>
-                            	<button class="btn btn-default btn-sm" type="button" id="saveSettings">
-                            		Save Settings
-                            	</button>
+                        <div class="col-xl-12">
+                            <label>Your Species</label>
+                            <select name="userSpecies" id="userSpecies"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label>Your Role</label>
+                            <select name="userRole" id="userRole"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label>Partner&apos;s Gender</label>
+                            <select name="partnerGender[]" id="partnerGender" multiple="multiple">
+                                <option value="any">Any / All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label>Partner&apos;s Species</label>
+                            <select name="partnerSpecies[]" id="partnerSpecies" multiple="multiple">
+                                <option value="any">Any / All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label>Partner&apos;s Role</label>
+                            <select name="partnerRole" id="partnerRole"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label>Kinks</label>
+                            <select name="userKinks[]" id="userKinks" multiple="multiple">
+                                <option value="any">Any / All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="btn-group partner-actions" role="group">
+                                <button class="btn btn-primary btn-sm" id="find-partner" type="submit">Find
+                                    Partner</button>
+                                <button class="btn btn-danger btn-sm hide-ele" id="block-partner" type="submit">Block
+                                    Partner</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row credit">
-                    <div class="col-lg-12 text-muted">
-                        <p>Created by <a href="https://twitter.com/KisukaKiza" target="_blank">@KisukaKiza</a></p>
+                    <div id="disconnect-row" class="row hide-ele">
+                        <div class="col-xl-12">
+                            <div class="btn-group partner-actions" role="group">
+                                <button class="btn btn-danger btn-sm" id="disconnect" type="submit">Disconnect</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" id="welcome">
-            <div class="col-sm-offset-4 col-lg-offset-2 col-lg-10">
-                <h3>Welcome to Yiff Spot</h3>
-                <p>On Yiff Spot you are able to yiff one-on-one with a random furry in real-time. Your yiffing partner is selected at random based on the preferences you set. You are kept completely anonymous unless you tell your partner who you are.</p>
-                <p>To begin, set your preferences and click the "Find Partner" button.</p>
-            </div>
-        </div>
-        <div class="row chat" id="chat">
-            <div class="col-sm-offset-4 col-lg-offset-2 col-lg-10">
-                <ul class="list-unstyled messages" id="messages">
-                    <li class="typing message message-system" id="typing">Your partner is typing...</li>
-                </ul>
-                
-                <form action="" id="messageBox" role="form">
-                    <p>
-                    	<input class="form-control" name="message" id="message" type="text" placeholder="Enter your message..." autocomplete="off" required="required">
-                    </p>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="btn-group partner-actions d-flex" role="group">
+                                <button class="btn btn-default btn-sm flex-sm-fill" type="button"
+                                    id="settings">Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 text-muted">
+                            <p>Created by <a href="https://twitter.com/KisukaKiza" target="_blank">@KisukaKiza</a></p>
+                        </div>
+                    </div>
+                </form>
+
+                <form class="userSettings hide-ele" onsubmit="return false;" id="siteSettings">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label>Theme</label>
+                            <select name="siteTheme" id="siteTheme"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="btn-group partner-actions d-flex" role="group">
+                                <button class="btn btn-default btn-sm flex-sm-fill" type="button"
+                                    id="preferences">Preferences</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
+        </ul>
+    </div>
+
+    <div class="offset-sm-4 offset-lg-2 col-lg-10" id="welcome">
+        <div class="pt-4 ps-4">
+            <h3>Welcome to Yiff Spot</h3>
+            <p>On Yiff Spot you are able to yiff one-on-one with a random furry in real-time. Your yiffing partner is selected at random based on the preferences you set. You are kept completely anonymous unless you tell your partner who you are.</p>
+            <p>To begin, set your preferences and click the "Find Partner" button.</p>
         </div>
+    </div>
+
+    <div class="offset-sm-4 offset-lg-2 col-lg-10">
+        <div class="chat" id="chat">
+            <ul class="list-unstyled messages px-4" id="messages">
+                <li class="typing message message-system" id="typing">Your partner is typing...</li>
+            </ul>
+            <form onsubmit="return false;" id="messageBox" role="form" class="px-4 pb-4">
+                <input class="form-control" id="message" type="text" placeholder="Enter your message..."
+                    autocomplete="off" onsubmit="return false;">
+            </form>
+        </div>
+    </div>
+
+    <template id="toastTemplate">
+        <div class="toast align-items-center text-white bg-primary" role="alert" aria-live="assertive"
+            aria-atomic="true" data-bs-delay="10000">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </template>
+
+    <template id="confirmToastTemplate">
+        <div class="toast text-white bg-primary" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-delay="10000">
+            <div class="toast-body">
+                <div class="mt-2 pt-2 border-top">
+                    <button id="confirm" type="button" class="btn btn-primary btn-sm">Yes</button>
+                    <button id="decline" type="button" class="btn btn-danger btn-sm" data-bs-dismiss="toast">No</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-absolute bottom-0 end-0 p-3" id="toast-container"></div>
     </div>
 </body>
 </html>

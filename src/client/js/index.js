@@ -1,97 +1,114 @@
-'use strict';
+import 'bootstrap';
+import '../assets/apple-touch-icon.png';
+import '../assets/favicon.ico';
+import '../assets/logo.png';
+import '../assets/notification.mp3';
+import '../scss/app.scss';
 
-import './../scss/app.scss';
-
-import './../assets/apple-touch-icon.png';
-import './../assets/favicon.ico';
-import './../assets/logo.png';
-import './../assets/notification.mp3';
-
-const chat = require('./chat');
-const partner = require('./partner');
-const preferences = require('./preferences');
-const user = require('./user');
+const chat = require('./chat'),
+  partner = require('./partner'),
+  preferences = require('./preferences'),
+  user = require('./user'),
+  toast = require('./toast');
 
 // Initalize user client information
 user.init();
 
 // Create connection to server
-const socket = new WebSocket(''+(location.protocol == 'https:' ? 'wss' : 'ws')+'://'+location.hostname+(location.port ? ':'+location.port : '')+'?id='+user.getId());
+const socket = new WebSocket(
+  '' +
+    (location.protocol == 'https:' ? 'wss' : 'ws') +
+    '://' +
+    location.hostname +
+    (location.port ? ':' + location.port : '') +
+    '?id=' +
+    user.getId()
+);
+
+let interval;
+
+// Heartbeat
+socket.onopen = () => {
+  interval = setInterval(() => {
+    socket.send(JSON.stringify({ type: 'ping', data: true }));
+  }, 10000)
+}
 
 // Server responses
-socket.addEventListener('close', function (event) {
+socket.onclose = () => {
+  if (interval) clearInterval(interval);
   user.setPartner(false);
-});
+};
 
-socket.addEventListener('error', function (event) {
-  console.log('Error: '+event);
-});
+socket.onerror = (event) => {
+  console.log('Error: ' + event);
+};
 
-socket.addEventListener('message', function (event) {
+socket.onmessage = (event) => {
   const response = JSON.parse(event.data);
 
   switch(response.type) {
     case 'connection_success':
       user.setId(response.data);
-    break;
+      break;
+
     case 'connection_exists':
-      alert('You already have an active session.');
+      toast.toast('You already have an active session.');
       return false;
-    break;
+      break;
+
     case 'update_user_count':
       document.getElementById('userCount').innerText = response.data;
-    break;
+      break;
+
     case 'receive_message':
       chat.addChatMessage(response.data, {class: 'message-partner'});
-    break;
+      break;
+
     case 'partner_typing':
-      if (response.data == true) {
-        chat.showChatTyping();
-      } else {
-        chat.hideChatTyping();
-      }
-    break;
+      (response.data && chat.showChatTyping()) || chat.hideChatTyping();
+      break;
+
     case 'partner_connected':
       partner.connected(response.data);
-    break;
+      break;
+
     case 'partner_disconnected':
       partner.disconnected();
-    break;
+      break;
+
     case 'partner_left':
       partner.left();
-    break;
+      break;
+
     case 'partner_blocked':
       partner.blocked();
-    break;
+      break;
+
     case 'partner_pending':
       partner.pending();
-    break;
-    case 'invalid_links':
-      chat.invalid();
-    break;
+      break;
+
     case 'invalid_preferences':
       preferences.invalid();
-    break;
-    case 'ping':
-    break;
+      break;
   }
-});
+};
 
 /**
  * Event Listeners
  */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
   preferences.init();
 
   // When preferences menu button is clicked
   document.getElementById('menu').addEventListener('click', preferences.toggleMenu);
 
-  // When save preferences button is clicked
-  document.getElementById('savePref').addEventListener('click', preferences.save);
-
   // When message is submitted into chat
-  document.getElementById('messageBox').addEventListener('submit', function(e) {
-    e.preventDefault();
+  document.getElementById('message').addEventListener('keydown', e => {
+    if (e.key != 'Enter') {
+      return;
+    }
     chat.sendMessage(socket);
   });
 
@@ -102,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // When user requests to find partner by submitting preferences
-  document.getElementById('userSettings').addEventListener('submit', function(e) {
+  document.getElementById("find-partner").addEventListener("click", e => {
     e.preventDefault();
     partner.find(socket);
   });
@@ -113,25 +130,33 @@ document.addEventListener('DOMContentLoaded', function() {
     partner.block(socket);
   });
 
+  document.getElementById('disconnect').addEventListener('click', e => {
+    e.preventDefault();
+
+    if (!document.getElementById('disconnect').classList.contains('hide-ele')) {
+      document.getElementById('disconnect').classList.add('hide-ele');
+    }
+
+    partner.disconnect(socket);
+  });
+
   // Show Site Settings
   document.getElementById('settings').addEventListener('click', function(e) {
     e.preventDefault();
-    document.getElementById('userPrefs').classList.toggle("hide-ele");
-    document.getElementById('siteSettings').classList.toggle("hide-ele");
+    document.getElementById('userPrefs').classList.toggle('hide-ele');
+    document.getElementById('siteSettings').classList.toggle('hide-ele');
   });
 
   // Show Preferences Settings
   document.getElementById('preferences').addEventListener('click', function(e) {
     e.preventDefault();
-    document.getElementById('siteSettings').classList.toggle("hide-ele");
-    document.getElementById('userPrefs').classList.toggle("hide-ele");
+    document.getElementById('siteSettings').classList.toggle('hide-ele');
+    document.getElementById('userPrefs').classList.toggle('hide-ele');
   });
 
   // When save settings button is clicked
-  document.getElementById('saveSettings').addEventListener('click', preferences.saveSettings);
+  document.getElementById('siteTheme').onchange = preferences.saveSettings;
 
   // Handle when window is closed
-  window.addEventListener('beforeunload', function () {
-    socket.close();
-  });
+  window.addEventListener('beforeunload', () => socket.close());
 });

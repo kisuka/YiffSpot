@@ -1,0 +1,6 @@
+{
+    "verbose": true,
+    "watch": ["src/**/*"],
+    "ext": "*",
+    "exec": "npx webpack --mode development && node ."
+}

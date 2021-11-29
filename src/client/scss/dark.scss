@@ -2,26 +2,30 @@ body.dark {
 	background-color: #36393e;
 	color: #afb0b1;
 
-	a { color: #375a7f; }
+	a {
+		color: #375a7f;
+	}
 
-	.btn.btn-primary {
+	.btn-primary {
 		background-color: #375a7f;
     	border-color: #375a7f;
 	}
 
-	.btn.btn-default {
+	.btn-default {
 		background-color: #2b2a2a;
     	border-color: #242424;
     	color: #FFF;
 	}
 
-	.btn.btn-danger {
+	.btn-danger {
 		background-color: #E74C3C;
     	border-color: #E74C3C;
 	}
 
 	// Chat
-	.message { border-bottom: 1px solid #46494d; }
+	.message {
+		border-bottom: 1px solid #46494d;
+	}
 
 	.message-partner:before {
 		color: #FFF;
@@ -31,7 +35,9 @@ body.dark {
 		color: #FFF;
 	}
 
-	.message-system { color: #FFF; }
+	.message-system {
+		color: #FFF;
+	}
 
 	// Selects
 	.ss-main .ss-multi-selected .ss-values .ss-value {
@@ -48,10 +54,12 @@ body.dark {
 		border-color: #222327;
 	}
 
-	.form-control { color: #FFF; }
+	.form-control {
+		color: #FFF;
+	}
 
 	.ss-main .ss-content .ss-search input:focus, .form-control:focus {
-		box-shadow: 0 0 5px #fff;
+		box-shadow: 0 0 5px #FFF;
 	}
 
 	.ss-main .ss-content .ss-list .ss-option:hover,
@@ -64,11 +72,15 @@ body.dark {
 		border-color: #232529;
 	}
 
+	.ss-single-selected .placeholder {
+		color: #FFF;
+	}
+
 	// Desktop
-	@media (min-width: 768px) {
+	@media (min-width: 576px) {
 	  .sidebar {
 	    background-color: #2f3136;
-	    border-right: none;
+	    //border-right: none;
 	  }
 	}
 }

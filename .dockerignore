@@ -1,7 +1,7 @@
-.git
-.idea
-.DS_Store
-.data
-node_modules
+.git/
+.idea/
+.DS_Store/
+.data/
+node_modules/
 npm-debug.log
 docker-compose.yml

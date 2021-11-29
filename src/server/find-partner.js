@@ -1,10 +1,10 @@
-'use strict';
-
-const gender  = require("../models/gender");
-const kinks   = require("../models/kinks");
-const role    = require("../models/role");
-const species = require("../models/species");
-const users   = require("../models/users");
+const prefs = {
+  gender: require('../models/gender'),
+  kinks: require('../models/kinks'),
+  role: require('../models/role'),
+  species: require('../models/species'),
+  users: require('../models/users')
+}
 
 /**
  * Checks for any empty fields.
@@ -12,11 +12,9 @@ const users   = require("../models/users");
  * @param  Object preferences The preference object.
  * @return Boolean
  */
-function checkEmpty(preferences) {
-  for (var key in preferences) {
-    if (preferences[key].length < 1) {
-      return true;
-    }
+const checkEmpty = (preferences) => {
+  for (let key in preferences) {
+    if (0 >= preferences[key].length) return true;
   }
   return false;
 }
@@ -27,18 +25,15 @@ function checkEmpty(preferences) {
  * @param  Object preferences The preference object.
  * @return Boolean
  */
-function checkInvalid(preferences) {
-  for (var key in preferences) {
+const checkInvalid = (preferences) => {
+  for (let key in preferences) {
+    if (!prefs[key]) return true;
     if (preferences[key] instanceof Array) {
-      for (var i = 0; i < preferences[key].length; i++) {
-        if (preferences[key][i] != 'any' && eval(key).find(preferences[key][i]) === false) {
-          return true;
-        }
+      for (let i = 0; i < preferences[key].length; i++) {
+        if (preferences[key][i] != 'any' && !prefs[key].find(preferences[key][i])) return true;
       }
     } else {
-      if (preferences[key] != 'any' && eval(key).find(preferences[key]) === false) {
-        return true;
-      }
+      return preferences[key] != 'any' && !prefs[key].find(preferences[key])
     }
   }
   return false;
@@ -51,28 +46,26 @@ function checkInvalid(preferences) {
  * @param  Object partner Possible partner's preferences
  * @return Boolean
  */
-function matchedPreferences(user, partner) {
-  var matchCount = 0;
+const matchedPreferences = (user, partner) => {
+  let matchCount = 0;
 
-  if ((user.partner['gender'].indexOf(partner.user['gender']) !== -1 || user.partner['gender'].indexOf('any') !== -1) &&
-    (partner.partner['gender'].indexOf(user.user['gender']) !== -1 || partner.partner['gender'].indexOf('any') !== -1)) {
-    ++matchCount;
+  if ((user.partner['gender'].includes(partner.user['gender']) || user.partner['gender'].includes('any')) && (partner.partner['gender'].includes(user.user['gender']) || partner.partner['gender'].includes('any'))) {
+    matchCount++;
   }
 
-  if ((user.partner['species'].indexOf(partner.user['species']) !== -1 || user.partner['species'].indexOf('any') !== -1) &&
-    (partner.partner['species'].indexOf(user.user['species']) !== -1 || partner.partner['species'].indexOf('any') !== -1)) {
-    ++matchCount;
+  if ((user.partner['species'].includes(partner.user['species']) || user.partner['species'].includes('any')) && (partner.partner['species'].includes(user.user['species']) || partner.partner['species'].includes('any'))) {
+    matchCount++;
   }
 
   if ((user.partner['role'] == partner.user['role'] && partner.partner['role'] == user.user['role']) || (user.user['role'] == 'Switch' || partner.user['role'] == 'Switch')) {
     ++matchCount;
   }
 
-  if (matchCount >= 3) {
-    return true;
-  } else {
-    return false;
+  if ((user.partner['role'] == partner.user['role'] && partner.partner['role'] == user.user['role']) || (user.user['role'] == 'Switch' || partner.user['role'] == 'Switch')) {
+    matchCount++;
   }
+
+  return matchCount >= 3;
 }
 
 /**
@@ -82,16 +75,8 @@ function matchedPreferences(user, partner) {
  * @param  Array partnerKinks Possible partner's kinks
  * @return Boolean
  */
-function matchedDesires(userKinks, partnerKinks) {
-  if (userKinks.indexOf('any') !== -1 || partnerKinks.indexOf('any') !== -1) {
-    return true;
-  }
-
-  if (similiarKinks(userKinks, partnerKinks, 1)) {
-    return true;
-  }
-
-  return false;
+const matchedDesires = (userKinks, partnerKinks) => {
+  return (userKinks.includes('any') || partnerKinks.includes('any')) || similiarKinks(userKinks, partnerKinks, 1);
 }
 
 /**
@@ -101,11 +86,11 @@ function matchedDesires(userKinks, partnerKinks) {
  * @param  Integer similarities The number of similar kinks to have to give a valid result.
  * @return Boolean
  */
-function similiarKinks(userKinks, partnerKinks, similarities) {
-  var similar = 0;
+const similiarKinks = (userKinks, partnerKinks, similarities) => {
+  let similar = 0;
 
-  for (var i = 0; i < userKinks.length; i++) {
-    if (partnerKinks.indexOf(userKinks[i]) !== -1) {
+  for (let i = 0; i < userKinks.length; i++) {
+    if (partnerKinks.includes(userKinks[i])) {
       similar++;
     }
 
@@ -113,88 +98,104 @@ function similiarKinks(userKinks, partnerKinks, similarities) {
       return true;
     }
   }
+
   return false;
 }
 
-module.exports = function (users, token, preferences) {
-	// Update user's preferences.
-    users.addPreferences(token, preferences);
+module.exports = (users, token, preferences) => {
+  const currentUser = users.findClient(token);
+  const clients = users.getAllClients();
+  let partner = null;
 
-    var partner = null;
-    var currentUser = users.findClient(token);
-    var clients = users.getAllClients();
-
-    // If user submitted any blank values, do not search for anything.
-    if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
-      if (currentUser.socket.readyState == 1) {
-        currentUser.socket.send(JSON.stringify({type:'invalid_preferences', data: true}));
-      }
-      return false;
+  // If user submitted any blank values, do not search for anything.
+  if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
+    if (currentUser.socket.readyState == 1) {
+      currentUser.socket.send(JSON.stringify({ type: 'invalid_preferences', data: true }));
     }
 
-    // Make sure user didn't try to submit any values not allowed.
-    if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({kinks: preferences.kinks})) {
-      if (currentUser.socket.readyState == 1) {
-        currentUser.socket.send(JSON.stringify({type:'invalid_preferences', data: true}));
-      }
-      return false;
+    return false;
+  }
+
+  // Make sure user didn't try to submit any values not allowed.
+  if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({ kinks: preferences.kinks })) {
+    if (currentUser.socket.readyState == 1) {
+      currentUser.socket.send(JSON.stringify({ type: 'invalid_preferences', data: true }));
     }
 
-    // User is looking for a new partner, therefore delete any existing paired partner.
-    if (currentUser.partner != null) {
-      var currentPartner = users.findClient(currentUser.partner);
+    return false;
+  }
 
-      if (currentPartner && currentUser.id == currentPartner.partner) {
-        // Send message to the partner that the user has disconnected.
-        if (currentPartner.socket.readyState == 1) {
-          currentPartner.socket.send(JSON.stringify({type:'partner_left', data: true}));
-        }
+  // Update user's preferences.
+  users.addPreferences(token, preferences);
+
+  // Set that user is looking for a partner
+  currentUser.lookingForPartner = true;
+
+  // User is looking for a new partner, therefore delete any existing paired partner.
+  if (currentUser.partner) {
+    const currentPartner = users.findClient(currentUser.partner);
+
+    if (currentPartner && currentUser.id == currentPartner.partner) {
+      // Send message to the partner that the user has disconnected.
+      if (currentPartner.socket.readyState == 1) {
+        currentPartner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
       }
-
-      // Disconnect partners from each other.
-      users.removePartner(currentUser.id);
     }
 
-    // Look for a partner to yiff with in the list of pending users
-    for (var client in clients) {
-      var client = clients[client];
+    // Disconnect partners from each other.
+    users.removePartner(currentUser.id);
+  }
 
-      // Make sure our current partner is not our new partner and is not ourselves.
-      if (client.partner == null && client.preferences != null && currentUser.id != client.id) {
-        // Make sure not on blocked list for user.
-        if (users.checkBlocks(currentUser.id, client.id) === false && users.checkBlocks(client.id, currentUser.id) === false) {
-          // Match based off preferences.
-          if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences)) {
-            partner = client;
-            users.pairPartners(currentUser.id, client.id);
+  if (currentUser.socket.readyState == 1) {
+    currentUser.socket.send(JSON.stringify({ type: 'partner_pending', data: true }));
+  }
 
-            if (currentUser.socket.readyState == 1) {
-              currentUser.socket.send(JSON.stringify({type:'partner_connected', data: {
+  // Look for a partner to yiff with in the list of pending users
+  for (let client of Object.values(clients)) {
+    // Make sure our current partner is not our new partner and is not ourselves.
+    if (!client.partner && client.lookingForPartner && client.preferences && currentUser.id != client.id) {
+      // Make sure not on blocked list for user.
+      if (!users.checkBlocks(currentUser.id, client.id) && !users.checkBlocks(client.id, currentUser.id)) {
+        // Match based off preferences.
+        if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences)) {
+          partner = client;
+          users.pairPartners(currentUser.id, client.id);
+
+          if (currentUser.socket.readyState == 1) {
+            currentUser.socket.send(JSON.stringify({
+              type: 'partner_connected',
+              data: {
                 gender: partner.preferences.user.gender,
                 species: partner.preferences.user.species,
-                kinks: partner.preferences.kinks.join(", "),
+                kinks: partner.preferences.kinks.join(', '),
                 role: partner.preferences.user.role
-              }}));
-            }
+              }
+            }));
 
-            break;
+            currentUser.lookingForPartner = false;
+            partner.lookingForPartner = false;
           }
+
+          break;
         }
       }
     }
+  }
 
-    if (partner != null) {
-      if (partner.socket.readyState == 1) {
-        partner.socket.send(JSON.stringify({type: 'partner_connected', data: {
+  if (partner) {
+    if (partner.socket.readyState == 1) {
+      partner.socket.send(JSON.stringify({
+        type: 'partner_connected',
+        data: {
           gender: currentUser.preferences.user.gender,
           species: currentUser.preferences.user.species,
-          kinks: currentUser.preferences.kinks.join(", "),
+          kinks: currentUser.preferences.kinks.join(', '),
           role: currentUser.preferences.user.role,
-        }}));
-      }
-    } else {
-      if (currentUser.socket.readyState == 1) {
-    	 currentUser.socket.send(JSON.stringify({type:'partner_pending', data: true}));
-      }
+        }
+      }));
+
+      currentUser.lookingForPartner = false;
+      partner.lookingForPartner = false;
     }
+  }
 }

@@ -1,4 +1,4 @@
-var kinks = [
+const kinks = [
   '3+ Penetration',
   'Ageplay',
   'Anal',
@@ -99,16 +99,6 @@ var kinks = [
 
 
 module.exports = {
-  getAll: function() {
-    return kinks;
-  },
-  find: function(value) {
-    var result = kinks.indexOf(value);
-
-    if (result === -1) {
-      return false;
-    } else {
-      return result;
-    }
-  }
+  getAll: () => kinks,
+  find: (value) => kinks.includes(value)
 }

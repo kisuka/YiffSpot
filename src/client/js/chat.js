@@ -1,6 +1,15 @@
-'use strict';
+const user = require('./user'),
+  toast = require('./toast');
 
-const user = require('./user');
+const tagsToReplace = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;'
+};
+
+const replaceTag = (tag) => tagsToReplace[tag] || tag;
+
+const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
 
 /**
  * Append message to chat box.
@@ -8,12 +17,18 @@ const user = require('./user');
  * @param String message The message to append.
  * @param Object options Various options.
  */
-function addChatMessage(message, options) {
-  var msg = options.alreadyStripped
-    ? linkify(message)
-    : linkify(strip_tags(message));
-  var messages = document.getElementById('messages');
-  var newMessage = document.createElement("li");
+const addChatMessage = (message, options) => {
+  let msg = options.alreadyStripped ? message : safe_tags_replace(message);
+  const matches = msg.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi);
+
+  if (matches) {
+    matches.forEach(match => {
+      msg = msg.replace(match, `<a href="${safe_tags_replace(match)}" target="_blank">${safe_tags_replace(match)}</a>`);
+    });
+  }
+
+  const messages = document.getElementById('messages');
+  const newMessage = document.createElement('li');
 
   newMessage.className += 'message ';
   newMessage.className += options.class;
@@ -26,63 +41,23 @@ function addChatMessage(message, options) {
 /**
  * Shows the partner is typing message.
  */
-function showChatTyping() {
+const showChatTyping = () => {
   document.getElementById('typing').style.display = 'block';
 }
 
 /**
  * Hides the partner is typing message.
  */
-function hideChatTyping() {
+const hideChatTyping = () => {
   document.getElementById('typing').style.display = 'none';
-}
-
-/**
- * Converts URLs to links.
- * @param  String text The text to parse.
- * @return String      The converted text.
- */
-function linkify(text) {
-  if (text) {
-    text = text.replace(
-      /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
-      function(url){
-        var full_url = url;
-        if (!full_url.match('^https?:\/\/')) {
-            full_url = 'http://' + full_url;
-        }
-        return '<a href="' + full_url + '" target="_blank">' + url + '</a>';
-      }
-    );
-  }
-
-  return text;
-}
-
-/**
- * Strips tags from string.
- * @param  String text The raw string.
- * @return String      The cleaned string.
- */
-function strip_tags(text) {
-  return text.replace(/(<([^>]+)>)/ig, "");
 }
 
 /**
  * Hides welcome message and displays chat box.
  */
-function showChatBox() {
+const showChatBox = () => {
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('chat').style.display = 'block';
-}
-
-/**
- * [invalidLinkMessage description]
- * @return {[type]} [description]
- */
-function invalidLinkMessage() {
-  alert('You have attempted to submit a possible malicious link.');
-  return false;
 }
 
 /**
@@ -90,29 +65,28 @@ function invalidLinkMessage() {
  * @param  {[type]} e [description]
  * @return {[type]}   [description]
  */
-function sendMessage(socket) {
-  var message = document.getElementById('message');
+const sendMessage = (socket) => {
+  const message = document.getElementById('message');
 
   if (message.value.length <= 0) {
-    alert('Please enter a message.');
+    toast.toast('Please enter a message.', 'bg-danger');
     return false;
   }
 
   if (message.value.length >= 3000) {
-    alert('Please shorten the length of your message.');
+    toast.toast('Please shorten the length of your message.', 'bg-danger');
     return false;
   }
 
   if (user.getPartner() === false) {
-    message.value = '';
-    alert('You are not connected to a partner yet.');
+    toast.toast('You are not connected to a partner yet.', 'bg-danger');
     return false;
   }
 
   sendTypingStatus(socket, false);
-  socket.send(JSON.stringify({type:'send_message', data: message.value}));
+  socket.send(JSON.stringify({ type: 'send_message', data: message.value }));
 
-  addChatMessage(message.value, {class: 'message-user'});
+  addChatMessage(message.value, { class: 'message-user' });
   message.value = '';
 }
 
@@ -120,10 +94,11 @@ function sendMessage(socket) {
  * [sendTypingStatus description]
  * @return {[type]} [description]
  */
-function sendTypingStatus(socket, status = true) {
-  if (user.getPartner()) {
-    socket.send(JSON.stringify({type:'typing', data: status}));
+const sendTypingStatus = (socket, status = true) => {
+  if (!user.getPartner()) {
+    return;
   }
+  socket.send(JSON.stringify({ type: 'typing', data: status }));
 }
 
 module.exports = {
@@ -131,8 +106,7 @@ module.exports = {
   showChatTyping: showChatTyping,
   hideChatTyping: hideChatTyping,
   showChatBox: showChatBox,
-  invalid: invalidLinkMessage,
   sendMessage: sendMessage,
   sendTypingStatus: sendTypingStatus,
-  stripTags: strip_tags,
+  safe_tags_replace: safe_tags_replace
 };

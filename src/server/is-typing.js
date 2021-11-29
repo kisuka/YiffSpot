@@ -1,12 +1,14 @@
-'use strict';
+module.exports = (users, token, status) => {
+  const currentUser = users.findClient(token);
+  const partner = users.findClient(currentUser.partner);
 
-module.exports = function (users, token, status) {
-  var currentUser = users.findClient(token);
-  var partner = users.findClient(currentUser.partner);
-
-  if (partner && partner.partner == currentUser.id) {
-    if (partner.socket.readyState == 1) {
-      partner.socket.send(JSON.stringify({type:'partner_typing', data: status}));
-    }
+  if (!partner || partner.partner != currentUser.id) {
+    return;
   }
+
+  if (partner.socket.readyState != 1) {
+    return
+  }
+
+  partner.socket.send(JSON.stringify({ type: 'partner_typing', data: status }));
 }

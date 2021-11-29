@@ -1,101 +1,132 @@
-'use strict';
+const users = require('../models/users'),
+  uuid = require('uuid'),
+  url = require('url');
 
-const users = require('../models/users');
-const uuid = require('uuid');
-const url = require('url');
+const broadcast = require('./broadcast'),
+  send_message = require('./send-message'),
+  typing = require('./is-typing'),
+  find_partner = require('./find-partner'),
+  block_partner = require('./block-partner'),
+  disconnect = require('./disconnect');
 
-const broadcast = require('./broadcast');
-const send_message = require('./send-message');
-const typing = require('./is-typing');
-const find_partner = require('./find-partner');
-const block_partner = require('./block-partner');
-const disconnect = require('./disconnect');
-
-module.exports = function (wss) {
+module.exports = wss => {
   // Establish web socket connection
-  wss.on('connection', function(ws, req) {
-    if (req.headers.origin != process.env.HOST) {
-      return ws.terminate();
-    }
+  wss.on('connection', (client, req) => {
+    const request = url.parse(req.url, true);
+    const token =
+      (request.query.id != undefined &&
+        request.query.id != 'null' &&
+        request.query.id != 'NaN' &&
+        request.query.id) ||
+      `${Date.now()}-${uuid.v4()}`;
 
-    var request = url.parse(req.url, true);
-  	var token = (request.query.id != undefined && request.query.id != "null" && request.query.id) || uuid.v4();
+    client.isAlive = true;
+    client.clientId = token;
 
-    ws.isAlive = true;
-    ws.clientId = token;
-
-    var existingUser = users.findClient(token);
+    const existingUser = users.findClient(token);
 
     // Check if user already has an established connection
-    if (existingUser) {
-      if (ws.readyState == 1) {
-        ws.send(JSON.stringify({type: 'connection_exists', data: true}));
-      }
-      return false;
+    if (existingUser && client.readyState == 1) {
+      client.send(JSON.stringify({ type: 'connection_exists', data: true }));
+      return client.terminate();
     }
     
-  	users.addClient(ws, token);
-  	users.incrementOnline();
+    users.addClient(client, token);
+    users.incrementOnline();
 
     // Send unique ID to client
-    if (ws.readyState == 1) {
-      ws.send(JSON.stringify({type: 'connection_success', data: token}));
+    if (client.readyState == 1) {
+      client.send(JSON.stringify({ type: 'connection_success', data: token }));
     }
 
     // Update user count
-  	broadcast(wss.clients, {type: "update_user_count", data: users.getOnline()});
-  	console.log('User Connected! Total Users Online: %d', users.getOnline());
+    broadcast(wss.clients, {
+      type: 'update_user_count',
+      data: users.getOnline()
+    });
+
+    console.log('User Connected! Total Users Online: %d', users.getOnline());
 
     // Client requests
-    ws.on('message', function incoming(message) {
-      const data = JSON.parse(message);
+    client.on('message', message => {
+      client.isAlive = true;
 
-      switch(data.type) {
-        case "find_partner":
-          find_partner(users, token, data.data);
-        break;
-        case "block_partner":
-          block_partner(users, token);
-        break;
-        case "typing":
-          typing(users, token, data.data);
-        break;
-        case "send_message":
-          send_message(users, token, data.data);
-        break;
+      try {
+        const data = JSON.parse(message);
+
+        if (!data.type) {
+          return;
+        }
+
+        switch(data.type) {
+          case 'find_partner':
+            find_partner(users, token, data.data);
+            break;
+
+          case 'block_partner':
+            block_partner(users, token);
+            break;
+
+          case 'typing':
+            typing(users, token, data.data);
+            break;
+
+          case 'send_message':
+            send_message(users, token, data.data);
+            break;
+
+          case 'disconnect':
+            const currentUser = users.findClient(token);
+            const partner = users.findClient(currentUser.partner);
+
+            if (!partner) {
+              return;
+            }
+
+            users.removePartner(currentUser.id);
+
+            if (clients[partner.id] && clients[partner.id].partner && partner.socket.readyState == 1) {
+              partner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
+            }
+
+            break;
+        }
+      } catch (e) {
+        console.log(e);
+        console.warn(`"${client.clientId}" tries to send invalid message!`);
       }
     });
 
     // Error
-    ws.on('error', (e) => {
+    client.on('error', err => {
       // Ignore network errors like ECONNRESET, EPIPE, etc
-      if (e.errno) return;
-      throw e;
+      if (err.errno) return;
+      else throw err;
     });
 
     // Closed
-    ws.on('close', function closed(e) {
+    client.on('close', () => {
       disconnect(users, token);
-      broadcast(wss.clients, {type: "update_user_count", data: users.getOnline()});
-      console.log('User Disconnected! Total Users Online: %d', users.getOnline());
-    });
 
-    // Heartbeat
-    ws.on('pong', function heartbeat() {
-      this.isAlive = true;
+      broadcast(wss.clients, {
+        type: 'update_user_count',
+        data: users.getOnline()
+      });
+
+      console.log('User Disconnected! Total Users Online: %d', users.getOnline());
     });
   });
 
   // Heartbeat
-  const interval = setInterval(function ping() {
-    wss.clients.forEach(function each(ws) {
-      if (ws.isAlive === false) {
-        disconnect(users, ws.clientId);
-        return ws.terminate();
-      }
-      
+  const interval = setInterval(() => {
+    wss.clients.forEach(ws => {
+      if (!ws.isAlive) return ws.terminate();
       ws.isAlive = false;
-      ws.ping('', false, true);
+      ws.ping();
     });
   }, 30000);
+
+  wss.on('close', function close() {
+    clearInterval(interval);
+  });
 };

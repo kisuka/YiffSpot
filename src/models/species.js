@@ -1,4 +1,4 @@
-var species = [
+const species = [
   'Alligator',
   'Arachnid',
   'Arctic Fox',
@@ -44,6 +44,7 @@ var species = [
   'Mouse',
   'Newt',
   'Ocelot',
+  'Octopus',
   'Other',
   'Otter',
   'Panda',
@@ -52,6 +53,7 @@ var species = [
   'Pig/Swine',
   'Pokemon',
   'Primate',
+  'Protogen',
   'Rabbit',
   'Raccoon',
   'Rat',
@@ -74,16 +76,6 @@ var species = [
 ];
 
 module.exports = {
-  getAll: function() {
-    return species;
-  },
-  find: function(value) {
-    var result = species.indexOf(value);
-
-    if (result === -1) {
-      return false;
-    } else {
-      return result;
-    }
-  }
+  getAll: () => species,
+  find: (value) => species.includes(value)
 }

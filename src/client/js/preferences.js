@@ -1,69 +1,106 @@
-'use strict';
+const SlimSelect = require('./../../../node_modules/slim-select/dist/slimselect');
 
-const SlimSelect  = require('./../../../node_modules/slim-select/dist/slimselect');
-const genderRepo  = require("./../../models/gender");
-const kinksRepo   = require("./../../models/kinks");
-const roleRepo    = require("./../../models/role");
-const speciesRepo = require("./../../models/species");
+const genderRepo = require('./../../models/gender'),
+  kinksRepo = require('./../../models/kinks'),
+  roleRepo = require('./../../models/role'),
+  speciesRepo = require('./../../models/species');
+
+const toast = require('./toast');
+
+// Key = LocalStoage Key
+// Value = Data from SlimSelect
+const _updateStorage = (key, value) => {
+  localStorage[key] = value.map(v => v.value).join(',');
+}
 
 /**
  * [initPreferences description]
  * @return {[type]} [description]
  */
-function initPreferences() {
+const initPreferences = () => {
   new SlimSelect({
     select: '#userGender',
     showSearch: false,
-    data: [{value: '', text: 'Select Gender'}, ...genderRepo.getAll().map(item => {
-      return {text: item};
+    data: [{ value: '', text: 'Select Gender' }, ...genderRepo.getAll().map(item => {
+      return { text: item };
     })],
-    placeholder: true
+    placeholder: true,
+    onChange: (gender) => {
+      localStorage['gender'] = gender.value;
+    }
   });
 
   new SlimSelect({
     select: '#userSpecies',
-    data: [{value: '', text: 'Select Species'}, ...speciesRepo.getAll().map(item => {
-      return {text: item};
+    data: [{ value: '', text: 'Select Species' }, ...speciesRepo.getAll().map(item => {
+      return { text: item };
     })],
-    placeholder: true
+    placeholder: true,
+    onChange: (userSpecies) => {
+      localStorage['species'] = userSpecies.value;
+    }
   });
 
   new SlimSelect({
     select: '#userRole',
     showSearch: false,
-    data: [{value: '', text: 'Select Role'}, ...roleRepo.getAll().map(item => {
-      return {text: item};
+    data: [{ value: '', text: 'Select Role' }, ...roleRepo.getAll().map(item => {
+      return { text: item };
     })],
-    placeholder: true
+    placeholder: true,
+    onChange: (role) => {
+      localStorage['role'] = role.value;
+    }
   });
 
   new SlimSelect({
     select: '#userKinks',
-    data: [{value: 'any', text: 'Any / All', selected: true}, ...kinksRepo.getAll().map(item => {
-      return {text: item};
-    })]
+    data: [{ value: 'any', text: 'Any / All', selected: true }, ...kinksRepo.getAll().map(item => {
+      return { text: item };
+    })],
+    onChange: (kinks) => {
+      _updateStorage('kinks', kinks);
+    }
   });
 
   new SlimSelect({
     select: '#partnerGender',
-    data: [{value: 'any', text: 'Any / All', selected: true}, ...genderRepo.getAll().map(item => {
-      return {text: item};
-    })]
+    data: [{ value: 'any', text: 'Any / All', selected: true }, ...genderRepo.getAll().map(item => {
+      return { text: item };
+    })],
+    onChange: (partnerGender) => {
+      _updateStorage('partnerGender', partnerGender);
+    }
   });
 
   new SlimSelect({
     select: '#partnerRole',
     showSearch: false,
-    data: [{value: '', text: 'Select Role'}, ...roleRepo.getAll().map(item => {
-      return {text: item};
-    })]
+    data: [{ value: '', text: 'Select Role' }, ...roleRepo.getAll().map(item => {
+      return { text: item };
+    })],
+    onChange: (partnerRole) => {
+      localStorage['partnerRole'] = partnerRole.value;
+    }
   });
 
   new SlimSelect({
     select: '#partnerSpecies',
-    data: [{value: 'any', text: 'Any / All', selected: true}, ...speciesRepo.getAll().map(item => {
-      return {text: item};
-    })]
+    data: [{ value: 'any', text: 'Any / All', selected: true }, ...speciesRepo.getAll().map(item => {
+      return { text: item };
+    })],
+    onChange: (species) => {
+      _updateStorage('partnerSpecies', species);
+    }
+  });
+
+  new SlimSelect({
+    select: '#siteTheme',
+    data: [{ value: 'dark', text: 'Dark', selected: true }, { value: 'light', text: 'Light' }],
+    onChange: (theme) => {
+      localStorage['theme'] = theme.value;
+      loadTheme();
+    }
   });
 
   loadPreferences();
@@ -75,10 +112,10 @@ function initPreferences() {
  * [loadPreferences description]
  * @return {[type]} [description]
  */
-function loadPreferences() {
-  var gendersSelect = document.getElementById('partnerGender');
-  var kinksSelect = document.getElementById('userKinks');
-  var speciesSelect = document.getElementById('partnerSpecies');
+const loadPreferences = () => {
+  const gendersSelect = document.getElementById('partnerGender'),
+    kinksSelect = document.getElementById('userKinks'),
+    speciesSelect = document.getElementById('partnerSpecies');
 
   if (localStorage['gender']) {
     document.getElementById('userGender').value = localStorage['gender'];
@@ -93,27 +130,31 @@ function loadPreferences() {
   }
 
   if (localStorage['partnerGender']) {
-    var genders = localStorage['partnerGender'].split(',');
+    const genders = localStorage['partnerGender'].split(',');
     
-    for(var count=0; count < gendersSelect.options.length; count++) {
-      if(genders.includes(gendersSelect.options[count].value)) {
-        gendersSelect.options[count].selected = "selected";
+    for (let count = 0; count < gendersSelect.options.length; count++) {
+      if (!genders.includes(gendersSelect.options[count].value)) {
+        continue;
       }
+
+      gendersSelect.options[count].selected = 'selected';
     }
   } else {
-    gendersSelect.options[0].selected = "selected";
+    gendersSelect.options[0].selected = 'selected';
   }
 
   if (localStorage['partnerSpecies']) {
-    var species = localStorage['partnerSpecies'].split(',');
+    const species = localStorage['partnerSpecies'].split(',');
     
-    for(var count=0; count < speciesSelect.options.length; count++) {
-      if(species.includes(speciesSelect.options[count].value)) {
-        speciesSelect.options[count].selected = "selected";
+    for (let count = 0; count < speciesSelect.options.length; count++) {
+      if (!species.includes(speciesSelect.options[count].value)) {
+        continue;
       }
+
+      speciesSelect.options[count].selected = 'selected';
     }
   } else {
-    speciesSelect.options[0].selected = "selected";
+    speciesSelect.options[0].selected = 'selected';
   }
 
   if (localStorage['partnerRole']) {
@@ -121,103 +162,41 @@ function loadPreferences() {
   }
 
   if (localStorage['kinks']) {
-    var kinks = localStorage['kinks'].split(',');
+    const kinks = localStorage['kinks'].split(',');
 
-    for(var count=0; count < kinksSelect.options.length; count++) {
-      if(kinks.includes(kinksSelect.options[count].value)) {
-        kinksSelect.options[count].selected = "selected";
+    for (let count = 0; count < kinksSelect.options.length; count++) {
+      if (!kinks.includes(kinksSelect.options[count].value)) {
+        continue;
       }
+
+      kinksSelect.options[count].selected = 'selected';
     }
   } else {
-    kinksSelect.options[0].selected = "selected";
+    kinksSelect.options[0].selected = 'selected';
   }
-}
-
-/**
- * [savePreferences description]
- * @return {[type]} [description]
- */
-function savePreferences(e) {
-  e.preventDefault();
-
-  var gender       = document.getElementById('userGender').value;
-  var species      = document.getElementById('userSpecies').value;
-  var role         = document.getElementById('userRole').value;
-  var kinks        = document.getElementById('userKinks');
-  var matchGender  = document.getElementById('partnerGender');
-  var matchSpecies = document.getElementById('partnerSpecies');
-  var matchRole    = document.getElementById('partnerRole').value;
-
-  var selectedKinks = [];
-  var selectedGenders = [];
-  var selectedSpecies = [];
-
-  for (var i=0; i<kinks.options.length; i++) {
-    if (kinks.options[i].selected) {
-      selectedKinks.push(kinks.options[i].value);
-    }
-  }
-
-  for (var i=0; i<matchGender.options.length; i++) {
-    if (matchGender.options[i].selected) {
-      selectedGenders.push(matchGender.options[i].value);
-    }
-  }
-
-  for (var i=0; i<matchSpecies.options.length; i++) {
-    if (matchSpecies.options[i].selected) {
-      selectedSpecies.push(matchSpecies.options[i].value);
-    }
-  }
-
-  kinks = selectedKinks.join(',');
-  matchGender = selectedGenders.join(',');
-  matchSpecies = selectedSpecies.join(',');
-
-  localStorage['gender'] = gender;
-  localStorage['species'] = species;
-  localStorage['role'] = role;
-  localStorage['partnerGender'] = matchGender;
-  localStorage['partnerSpecies'] = matchSpecies;
-  localStorage['partnerRole'] = matchRole;
-  localStorage['kinks'] = kinks;
-
-  alert('Preferences have been saved.');
-}
-
-/**
- * [saveSettings description]
- * @return {[type]} [description]
- */
-function saveSettings(e) {
-  e.preventDefault();
-
-  var theme = document.getElementById('siteTheme').value;
-
-  localStorage['theme'] = theme;
-
-  loadTheme();
-
-  alert('Site Settings have been saved.');
 }
 
 /**
  * [loadSettings description]
  * @return {[type]} [description]
  */
-function loadSettings() {
-  var themeSelect = document.getElementById('siteTheme');
-
-  if (localStorage['theme']) {
-    document.getElementById('siteTheme').value = localStorage['theme'];
+const loadSettings = () => {
+  if (!localStorage['theme']) {
+    return;
   }
+
+  document.getElementById('siteTheme').value = localStorage['theme'];
 }
 
-function loadTheme() {
-  if (localStorage['theme'] && localStorage['theme'] == 'dark') {
-    document.body.classList.add("dark");
+const loadTheme = () => {
+  if (!localStorage['theme'] || localStorage['theme'] != 'light') {
+    document.body.classList.add('dark');
+    document.getElementById('navbar').classList.add('navbar-dark');
+    document.getElementById('navbar').classList.remove('navbar-light');
   } else {
-    document.body.classList.remove("dark");
+    document.body.classList.remove('dark');
+    document.getElementById('navbar').classList.remove('navbar-dark');
+    document.getElementById('navbar').classList.add('navbar-light');
   }
 }
 
@@ -225,85 +204,72 @@ function loadTheme() {
  * [invalid description]
  * @return {[type]} [description]
  */
-function invalidPreferences() {
-  alert('You have attempted to submit invalid preferences. Please check your preferences again.');
-    return false;
+const invalidPreferences = () => {
+  toast.toast('You have attempted to submit invalid preferences. Please check your preferences again.', 'bg-danger');
+  return false;
 }
 
 /**
  * [toggleMenu description]
  * @return {[type]} [description]
  */
-function toggleMenu(e) {
+const toggleMenu = (e) => {
   e.preventDefault();
-  document.getElementById("sidebar").classList.toggle('active-sidebar');
+  document.getElementById('sidebar').classList.toggle('active-sidebar');
 }
 
 /**
  * [validatePreferences description]
  * @return {[type]} [description]
  */
-function validatePreferences() {
-  var gender       = document.getElementById('userGender').value;
-  var species      = document.getElementById('userSpecies').value;
-  var role         = document.getElementById('userRole').value;
-  var kinks        = document.getElementById('userKinks');
-  var matchGender  = document.getElementById('partnerGender');
-  var matchSpecies = document.getElementById('partnerSpecies');
-  var matchRole    = document.getElementById('partnerRole').value;
+const validatePreferences = () => {
+  const gender = document.getElementById('userGender').value,
+    species = document.getElementById('userSpecies').value,
+    role = document.getElementById('userRole').value,
+    kinks = document.getElementById('userKinks'),
+    matchGender = document.getElementById('partnerGender'),
+    matchSpecies = document.getElementById('partnerSpecies'),
+    matchRole = document.getElementById('partnerRole').value;
 
-  var selectedKinks = [];
-  var selectedGenders = [];
-  var selectedSpecies = [];
+  const selectedKinks = [];
+  const selectedGenders = [];
+  const selectedSpecies = [];
 
-  if (gender === '') {
-    alert('Please select your gender.');
+  let validPreferences = true;
+
+  const assertToastMessage = (condition, message) => {
+    if (!condition) {
+      toast.toast(message, 'bg-danger');
+    }
+
+    return condition
+  }
+
+  validPreferences = validPreferences && assertToastMessage(gender !== '', 'Please select your gender.');
+  validPreferences = validPreferences && assertToastMessage(species !== '', 'Please select your species.');
+  validPreferences = validPreferences && assertToastMessage(role !== '', 'Please select your role.');
+  validPreferences = validPreferences && assertToastMessage(matchGender, 'Please select the gender you\'re seeking.');
+  validPreferences = validPreferences && assertToastMessage(matchSpecies !== '', 'Please select the species you\'re seeking.');
+  validPreferences = validPreferences && assertToastMessage(matchRole !== '', 'Please select the role you\'re seeking.');
+  validPreferences = validPreferences && assertToastMessage(kinks !== '', 'Please select the kinks you\'re interested in.');
+
+  if (!validPreferences) {
     return false;
   }
 
-  if (species === '') {
-    alert('Please select your species.');
-    return false;
-  }
-
-  if (role === '') {
-    alert('Please select your role.');
-    return false;
-  }
-
-  if (!matchGender) {
-    alert("Please select the gender you're seeking.");
-    return false;
-  }
-
-  if (!matchSpecies) {
-    alert("Please select the species you're seeking.");
-    return false;
-  }
-
-  if (!matchRole) {
-    alert("Please select the role you're seeking.");
-    return false;
-  }
-
-  if (!kinks) {
-    alert("Please select the kinks you're interested in.");
-    return false;
-  }
-
-  for (var i=0; i<kinks.options.length; i++) {
+  for (let i = 0; i < kinks.options.length; i++) {
     if (kinks.options[i].selected) {
       selectedKinks.push(kinks.options[i].value);
     }
   }
 
-  for (var i=0; i<matchGender.options.length; i++) {
+  for (let i = 0; i < matchGender.options.length; i++) {
     if (matchGender.options[i].selected) {
       selectedGenders.push(matchGender.options[i].value);
     }
   }
 
-  for (var i=0; i<matchSpecies.options.length; i++) {
+  for (let i = 0; i < matchSpecies.options.length; i++) {
     if (matchSpecies.options[i].selected) {
       selectedSpecies.push(matchSpecies.options[i].value);
     }
@@ -327,11 +293,9 @@ function validatePreferences() {
 module.exports = {
   init: initPreferences,
   load: loadPreferences,
-  save: savePreferences,
   validate: validatePreferences,
   invalid: invalidPreferences,
   toggleMenu: toggleMenu,
-  saveSettings: saveSettings,
   loadSettings: loadSettings,
   loadTheme: loadTheme,
 };
