@@ -55,7 +55,7 @@ const initPreferences = () => {
 
   new SlimSelect({
     select: '#userKinks',
-    data: [{ value: 'any', text: 'Any / All', selected: true }, ...kinksRepo.getAll().map(item => {
+    data: [{ value: 'any', text: 'Any / All'}, ...kinksRepo.getAll().map(item => {
       return { text: item };
     })],
     onChange: (kinks) => {
@@ -65,7 +65,7 @@ const initPreferences = () => {
 
   new SlimSelect({
     select: '#partnerGender',
-    data: [{ value: 'any', text: 'Any / All', selected: true }, ...genderRepo.getAll().map(item => {
+    data: [{ value: 'any', text: 'Any / All'}, ...genderRepo.getAll().map(item => {
       return { text: item };
     })],
     onChange: (partnerGender) => {
@@ -86,7 +86,7 @@ const initPreferences = () => {
 
   new SlimSelect({
     select: '#partnerSpecies',
-    data: [{ value: 'any', text: 'Any / All', selected: true }, ...speciesRepo.getAll().map(item => {
+    data: [{ value: 'any', text: 'Any / All'}, ...speciesRepo.getAll().map(item => {
       return { text: item };
     })],
     onChange: (species) => {
@@ -96,7 +96,7 @@ const initPreferences = () => {
 
   new SlimSelect({
     select: '#siteTheme',
-    data: [{ value: 'dark', text: 'Dark', selected: true }, { value: 'light', text: 'Light' }],
+    data: [{ value: 'dark', text: 'Dark'}, { value: 'light', text: 'Light' }],
     onChange: (theme) => {
       localStorage['theme'] = theme.value;
       loadTheme();
@@ -181,11 +181,7 @@ const loadPreferences = () => {
  * @return {[type]} [description]
  */
 const loadSettings = () => {
-  if (!localStorage['theme']) {
-    return;
-  }
-
-  document.getElementById('siteTheme').value = localStorage['theme'];
+  document.getElementById('siteTheme').value = localStorage['theme'] || 'dark';
 }
 
 const loadTheme = () => {
