@@ -66,7 +66,8 @@ socket.onmessage = (event) => {
       break;
 
     case 'partner_typing':
-      (response.data && chat.showChatTyping()) || chat.hideChatTyping();
+      if (response.data && (response.data == "true" || response.data == true)) chat.showChatTyping();
+      else chat.hideChatTyping();
       break;
 
     case 'partner_connected':
@@ -133,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('disconnect').addEventListener('click', e => {
     e.preventDefault();
 
-    if (!document.getElementById('disconnect').classList.contains('hide-ele')) {
-      document.getElementById('disconnect').classList.add('hide-ele');
+    if (!document.getElementById('disconnect-row').classList.contains('hide-ele')) {
+      document.getElementById('disconnect-row').classList.add('hide-ele');
     }
 
     partner.disconnect(socket);
