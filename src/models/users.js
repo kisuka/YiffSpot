@@ -27,7 +27,12 @@ module.exports = {
     clients[partner].partner = id;
   },
   removePartner: (id) => {
-    clients[id].partner = null;
+    if (clients[id].partner) {
+      if (clients[clients[id].partner]) {
+        clients[clients[id].partner].partner = id;
+      }
+      clients[id].partner = null;
+    }
   },
   blockPartner: (id, partner) => {
     clients[id].blocks.push(partner);
