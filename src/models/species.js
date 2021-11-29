@@ -70,6 +70,7 @@ const species = [
   'Tiger',
   'Turtle',
   'Unicorn',
+  'Werewolf',
   'Whale',
   'Wolf',
   'Zebra'
