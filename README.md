@@ -1,8 +1,6 @@
 # Yiff Spot
 
 [![Build Status](https://travis-ci.org/kisuka/YiffSpot.svg)](https://travis-ci.org/kisuka/YiffSpot)
-[![Dependency Status](https://david-dm.org/kisuka/YiffSpot.svg)](https://david-dm.org/kisuka/YiffSpot)
-[![devDependency Status](https://david-dm.org/kisuka/YiffSpot/dev-status.svg)](https://david-dm.org/kisuka/YiffSpot#info=devDependencies)
 
 ## About
 
