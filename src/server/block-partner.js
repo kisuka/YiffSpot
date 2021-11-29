@@ -1,6 +1,6 @@
 module.exports = (users, token) => {
   const currentUser = users.findClient(token);
-  const partner = users.findClient(currentUser.partner);
+  const partner = users.findClient(currentUser.partner || clientUser.previousPartner);
 
   if (!partner) {
     return;
