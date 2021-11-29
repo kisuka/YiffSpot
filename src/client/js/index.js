@@ -94,7 +94,7 @@ socket.onmessage = (event) => {
       preferences.invalid();
       break;
     case 'client_disconnect':
-      if (!document.getElementById("disconnect-row").classList.contains("hide-ele") {
+      if (!document.getElementById("disconnect-row").classList.contains("hide-ele")) {
           document.getElementById("disconnect-row").classList.add("hide-ele");
       }
       chat.addChatMessage('You have disconnected from your partner.', {
