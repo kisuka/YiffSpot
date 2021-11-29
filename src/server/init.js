@@ -83,7 +83,7 @@ module.exports = wss => {
               return;
             }
 
-            if (users[partner.id] && users[partner.id].partner && partner.socket.readyState == 1) {
+            if (partner.socket.readyState == 1) {
               partner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
             }
             
