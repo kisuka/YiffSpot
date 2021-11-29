@@ -138,6 +138,8 @@ module.exports = (users, token, preferences) => {
     if (currentPartner.socket.readyState == 1) {
       currentPartner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
     }
+    
+    currentUser.previousPartner = currentUser.partner;
     // Disconnect partners from each other.
     users.removePartner(currentUser.id);
   }
