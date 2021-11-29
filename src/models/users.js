@@ -12,6 +12,7 @@ module.exports = {
       socket: socket,
       preferences: null,
       partner: null,
+      previousPartner: null,
       blocks: [],
     }
   },
@@ -28,8 +29,11 @@ module.exports = {
   },
   removePartner: (id) => {
     if (clients[id].partner) {
-      if (clients[clients[id].partner]) {
-        clients[clients[id].partner].partner = null;
+      const partner = clients[clients[id].partner];
+      if (partner) {
+        partner.partner = null;
+        partner.previousPartner = id;
+        clients[id].previousPartner = clients[id].partner
       }
       clients[id].partner = null;
     }
