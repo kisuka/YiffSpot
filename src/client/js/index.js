@@ -154,9 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('userPrefs').classList.toggle('hide-ele');
   });
 
-  // When save settings button is clicked
-  document.getElementById('siteTheme').onchange = preferences.saveSettings;
-
   // Handle when window is closed
   window.addEventListener('beforeunload', () => socket.close());
 });
