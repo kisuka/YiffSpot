@@ -151,10 +151,6 @@ const findPartner = async (socket) => {
 
 const disconnect = async (socket) => {
   socket.send(JSON.stringify({ type: 'disconnect', data: true }));
-  chat.addChatMessage('You have disconnected from your partner.', {
-    class: 'message-system'
-  });
-  user.setPartner(false);
 }
 
 module.exports = {
