@@ -39,7 +39,7 @@ module.exports = {
     }
   },
   blockPartner: (id, partner) => {
-    clients[id].blocks.push(partner);
+    if (!clients[id].blocks.includes(partner)) clients[id].blocks.push(partner);
   },
   checkBlocks: (id, partner) => clients[id] && clients[id].blocks && clients[id].blocks.includes(partner)
 }
