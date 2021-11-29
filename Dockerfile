@@ -8,6 +8,6 @@ Copy . ./
 
 RUN npm install
 
-ENTRYPOINT [ "sh", "/app/run.sh" ]
-
 EXPOSE 3000
+
+ENTRYPOINT ["/bin/sh", "-c" , "npm run build && npm run server"]
