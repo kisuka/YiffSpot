@@ -134,14 +134,10 @@ module.exports = (users, token, preferences) => {
   // User is looking for a new partner, therefore delete any existing paired partner.
   if (currentUser.partner) {
     const currentPartner = users.findClient(currentUser.partner);
-
-    if (currentPartner && currentUser.id == currentPartner.partner) {
       // Send message to the partner that the user has disconnected.
-      if (currentPartner.socket.readyState == 1) {
-        currentPartner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
-      }
+    if (currentPartner.socket.readyState == 1) {
+      currentPartner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
     }
-
     // Disconnect partners from each other.
     users.removePartner(currentUser.id);
   }
