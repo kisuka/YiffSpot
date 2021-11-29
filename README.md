@@ -1,7 +1,5 @@
 # Yiff Spot
 
-[![Build Status](https://travis-ci.org/kisuka/YiffSpot.svg)](https://travis-ci.org/kisuka/YiffSpot)
-
 ## About
 
 A real-time web chat utilizing web sockets for "yiffing" with furries anonymously and randomly.
