@@ -6,11 +6,6 @@ module.exports = (users, token) => {
     return;
   }
 
-  // Check if user has a partner
-  if (!currentUser.partner) {
-    return;
-  }
-
   const clients = users.getAllClients();
 
   // Block partner
