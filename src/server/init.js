@@ -87,9 +87,6 @@ module.exports = wss => {
               partner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
             }
             
-            currentUser.previousPartner = partner.id;
-            partner.previousPartner = currentUser.id;
-            
             users.removePartner(currentUser.id);
             
             if (currentUser.socket.readyState == 1) {
