@@ -83,11 +83,12 @@ module.exports = wss => {
               return;
             }
 
-            users.removePartner(currentUser.id);
-
             if (clients[partner.id] && clients[partner.id].partner && partner.socket.readyState == 1) {
               partner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
             }
+            
+            currentUser.previousPartner = currentUser.partner;
+            users.removePartner(currentUser.id);
             
             if (currentUser.socket.readyState == 1) {
               currentUser.socket.send(JSON.stringify({ type: 'client_disconnect', data: true }));
