@@ -66,7 +66,8 @@ socket.onmessage = (event) => {
       break;
 
     case 'partner_typing':
-      (response.data && chat.showChatTyping()) || chat.hideChatTyping();
+      if (response.data) chat.showChatTyping();
+      else chat.hideChatTyping();
       break;
 
     case 'partner_connected':
