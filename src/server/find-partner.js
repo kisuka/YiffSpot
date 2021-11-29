@@ -58,14 +58,14 @@ const matchedPreferences = (user, partner) => {
   }
 
   if ((user.partner['role'] == partner.user['role'] && partner.partner['role'] == user.user['role']) || (user.user['role'] == 'Switch' || partner.user['role'] == 'Switch')) {
-    ++matchCount;
+    matchCount++;
   }
 
   if ((user.partner['role'] == partner.user['role'] && partner.partner['role'] == user.user['role']) || (user.user['role'] == 'Switch' || partner.user['role'] == 'Switch')) {
     matchCount++;
   }
 
-  return matchCount >= 3;
+  return matchCount >= 4;
 }
 
 /**
