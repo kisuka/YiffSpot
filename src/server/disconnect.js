@@ -9,6 +9,8 @@ module.exports = (users, token) => {
 
   // Check if user has a partner
   if (partner) {
+    currentUser.previousPartner = currentUser.partner;
+    
     // Disconnect user from partner.
     users.removePartner(currentUser.id);
 
