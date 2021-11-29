@@ -57,7 +57,6 @@ socket.onmessage = (event) => {
     case 'connection_exists':
       toast.toast('You already have an active session.');
       return false;
-      break;
 
     case 'update_user_count':
       document.getElementById('userCount').innerText = response.data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
