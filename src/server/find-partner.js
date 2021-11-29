@@ -139,7 +139,9 @@ module.exports = (users, token, preferences) => {
       currentPartner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
     }
     
-    currentUser.previousPartner = currentUser.partner;
+    currentUser.previousPartner = currentPartner.id;
+    currentPartner.previousPartner = currentUser.id;
+    
     // Disconnect partners from each other.
     users.removePartner(currentUser.id);
   }
