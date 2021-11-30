@@ -34,15 +34,24 @@ const addChatMessage = (message, options) => {
   newMessage.className += options.class;
   newMessage.innerHTML = msg;
 
+  const isScrolledToBottom =messages.scrollHeight - messages.clientHeight <= messages.scrollTop + 1;
+
   messages.insertBefore(newMessage, document.getElementById('typing'));
-  messages.scrollTop = messages.scrollHeight;
+  if (isScrolledToBottom) {
+    messages.scrollTop = messages.scrollHeight;
+  }
 }
 
 /**
  * Shows the partner is typing message.
  */
 const showChatTyping = () => {
+  const messages = document.getElementById('messages');
+  const isScrolledToBottom = messages.scrollHeight - messages.clientHeight <= messages.scrollTop + 1;
   document.getElementById('typing').style.display = 'block';
+  if (isScrolledToBottom) {
+    messages.scrollTop = messages.scrollHeight;
+  }
 }
 
 /**
@@ -57,7 +66,7 @@ const hideChatTyping = () => {
  */
 const showChatBox = () => {
   document.getElementById('welcome').style.display = 'none';
-  document.getElementById('chat').style.display = 'block';
+  document.getElementById('chat').style.display = 'flex';
 }
 
 /**
