@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Yiff Spot allows users to yiff anonymously with other furries in real-time.">
     <meta name="keywords" content="Furries, Furry, Yiff, Chat, Online, Random, Anonymously">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <title><%= process.env.APP_TITLE %></title>
-    
+
+    <title>
+        <%= process.env.APP_TITLE %>
+    </title>
+
     <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 
@@ -16,13 +19,14 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=<%= process.env.GA_ID %>"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', '<%= process.env.GA_ID %>');
     </script>
 </head>
+
 <body>
-	<!--[if lt IE 8]>
+    <!--[if lt IE 8]>
 		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com">upgrade your browser</a> to improve your experience.</p>
 	<![endif]-->
 
@@ -37,6 +41,7 @@
         </div>
     </nav>
 
+
     <div id="sidebar" class="sidebar container-fluid col-lg-2">
         <div class="logo">
             <img src="/assets/logo.png" alt="Yiff Spot - Yiff With Random Furries">
@@ -44,12 +49,13 @@
 
         <ul class="nav mb-auto">
             <div class="container-fluid">
-                <p class="text-center text-muted" id="below-logo-text" style="float: none;"> <span id="userCount">0</span> Users Online</p>
+                <p class="text-center text-muted" id="below-logo-text" style="float: none;"> <span
+                        id="userCount">0</span> Users Online</p>
             </div>
 
             <div class="container-fluid">
                 <form id="userPrefs" class="userSettings" onsubmit="return false;">
-                     <div class="row">
+                    <div class="row">
                         <div class="col-xl-12">
                             <label>Your Gender</label>
                             <select name="userGender" id="userGender"></select>
@@ -152,11 +158,12 @@
     <div class="offset-sm-4 offset-lg-2 col-lg-10" id="welcome">
         <div class="pt-4 ps-4">
             <h3>Welcome to Yiff Spot</h3>
-            <p>On Yiff Spot you are able to yiff one-on-one with a random furry in real-time. Your yiffing partner is selected at random based on the preferences you set. You are kept completely anonymous unless you tell your partner who you are.</p>
+            <p>On Yiff Spot you are able to yiff one-on-one with a random furry in real-time. Your yiffing partner is
+                selected at random based on the preferences you set. You are kept completely anonymous unless you tell
+                your partner who you are.</p>
             <p>To begin, set your preferences and click the "Find Partner" button.</p>
         </div>
     </div>
-
     <div class="offset-sm-4 offset-lg-2 col-lg-10">
         <div class="chat" id="chat">
             <ul class="list-unstyled messages px-4" id="messages">
@@ -196,4 +203,5 @@
         <div class="toast-container position-absolute bottom-0 end-0 p-3" id="toast-container"></div>
     </div>
 </body>
+
 </html>

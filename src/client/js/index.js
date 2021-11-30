@@ -59,7 +59,7 @@ socket.onmessage = (event) => {
       return false;
 
     case 'update_user_count':
-      document.getElementById('userCount').innerText = response.data.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      document.getElementById('userCount').innerText = response.data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       break;
 
     case 'receive_message':
