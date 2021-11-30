@@ -149,6 +149,10 @@ label {
     border-color: #ccc;
 }
 
+.navbar {
+    border-bottom: 1px solid #ddd;
+}
+
 // Desktop
 @media (min-width: 768px) {
     .sidebar {
@@ -168,9 +172,13 @@ label {
 }
 
 @media (max-width: 768px) {
+    .sidebar {
+        padding-top: 10px;
+    }
+
 	.chat {
-		height: calc(100vh - 76px);
-		max-height: calc(100vh - 76px);
+		height: calc(100vh - 75px);
+		max-height: calc(100vh - 75px);
 	}
 
     .logo {
