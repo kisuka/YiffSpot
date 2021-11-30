@@ -66,6 +66,7 @@ const hideChatTyping = () => {
  */
 const showChatBox = () => {
   document.getElementById('welcome').style.display = 'none';
+  document.getElementById('welcome').classList.add('hidden');
   document.getElementById('chat').style.display = 'flex';
 }
 

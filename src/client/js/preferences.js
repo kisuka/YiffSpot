@@ -212,6 +212,8 @@ const invalidPreferences = () => {
 const toggleMenu = (e) => {
   e.preventDefault();
   document.getElementById('sidebar').classList.toggle('active-sidebar');
+  document.getElementById('chat').style.display = document.getElementById('sidebar').classList.contains('active-sidebar') || !document.getElementById('welcome').classList.contains('hidden') ? 'none' : 'flex';
+  document.getElementById('welcome').style.display = document.getElementById('sidebar').classList.contains('active-sidebar') || document.getElementById('welcome').classList.contains('hidden') ? 'none' : 'flex';
 }
 
 /**

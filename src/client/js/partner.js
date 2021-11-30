@@ -69,9 +69,13 @@ const blocked = () => {
       class: 'message-system'
     });
   }
-  
+
   if (!document.getElementById('disconnect-row').classList.contains('hide-ele')) {
     document.getElementById('disconnect-row').classList.add('hide-ele');
+  }
+
+  if (!document.getElementById('block-partner').classList.contains('hide-ele')) {
+    document.getElementById('block-partner').classList.add('hide-ele');
   }
 
   chat.hideChatTyping();
@@ -83,9 +87,9 @@ const blocked = () => {
  */
 const pending = () => {
   chat.showChatBox();
-  chat.addChatMessage(''+
-  'We are looking for a partner to match you with. '+
-  'Please either continue to wait, or modify your yiffing preferences.', {
+  chat.addChatMessage('' +
+    'We are looking for a partner to match you with. ' +
+    'Please either continue to wait, or modify your yiffing preferences.', {
     class: 'message-system'
   });
 }
