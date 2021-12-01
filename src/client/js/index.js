@@ -38,6 +38,8 @@ socket.onopen = () => {
 socket.onclose = () => {
   if (interval) clearInterval(interval);
   user.setPartner(false);
+  toast.toast("You have been disconnected from the server, Please refresh the page.", 'bg-danger');
+  document.getElementById('userCount').innerText = "0";
 };
 
 socket.onerror = (event) => {
@@ -55,10 +57,9 @@ socket.onmessage = (event) => {
     case 'connection_exists':
       toast.toast('You already have an active session.');
       return false;
-      break;
 
     case 'update_user_count':
-      document.getElementById('userCount').innerText = response.data;
+      document.getElementById('userCount').innerText = response.data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       break;
 
     case 'receive_message':
@@ -66,7 +67,7 @@ socket.onmessage = (event) => {
       break;
 
     case 'partner_typing':
-      if (response.data && (response.data == "true" || response.data == true)) chat.showChatTyping();
+      if (response.data == true) chat.showChatTyping();
       else chat.hideChatTyping();
       break;
 
@@ -92,6 +93,15 @@ socket.onmessage = (event) => {
 
     case 'invalid_preferences':
       preferences.invalid();
+      break;
+    case 'client_disconnect':
+      if (!document.getElementById("disconnect-row").classList.contains("hide-ele")) {
+          document.getElementById("disconnect-row").classList.add("hide-ele");
+      }
+      chat.addChatMessage('You have disconnected from your partner.', {
+          class: 'message-system'
+      });
+      user.setPartner(false);
       break;
   }
 };
@@ -133,11 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('disconnect').addEventListener('click', e => {
     e.preventDefault();
-
-    if (!document.getElementById('disconnect-row').classList.contains('hide-ele')) {
-      document.getElementById('disconnect-row').classList.add('hide-ele');
-    }
-
     partner.disconnect(socket);
   });
 

@@ -1,6 +1,7 @@
 const genders = [
   'Male',
   'Female',
+  'Gender Fluid',
   'Herm',
   'Transgender',
   'Other'
