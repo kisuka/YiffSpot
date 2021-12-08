@@ -5,9 +5,8 @@ const express = require('express'),
 	https = require('https'),
 	fs = require('graceful-fs'),
 	init = require('./src/server/init.js'),
-	path = require('path')
-
-const { Server } = require("socket.io");
+	path = require('path'),
+	{ Server } = require('socket.io');
 
 let credentials,
 	sslServer,
