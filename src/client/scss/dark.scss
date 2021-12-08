@@ -40,46 +40,35 @@ body.dark {
     }
 
     // Selects
-    .ss-main .ss-multi-selected .ss-values .ss-value {
+
+    .ts-wrapper.multi .ts-control .item,
+    .ts-dropdown-content .selected,
+    .ts-dropdown-content .active,
+    .ts-dropdown .option:hover {
         background-color: #375a7f;
+        color: #FFF;
     }
 
-    .ss-single-selected,
-    .ss-multi-selected,
-    .ss-content,
-    .ss-main .ss-content .ss-list .ss-option.ss-disabled,
-    .ss-main .ss-content .ss-search input,
-    .form-control {
+    .ts-dropdown-content,
+    .ts-control .item {
+        color: #FFF;
+    }
+
+    .ts-wrapper.single.input-active .ts-control,
+    .ts-control,
+    .form-control,
+    .ts-dropdown {
         background-color: #26272b;
         border-color: #222327;
     }
 
-
-    .ss-search input {
-        color: #ffff;
-    }
-
     .form-control {
         color: #FFF;
-    }
-
-    .ss-main .ss-content .ss-search input:focus,
-    .form-control:focus {
-        box-shadow: 0 0 5px #FFF;
-    }
-
-    .ss-main .ss-content .ss-list .ss-option:hover,
-    .ss-main .ss-content .ss-list .ss-option.ss-highlighted {
-        background-color: #42464d;
     }
 
     // Sidebar
     .logo {
         border-color: #232529;
-    }
-
-    .ss-single-selected .placeholder {
-        color: #FFF;
     }
 
     // Desktop

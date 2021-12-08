@@ -1,10 +1,11 @@
 const clients = {};
+
 let usersOnline = 0;
 
 module.exports = {
   getOnline: () => usersOnline,
   incrementOnline: () => usersOnline++,
-  decrementOnline: () =>  usersOnline--,
+  decrementOnline: () => usersOnline--,
   getAllClients: () => clients,
   addClient: (socket, token) => {
     clients[token] = {
@@ -13,7 +14,7 @@ module.exports = {
       preferences: null,
       partner: null,
       previousPartner: null,
-      blocks: [],
+      blocks: []
     }
   },
   addPreferences: (id, preferences) => {

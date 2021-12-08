@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0] - 2021.12.8
+
+### Changes
+- Since reconnect feature got added, If you open YiffSpot from another tab, The socket in the current tab will be closed.
+### Fixes
+- Fixed a bug where toast appear in top right sometimes.
+### Added
+- Added reconnect feature, Give you 10 seconds to refresh your page if you got disconnected.
+- Added Contributor Tag, So when i ask people to test stuff, they won't run away.
+### Removed
+- Removed `butterutil`, `utf-8-validate`, `slim-select` and `ws`.
+### Replaced
+- Replace `slim-select` with `tom-select`.
+- Replace `ws` with `socket.io`.
 ## [3.0.0] - 2021.11.28
 ### Changed
 - Upgraded all dependencies to latest version.
@@ -9,7 +23,7 @@
 - Escape html tags instead of removing it.
 - Settings save automaticlly now.
 - Dark mode is the default now.
-- Use ES6 coding styles.
+- Use arrow function because it's cooler.
 - The two eval function inside `find-partner` has been replaced.
 - No more "Invalid preference" bug.
 - Added a disconnect button.

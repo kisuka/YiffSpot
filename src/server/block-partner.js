@@ -12,10 +12,10 @@ module.exports = (users, token) => {
 
   // Send generic left message to partner so they don't feel sad.
   if (partner.socket.readyState == 1) {
-    partner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
+    partner.socket.emit('partner_left');
   }
 
   if (currentUser.socket.readyState == 1) {
-    currentUser.socket.send(JSON.stringify({ type: 'partner_blocked', data: true }));
+    currentUser.socket.emit('partner_blocked');
   }
 }

@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const prefs = {
   gender: require('../models/gender'),
   kinks: require('../models/kinks'),
@@ -28,6 +30,7 @@ const checkEmpty = (preferences) => {
 const checkInvalid = (preferences) => {
   for (let key in preferences) {
     if (!prefs[key]) return true;
+    if (preferences[key].length > prefs[key].length) return true;
     if (preferences[key] instanceof Array) {
       for (let i = 0; i < preferences[key].length; i++) {
         if (preferences[key][i] != 'any' && !prefs[key].find(preferences[key][i])) return true;
@@ -105,24 +108,29 @@ module.exports = (users, token, preferences) => {
 
   // If user submitted any blank values, do not search for anything.
   if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
-    if (currentUser.socket.readyState == 1) {
-      currentUser.socket.send(JSON.stringify({ type: 'invalid_preferences', data: true }));
-    }
-
+    currentUser.socket.emit('invalid_preferences');
     return false;
   }
 
   // Make sure user didn't try to submit any values not allowed.
   if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({ kinks: preferences.kinks })) {
-    if (currentUser.socket.readyState == 1) {
-      currentUser.socket.send(JSON.stringify({ type: 'invalid_preferences', data: true }));
-    }
-
+    currentUser.socket.emit('invalid_preferences');
     return false;
   }
 
-  // Update user's preferences.
-  users.addPreferences(token, preferences);
+  if (currentUser.lookingForPartner && _.isEqual(currentUser.preferences, preferences)) {
+    currentUser.socket.emit('already_finding_partner');
+    return false;
+  }
+
+  if (currentUser.preferences != preferences) {
+    // Update user's preferences.
+    users.addPreferences(token, preferences);
+    if (currentUser.lookingForPartner) {
+      return currentUser.socket.emit('preference_updated');
+    }
+  }
+
 
   // Set that user is looking for a partner
   currentUser.lookingForPartner = true;
@@ -130,21 +138,17 @@ module.exports = (users, token, preferences) => {
   // User is looking for a new partner, therefore delete any existing paired partner.
   if (currentUser.partner) {
     const currentPartner = users.findClient(currentUser.partner);
-      // Send message to the partner that the user has disconnected.
-    if (currentPartner.socket.readyState == 1) {
-      currentPartner.socket.send(JSON.stringify({ type: 'partner_left', data: true }));
-    }
-    
+    // Send message to the partner that the user has disconnected.
+    currentPartner.socket.emit('partner_left');
+
     currentUser.previousPartner = currentPartner.id;
     currentPartner.previousPartner = currentUser.id;
-    
+
     // Disconnect partners from each other.
     users.removePartner(currentUser.id);
   }
 
-  if (currentUser.socket.readyState == 1) {
-    currentUser.socket.send(JSON.stringify({ type: 'partner_pending', data: true }));
-  }
+  currentUser.socket.emit('partner_pending');
 
   // Look for a partner to yiff with in the list of pending users
   for (let client of Object.values(clients)) {
@@ -157,41 +161,26 @@ module.exports = (users, token, preferences) => {
           partner = client;
           users.pairPartners(currentUser.id, client.id);
 
-          if (currentUser.socket.readyState == 1) {
-            currentUser.socket.send(JSON.stringify({
-              type: 'partner_connected',
-              data: {
-                gender: partner.preferences.user.gender,
-                species: partner.preferences.user.species,
-                kinks: partner.preferences.kinks.join(', '),
-                role: partner.preferences.user.role
-              }
-            }));
+          currentUser.socket.emit('partner_connected',
+            {
+              gender: partner.preferences.user.gender,
+              species: partner.preferences.user.species,
+              kinks: partner.preferences.kinks.join(', '),
+              role: partner.preferences.user.role
+            });
+          partner.socket.emit('partner_connected', {
+            gender: currentUser.preferences.user.gender,
+            species: currentUser.preferences.user.species,
+            kinks: currentUser.preferences.kinks.join(', '),
+            role: currentUser.preferences.user.role
+          });
 
-            currentUser.lookingForPartner = false;
-            partner.lookingForPartner = false;
-          }
-
-          break;
+          currentUser.lookingForPartner = false;
+          partner.lookingForPartner = false;
         }
       }
-    }
-  }
 
-  if (partner) {
-    if (partner.socket.readyState == 1) {
-      partner.socket.send(JSON.stringify({
-        type: 'partner_connected',
-        data: {
-          gender: currentUser.preferences.user.gender,
-          species: currentUser.preferences.user.species,
-          kinks: currentUser.preferences.kinks.join(', '),
-          role: currentUser.preferences.user.role,
-        }
-      }));
-
-      currentUser.lookingForPartner = false;
-      partner.lookingForPartner = false;
+      break;
     }
   }
 }

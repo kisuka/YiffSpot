@@ -2,7 +2,8 @@ const notify = require('./alert'),
   chat = require('./chat'),
   preferences = require('./preferences'),
   user = require('./user'),
-  toast = require('./toast');
+  toast = require('./toast'),
+  utility = require('./utility');
 
 // https://stackoverflow.com/questions/46476741/nodejs-util-promisify-is-not-a-function/53506206
 const promisify = f => (...args) => new Promise((a, b) => f(...args, (err, res) => err ? b(err) : a(res)));
@@ -28,6 +29,19 @@ const left = () => {
   }
 }
 
+const reconnect = (data) => {
+  const userKinks = preferences.validate().kinks;
+  const partnerKinks = data.kinks.split(', ').map(utility.safe_tags_replace);
+  const formattedPartnerKinks = partnerKinks.map((kink) => userKinks.includes(kink) ? `<span class="common_kink">${kink}</span>` : kink);
+
+  chat.addChatMessage(`You have been connected to your previous partner because you got disconnected, Your partner is a ${utility.safe_tags_replace(data.role)}, ${utility.safe_tags_replace(data.gender)}, ${utility.safe_tags_replace(data.species)} interested in: ${formattedPartnerKinks.join(', ')}.`,
+    { class: 'message-system', alreadyStripped: true });
+
+  user.setPartner(true);
+  document.getElementById('block-partner').classList.remove('hide-ele');
+  document.getElementById('disconnect-row').classList.remove('hide-ele');
+}
+
 /**
  * [joined description]
  * @param  {[type]} data [description]
@@ -41,10 +55,10 @@ const connected = (data) => {
   });
 
   const userKinks = preferences.validate().kinks;
-  const partnerKinks = data.kinks.split(', ').map(chat.safe_tags_replace);
+  const partnerKinks = data.kinks.split(', ').map(utility.safe_tags_replace);
   const formattedPartnerKinks = partnerKinks.map((kink) => userKinks.includes(kink) ? `<span class="common_kink">${kink}</span>` : kink);
 
-  chat.addChatMessage(`Your partner is a ${chat.safe_tags_replace(data.role)}, ${chat.safe_tags_replace(data.gender)}, ${chat.safe_tags_replace(data.species)} interested in: ${formattedPartnerKinks.join(', ')}.`,
+  chat.addChatMessage(`Your partner is a ${utility.safe_tags_replace(data.role)}, ${utility.safe_tags_replace(data.gender)}, ${utility.safe_tags_replace(data.species)} interested in: ${formattedPartnerKinks.join(', ')}.`,
     { class: 'message-system', alreadyStripped: true });
 
   user.setPartner(true);
@@ -89,7 +103,7 @@ const pending = () => {
   chat.showChatBox();
   chat.addChatMessage('' +
     'We are looking for a partner to match you with. ' +
-    'Please either continue to wait, or modify your yiffing preferences.', {
+    'Please either continue to wait, or modify your yiffing preferences and update it by pressing the \'Find Partner\' button.', {
     class: 'message-system'
   });
 }
@@ -122,7 +136,7 @@ const blockPartner = async (socket) => {
     return false;
   }
 
-  socket.send(JSON.stringify({ type: 'block_partner', data: true }));
+  socket.emit('block_partner', true);
 }
 
 const findPartner = async (socket) => {
@@ -133,7 +147,7 @@ const findPartner = async (socket) => {
   }
 
   user.setPartner(false);
-  socket.send(JSON.stringify({ type: 'find_partner', data: data }));
+  socket.emit('find_partner', data);
   chat.showChatBox();
 
   if (document.getElementById('sidebar').classList.contains('active-sidebar')) {
@@ -153,8 +167,8 @@ const findPartner = async (socket) => {
   });
 }
 
-const disconnect = async (socket) => {
-  socket.send(JSON.stringify({ type: 'disconnect', data: true }));
+const disconnect = (socket) => {
+  socket.emit('disconnect_from_partner');
 }
 
 module.exports = {
@@ -165,5 +179,6 @@ module.exports = {
   pending: pending,
   disconnected: disconnected,
   block: blockPartner,
-  disconnect: disconnect
+  disconnect: disconnect,
+  reconnect: reconnect
 };

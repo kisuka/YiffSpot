@@ -6,9 +6,9 @@ module.exports = (users, token, status) => {
     return;
   }
 
-  if (partner.socket.readyState != 1) {
+  if (!partner.socket.isAlive) {
     return
   }
 
-  partner.socket.send(JSON.stringify({ type: 'partner_typing', data: status }));
+  partner.socket.emit('partner_typing', status);
 }

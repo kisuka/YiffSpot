@@ -1,15 +1,6 @@
 const user = require('./user'),
+utility = require('./utility'),
   toast = require('./toast');
-
-const tagsToReplace = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;'
-};
-
-const replaceTag = (tag) => tagsToReplace[tag] || tag;
-
-const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
 
 /**
  * Append message to chat box.
@@ -18,12 +9,12 @@ const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
  * @param Object options Various options.
  */
 const addChatMessage = (message, options) => {
-  let msg = options.alreadyStripped ? message : safe_tags_replace(message);
+  let msg = options.alreadyStripped ? message : utility.safe_tags_replace(message);
   const matches = msg.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi);
 
   if (matches) {
     matches.forEach(match => {
-      msg = msg.replace(match, `<a href="${safe_tags_replace(match)}" target="_blank">${safe_tags_replace(match)}</a>`);
+      msg = msg.replace(match, `<a href="${utility.safe_tags_replace(match)}" target="_blank">${utility.safe_tags_replace(match)}</a>`);
     });
   }
 
@@ -34,7 +25,7 @@ const addChatMessage = (message, options) => {
   newMessage.className += options.class;
   newMessage.innerHTML = msg;
 
-  const isScrolledToBottom =messages.scrollHeight - messages.clientHeight <= messages.scrollTop + 1;
+  const isScrolledToBottom = messages.scrollHeight - messages.clientHeight <= messages.scrollTop + 1;
 
   messages.insertBefore(newMessage, document.getElementById('typing'));
   if (isScrolledToBottom) {
@@ -94,7 +85,7 @@ const sendMessage = (socket) => {
   }
 
   sendTypingStatus(socket, false);
-  socket.send(JSON.stringify({ type: 'send_message', data: message.value }));
+  socket.emit('send_message', message.value);
 
   addChatMessage(message.value, { class: 'message-user' });
   message.value = '';
@@ -108,7 +99,7 @@ const sendTypingStatus = (socket, status = true) => {
   if (!user.getPartner()) {
     return;
   }
-  socket.send(JSON.stringify({ type: 'typing', data: status }));
+  socket.emit('typing', status);
 }
 
 module.exports = {
@@ -117,6 +108,5 @@ module.exports = {
   hideChatTyping: hideChatTyping,
   showChatBox: showChatBox,
   sendMessage: sendMessage,
-  sendTypingStatus: sendTypingStatus,
-  safe_tags_replace: safe_tags_replace
+  sendTypingStatus: sendTypingStatus
 };

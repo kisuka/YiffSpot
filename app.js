@@ -3,10 +3,11 @@ require('dotenv').config();
 const express = require('express'),
 	http = require('http'),
 	https = require('https'),
-	ws = require('ws'),
 	fs = require('graceful-fs'),
 	init = require('./src/server/init.js'),
-	path = require('path');
+	path = require('path')
+
+const { Server } = require("socket.io");
 
 let credentials,
 	sslServer,
@@ -45,11 +46,7 @@ if (process.env.SSL_ENABLED == 'true') {
 }
 
 // Create Web Socket server
-if (process.env.SSL_ENABLED == 'true') {
-	wss = new ws.Server({ server: sslServer });
-} else {
-	wss = new ws.Server({ server: server });
-}
+wss = new Server(process.env.SSL_ENABLED == 'true' ? sslServer : server);
 
 // Initalize socket listeners
 init(wss);
