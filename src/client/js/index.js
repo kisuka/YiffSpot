@@ -179,26 +179,3 @@ document.addEventListener('DOMContentLoaded', () => {
     user.setPartner(false);
   }
 });
-
-// Gonna hide easter egg cuz yes :)
-console.log(`MMMMMMMMMXklccld0WMMMMMMWXOdooxKWMMMMMMM
-MMMMMMMMNxc:::::lkNMMMMNOl:::::o0WMMMMMM
-MMMMMMMMKo:::::::lOWMMNkc::::::cxNMMMMMM
-MMMMMMMW0l::::::::xXWWOl:::::::cxNMMMMMM
-MMMMMMMMXd::::::::dXWNxc:::::::lOWMMMMMM
-WXK0KXWMW0l::::::ckNWNxc::::::cxNMMMMMMM
-Ooc:clx0NW0oc:::cdXWMW0o::::clkNMMWNNNWM
-l::::::ckNWN0kxk0NMMMMWKkdodkKWWX0xoooxK
-c:::::::ckNMMMMMMMMMMMMMWWWWMMW0oc:::::o
-o::::::::oKMMMMMWWNNNWWMMMMMMWOl:::::::c
-0o:::::::oKMMWN0kdooodxOXWMMMXo::::::::l
-WKxl:::clONWXkoc:::::::clxKNW0o:::::::ck
-MMWXOkkOKNXklcodddlccldddolxKXxc::::coON
-MMMMMMMMN0occdO000OkkO000OdcoOKOdodxOXWM
-MMMMMMMNkc::cxO00000000000xc:lkXWNWWMMMM
-MMMMMMXxc::::lxkO000000Okdl:::ckNMMMMMMM
-MMMMMNkc::::::cloxOOOOxolc:::::l0WMMMMMM
-MMMMMKo::::::::::cldolc::::::::ckWMMMMMM
-MMMMMXxc:::::::ccloooolcc:::::cdKWMMMMMM
-MMMMMWXkolcccloxk0KXNNKOxoc:cokXWMMMMMMM
-=============== YIFF SPOT ==============`);
