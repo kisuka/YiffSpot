@@ -4,7 +4,7 @@
 
 ### Changes
 - Since reconnect feature got added, If you open YiffSpot from another tab, The socket in the current tab will be closed.
-- README has been revamped
+- README has been revamped.
 ### Fixes
 - Fixed a bug where toast appear in top right sometimes.
 ### Added
