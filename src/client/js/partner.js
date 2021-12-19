@@ -29,14 +29,7 @@ const left = () => {
   }
 }
 
-const reconnect = (data) => {
-  const userKinks = preferences.validate().kinks;
-  const partnerKinks = data.kinks.split(', ').map(utility.safe_tags_replace);
-  const formattedPartnerKinks = partnerKinks.map((kink) => userKinks.includes(kink) ? `<span class="common_kink">${kink}</span>` : kink);
-
-  chat.addChatMessage(`You have been connected to your previous partner because you got disconnected, Your partner is a ${utility.safe_tags_replace(data.role)}, ${utility.safe_tags_replace(data.gender)}, ${utility.safe_tags_replace(data.species)} interested in: ${formattedPartnerKinks.join(', ')}.`,
-    { class: 'message-system', alreadyStripped: true });
-
+const reconnect = () => {
   user.setPartner(true);
   document.getElementById('block-partner').classList.remove('hide-ele');
   document.getElementById('disconnect-row').classList.remove('hide-ele');

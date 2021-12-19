@@ -40,18 +40,21 @@ module.exports = (io) => {
       clearTimeout(currentUser.disconnectTimeout);
       currentUser.disconnectTimeout = null;
       if (currentUser.partner) {
+        /*
         const currentPartner = users.findClient(currentUser.partner);
-        currentUser.socket.emit('reconnect_to_partner', {
+        {
           gender: currentPartner.preferences.user.gender,
           species: currentPartner.preferences.user.species,
           kinks: currentPartner.preferences.kinks.join(', '),
           role: currentPartner.preferences.user.role
-        });
+        }
+        */
+        currentUser.socket.emit('reconnect_to_partner');
       }
     }
 
     socket.on('send_contributor_key', (code) => {
-      if (code != process.env.CONTRIBUTOR_KEY) return;
+      if (code != process.env.CONTRIBUTOR_KEY || process.env.CONTRIBUTOR_KEY == "") return;
       socket.emit('contributor_key_accepted');
       currentUser.isContributor = true;
     });

@@ -10,6 +10,7 @@
 ### Added
 - Added reconnect feature, Give you 10 seconds to refresh your page if you got disconnected.
 - Added Contributor Tag, So when i ask people to test stuff, they won't run away.
+- Added Chat Log.
 ### Removed
 - Removed `butterutil`, `utf-8-validate`, `slim-select` and `ws`.
 ### Replaced

@@ -95,9 +95,9 @@ socket.on('client_disconnect', () => {
   user.setPartner(false);
 });
 
-socket.on('reconnect_to_partner', (preference) => {
+socket.on('reconnect_to_partner', () => {
   chat.showChatBox();
-  partner.reconnect(preference);
+  partner.reconnect();
 });
 
 socket.on('disconnect', () => {
@@ -125,10 +125,14 @@ window.removeContributorTag = () => {
  * Event Listeners
  */
 document.addEventListener('DOMContentLoaded', () => {
+  chat.reloadChat();
   preferences.init();
 
   // When preferences menu button is clicked
-  document.getElementById('menu').addEventListener('click', preferences.toggleMenu);
+  document.getElementById('menu').addEventListener('click', e => {
+    e.preventDefault();
+    preferences.toggleMenu();
+  });
 
   // When message is submitted into chat
   document.getElementById('message').addEventListener('keydown', e => {
@@ -138,8 +142,13 @@ document.addEventListener('DOMContentLoaded', () => {
     chat.sendMessage(socket);
   });
 
+  document.getElementById('clear-chat').addEventListener('click', e => {
+    e.preventDefault();
+    chat.clearChat();
+  });
+
   // When key is pressed in message box / typing
-  document.getElementById('messageBox').addEventListener('input', function (e) {
+  document.getElementById('messageBox').addEventListener('input', e => {
     e.preventDefault();
     chat.sendTypingStatus(socket);
   });
@@ -151,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // When block partner button is clicked
-  document.getElementById('block-partner').addEventListener('click', function (e) {
+  document.getElementById('block-partner').addEventListener('click', e => {
     e.preventDefault();
     partner.block(socket);
   });
@@ -162,20 +171,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Show Site Settings
-  document.getElementById('settings').addEventListener('click', function (e) {
+  document.getElementById('settings').addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('userPrefs').classList.toggle('hide-ele');
     document.getElementById('siteSettings').classList.toggle('hide-ele');
   });
 
   // Show Preferences Settings
-  document.getElementById('preferences').addEventListener('click', function (e) {
+  document.getElementById('preferences').addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('siteSettings').classList.toggle('hide-ele');
     document.getElementById('userPrefs').classList.toggle('hide-ele');
   });
 
-  window.onbeforeunload = function () {
+  window.onbeforeunload = () => {
     user.setPartner(false);
   }
 });
