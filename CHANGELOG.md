@@ -1,9 +1,10 @@
 # Changelog
 
-## [3.1.0] - 2021.12.8
+## [3.1.0] - 2021.12.19
 
 ### Changes
 - Since reconnect feature got added, If you open YiffSpot from another tab, The socket in the current tab will be closed.
+- README has been revamped
 ### Fixes
 - Fixed a bug where toast appear in top right sometimes.
 ### Added
