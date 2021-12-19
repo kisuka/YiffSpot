@@ -4,9 +4,9 @@
   <br/>
   <br/>
   <p>
-    <img src="https://img.shields.io/github/package-json/v/kisuka/YiffSpot">
-    <img src="https://img.shields.io/librariesio/github/kisuka/YiffSpot" alt="dependencies status"/>
-    <a href="https://hub.docker.com/r/kisuka/yiffspot"><img src="https://img.shields.io/docker/automated/kisuka/yiffspot" alt="docker build type"/></a>
+    <a href="https://github.com/kisuka/YiffSpot/blob/master/package.json" target="_blank"><img src="https://img.shields.io/github/package-json/v/kisuka/YiffSpot"></a>
+    <a href="https://libraries.io/github/kisuka/YiffSpot/" target="_blank"><img src="https://img.shields.io/librariesio/github/kisuka/YiffSpot" alt="dependencies status"/></a>
+    <a href="https://hub.docker.com/r/kisuka/yiffspot" target="_blank"><img src="https://img.shields.io/docker/automated/kisuka/yiffspot" alt="docker build type"/></a>
   </p>
 </div>
 
