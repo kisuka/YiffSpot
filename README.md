@@ -1,7 +1,9 @@
 <div align="center">
-  </br>
+  <br/>
+  <br/>
   <img src="https://raw.githubusercontent.com/xhayper/YiffSpot/master/.github/logo.png">
-  </br>
+  <br/>
+  <br/>
   <p>
     <img src="https://img.shields.io/github/package-json/v/kisuka/YiffSpot">
     <img src="https://img.shields.io/librariesio/github/kisuka/YiffSpot" alt="dependencies status"/>
