@@ -29,7 +29,6 @@
     "css-loader": "^6.5.1",
     "dotenv-webpack": "^7.0.3",
     "html-webpack-plugin": "^5.5.0",
-    "install": "^0.13.0",
     "mini-css-extract-plugin": "^2.4.5",
     "postcss-cli": "^9.1.0",
     "postcss-loader": "^6.2.1",
