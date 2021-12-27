@@ -15,7 +15,7 @@
     "dev": "nodemon .",
     "build": "npx webpack --mode production",
     "server": "node .",
-    "start": "npm run buld && npm run server"
+    "start": "npm run build && npm run server"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
@@ -32,7 +32,7 @@
     "mini-css-extract-plugin": "^2.4.5",
     "postcss-cli": "^9.1.0",
     "postcss-loader": "^6.2.1",
-    "sass": "^1.45.0",
+    "sass": "^1.45.1",
     "sass-loader": "^12.4.0",
     "style-loader": "^3.3.1",
     "tom-select": "^2.0.0",
