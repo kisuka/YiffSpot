@@ -1,5 +1,5 @@
-module.exports = (users, token, status) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId, status) => {
+  const currentUser = users.findClient(userId);
   const partner = users.findClient(currentUser.partner);
 
   if (!partner || partner.partner != currentUser.id) {

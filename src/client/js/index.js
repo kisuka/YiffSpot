@@ -19,13 +19,15 @@ user.init();
 const socket = io(window.location.origin, {
   query: {
     'user-id': user.getId(),
+    'secret': user.getSecret()
   }
 });
 
 // Server responses
 
-socket.on('connection_success', (id) => {
-  user.setId(id);
+socket.on('connection_success', (data) => {
+  user.setId(data.userId);
+  user.setSecret(data.secret);
 });
 
 socket.on('new_session', () => {

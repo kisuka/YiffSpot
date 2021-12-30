@@ -50,6 +50,17 @@ const setId = (value) => {
   localStorage.setItem('user', JSON.stringify(user));
 }
 
+const getSecret = () => {
+  const user = getData();
+  return user && user.secret;
+}
+
+const setSecret = (value) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  user.secret = value;
+  localStorage.setItem('user', JSON.stringify(user));
+}
+
 module.exports = {
   init: init,
   getData: getData,
@@ -57,4 +68,6 @@ module.exports = {
   setPartner: setPartner,
   getId: getId,
   setId: setId,
+  getSecret: getSecret,
+  setSecret: setSecret
 };

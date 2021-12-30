@@ -6,34 +6,56 @@ const send_message = require('./send-message'),
   block_partner = require('./block-partner'),
   disconnect = require('./disconnect');
 
-const uuid = require('uuid');
+const uuid = require('uuid'),
+  util = require('util'),
+  crypto = require('crypto');
+
+const randomBytesAsync = util.promisify(crypto.randomBytes);
 
 module.exports = (io) => {
 
-  // Establish web socket connection
-  io.on('connection', (socket) => {
-    const token =
-      (socket.handshake.query['user-id'] != undefined &&
-        socket.handshake.query['user-id'] != 'null' &&
-        socket.handshake.query['user-id'] != 'NaN' &&
-        socket.handshake.query['user-id']) ||
-      `${Date.now()}-${uuid.v4()}`;
+  const randomUserId = () => {
+    return `${Date.now()}-${uuid.v4()}`;
+  }
 
-    if (users.findClient(token) && !users.findClient(token).disconnectTimeout) {
-      if (users.findClient(token).socket.isAlive) users.findClient(token).socket.emit('new_session');
-      disconnect(users, token);
+  const randomSecret = async () => {
+    return (await randomBytesAsync(512)).toString('hex');
+  }
+
+
+  const getData = async (socket) => {
+    return {
+      userId:
+        (socket.handshake.query['user-id'] != undefined && !['', 'undefined', 'null', 'NaN'].includes(socket.handshake.query['user-id'])) ? socket.handshake.query['user-id'] : randomUserId(),
+      secret:
+        (socket.handshake.query['secret'] != undefined && !['', 'undefined', 'null', 'NaN'].includes(socket.handshake.query['secret'])) ? socket.handshake.query['secret'] : (await randomSecret())
+    }
+  }
+
+  // Establish web socket connection
+  io.on('connection', async (socket) => {
+    const userData = await getData(socket);
+    let userId = userData.userId;
+    let secret = userData.secret;
+    let currentUser = users.findClient(userId);
+    if (currentUser) {
+      if (currentUser.secret != secret) {
+        userId = randomUserId();
+        currentUser = null;
+      } else if (!currentUser.disconnectTimeout) {
+        if (currentUser.socket.isAlive) currentUser.socket.emit('new_session');
+        disconnect(users, userId);
+      }
     }
 
     socket.isAlive = true;
 
-    socket.emit('connection_success', token);
-
-    let currentUser = users.findClient(token);
+    socket.emit('connection_success', { userId, secret });
 
     if (!currentUser || !currentUser.disconnectTimeout) {
-      users.addClient(socket, token);
+      users.addClient(socket, userId, secret);
       users.incrementOnline();
-      currentUser = users.findClient(token);
+      currentUser = users.findClient(userId);
       console.log('User Connected! Total Users Online: %d', users.getOnline());
     } else {
       currentUser.socket = socket;
@@ -66,19 +88,19 @@ module.exports = (io) => {
     });
 
     socket.on('find_partner', (preference) => {
-      find_partner(users, token, preference);
+      find_partner(users, userId, preference);
     });
 
     socket.on('block_partner', () => {
-      block_partner(users, token);
+      block_partner(users, userId);
     });
 
     socket.on('typing', (status) => {
-      typing(users, token, status);
+      typing(users, userId, status);
     });
 
     socket.on('send_message', (message) => {
-      send_message(users, token, message);
+      send_message(users, userId, message);
     });
 
     socket.on('disconnect_from_partner', () => {
@@ -100,7 +122,8 @@ module.exports = (io) => {
     socket.on('disconnect', () => {
       socket.isAlive = false;
       currentUser.disconnectTimeout = setTimeout(() => {
-        disconnect(users, token);
+        disconnect(users, userId);
+        io.sockets.emit('update_user_count', users.getOnline());
       }, 10000); // We give them 10 second to reconnect.
     });
 

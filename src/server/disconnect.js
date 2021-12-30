@@ -1,5 +1,5 @@
-module.exports = (users, token) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId) => {
+  const currentUser = users.findClient(userId);
 
   if (!currentUser) {
     return;

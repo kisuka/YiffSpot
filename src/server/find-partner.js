@@ -101,8 +101,8 @@ const similiarKinks = (userKinks, partnerKinks, similarities) => {
   return false;
 }
 
-module.exports = (users, token, preferences) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId, preferences) => {
+  const currentUser = users.findClient(userId);
   const clients = users.getAllClients();
   let partner = null;
 
@@ -125,7 +125,7 @@ module.exports = (users, token, preferences) => {
 
   if (currentUser.preferences != preferences) {
     // Update user's preferences.
-    users.addPreferences(token, preferences);
+    users.addPreferences(userId, preferences);
     if (currentUser.lookingForPartner) {
       return currentUser.socket.emit('preference_updated');
     }

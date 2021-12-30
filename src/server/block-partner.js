@@ -1,5 +1,5 @@
-module.exports = (users, token) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId) => {
+  const currentUser = users.findClient(userId);
   const partner = users.findClient(currentUser.partner || currentUser.previousPartner);
 
   if (!partner) {
@@ -8,7 +8,7 @@ module.exports = (users, token) => {
 
   // Block partner
   users.removePartner(currentUser.id);
-  users.blockPartner(token, partner.id);
+  users.blockPartner(userId, partner.id);
 
   // Send generic left message to partner so they don't feel sad.
   if (partner.socket.readyState == 1) {

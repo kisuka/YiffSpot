@@ -1,5 +1,5 @@
-module.exports = (users, token, message) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId, message) => {
+  const currentUser = users.findClient(userId);
   const partner = users.findClient(currentUser.partner);
 
   if (!partner.socket.isAlive) {
