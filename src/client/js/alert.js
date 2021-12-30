@@ -23,7 +23,7 @@ document.addEventListener('visibilitychange', () => {
     clearInterval(flashAlert);
     flashAlert = null;
   }
-  
+
   document.title = originalTitle;
 });
 

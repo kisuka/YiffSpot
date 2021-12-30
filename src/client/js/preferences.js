@@ -1,4 +1,4 @@
-const SlimSelect = require('./../../../node_modules/slim-select/dist/slimselect');
+const TomSelect = require('./../../../node_modules/tom-select/dist/js/tom-select.complete.js');
 
 const genderRepo = require('./../../models/gender'),
   kinksRepo = require('./../../models/kinks'),
@@ -8,9 +8,9 @@ const genderRepo = require('./../../models/gender'),
 const toast = require('./toast');
 
 // Key = LocalStoage Key
-// Value = Data from SlimSelect
+// Value = Data from TomSelect
 const _updateStorage = (key, value) => {
-  localStorage[key] = value.map(v => v.value).join(',');
+  localStorage[key] = value.join(',');
 }
 
 /**
@@ -18,170 +18,86 @@ const _updateStorage = (key, value) => {
  * @return {[type]} [description]
  */
 const initPreferences = () => {
-  new SlimSelect({
-    select: '#userGender',
-    showSearch: false,
-    data: [{ value: '', text: 'Select Gender' }, ...genderRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#userGender', {
+    options: [{ value: '', text: 'Select Gender' }, ...genderRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
-    placeholder: true,
+    items: localStorage['gender'] || [''],
     onChange: (gender) => {
-      localStorage['gender'] = gender.value;
+      localStorage['gender'] = gender;
     }
   });
 
-  new SlimSelect({
-    select: '#userSpecies',
-    data: [{ value: '', text: 'Select Species' }, ...speciesRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#userSpecies', {
+    options: [{ value: '', text: 'Select Species' }, ...speciesRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
-    placeholder: true,
+    items: localStorage['species'] || [''],
     onChange: (userSpecies) => {
-      localStorage['species'] = userSpecies.value;
+      localStorage['species'] = userSpecies;
     }
   });
 
-  new SlimSelect({
-    select: '#userRole',
-    showSearch: false,
-    data: [{ value: '', text: 'Select Role' }, ...roleRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#userRole', {
+    options: [{ value: '', text: 'Select Role' }, ...roleRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
-    placeholder: true,
+    items: localStorage['role'] || [''],
     onChange: (role) => {
-      localStorage['role'] = role.value;
+      localStorage['role'] = role;
     }
   });
 
-  new SlimSelect({
-    select: '#userKinks',
-    data: [{ value: 'any', text: 'Any / All'}, ...kinksRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#userKinks', {
+    options: [{ value: 'any', text: 'Any / All' }, ...kinksRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
+    items: localStorage['kinks'] && localStorage['kinks'].split(',') || ['any'],
     onChange: (kinks) => {
       _updateStorage('kinks', kinks);
     }
   });
 
-  new SlimSelect({
-    select: '#partnerGender',
-    data: [{ value: 'any', text: 'Any / All'}, ...genderRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#partnerGender', {
+    options: [{ value: 'any', text: 'Any / All' }, ...genderRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
+    items: localStorage['partnerGender'] && localStorage['partnerGender'].split(',') || ['any'],
     onChange: (partnerGender) => {
       _updateStorage('partnerGender', partnerGender);
     }
   });
 
-  new SlimSelect({
-    select: '#partnerRole',
-    showSearch: false,
-    data: [{ value: '', text: 'Select Role' }, ...roleRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#partnerRole', {
+    options: [{ value: '', text: 'Select Role' }, ...roleRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
+    items: localStorage['partnerRole'] || [''],
     onChange: (partnerRole) => {
-      localStorage['partnerRole'] = partnerRole.value;
+      localStorage['partnerRole'] = partnerRole;
     }
   });
 
-  new SlimSelect({
-    select: '#partnerSpecies',
-    data: [{ value: 'any', text: 'Any / All'}, ...speciesRepo.getAll().map(item => {
-      return { text: item };
+  new TomSelect('#partnerSpecies', {
+    options: [{ value: 'any', text: 'Any / All' }, ...speciesRepo.getAll().map(item => {
+      return { value: item, text: item };
     })],
+    items: localStorage['partnerSpecies'] && localStorage['partnerSpecies'].split(',') || ['any'],
     onChange: (species) => {
       _updateStorage('partnerSpecies', species);
     }
   });
 
-  new SlimSelect({
-    select: '#siteTheme',
-    data: [{ value: 'dark', text: 'Dark'}, { value: 'light', text: 'Light' }],
+  new TomSelect('#siteTheme', {
+    options: [{ value: 'dark', text: 'Dark' }, { value: 'light', text: 'Light' }],
+    items: localStorage['theme'] || ['dark'],
     onChange: (theme) => {
-      localStorage['theme'] = theme.value;
+      localStorage['theme'] = theme;
       loadTheme();
     }
   });
 
-  loadPreferences();
-  loadSettings();
   loadTheme();
-}
-
-/**
- * [loadPreferences description]
- * @return {[type]} [description]
- */
-const loadPreferences = () => {
-  const gendersSelect = document.getElementById('partnerGender'),
-    kinksSelect = document.getElementById('userKinks'),
-    speciesSelect = document.getElementById('partnerSpecies');
-
-  if (localStorage['gender']) {
-    document.getElementById('userGender').value = localStorage['gender'];
-  }
-
-  if (localStorage['species']) {
-    document.getElementById('userSpecies').value = localStorage['species'];
-  }
-
-  if (localStorage['role']) {
-    document.getElementById('userRole').value = localStorage['role'];
-  }
-
-  if (localStorage['partnerGender']) {
-    const genders = localStorage['partnerGender'].split(',');
-    
-    for (let count = 0; count < gendersSelect.options.length; count++) {
-      if (!genders.includes(gendersSelect.options[count].value)) {
-        continue;
-      }
-
-      gendersSelect.options[count].selected = 'selected';
-    }
-  } else {
-    gendersSelect.options[0].selected = 'selected';
-  }
-
-  if (localStorage['partnerSpecies']) {
-    const species = localStorage['partnerSpecies'].split(',');
-    
-    for (let count = 0; count < speciesSelect.options.length; count++) {
-      if (!species.includes(speciesSelect.options[count].value)) {
-        continue;
-      }
-
-      speciesSelect.options[count].selected = 'selected';
-    }
-  } else {
-    speciesSelect.options[0].selected = 'selected';
-  }
-
-  if (localStorage['partnerRole']) {
-    document.getElementById('partnerRole').value = localStorage['partnerRole'];
-  }
-
-  if (localStorage['kinks']) {
-    const kinks = localStorage['kinks'].split(',');
-
-    for (let count = 0; count < kinksSelect.options.length; count++) {
-      if (!kinks.includes(kinksSelect.options[count].value)) {
-        continue;
-      }
-
-      kinksSelect.options[count].selected = 'selected';
-    }
-  } else {
-    kinksSelect.options[0].selected = 'selected';
-  }
-}
-
-/**
- * [loadSettings description]
- * @return {[type]} [description]
- */
-const loadSettings = () => {
-  document.getElementById('siteTheme').value = localStorage['theme'] || 'dark';
 }
 
 const loadTheme = () => {
@@ -290,10 +206,8 @@ const validatePreferences = () => {
 
 module.exports = {
   init: initPreferences,
-  load: loadPreferences,
   validate: validatePreferences,
   invalid: invalidPreferences,
   toggleMenu: toggleMenu,
-  loadSettings: loadSettings,
   loadTheme: loadTheme,
 };

@@ -1,14 +1,14 @@
-module.exports = (users, token, status) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId, status) => {
+  const currentUser = users.findClient(userId);
   const partner = users.findClient(currentUser.partner);
 
   if (!partner || partner.partner != currentUser.id) {
     return;
   }
 
-  if (partner.socket.readyState != 1) {
+  if (!partner.socket.isAlive) {
     return
   }
 
-  partner.socket.send(JSON.stringify({ type: 'partner_typing', data: status }));
+  partner.socket.emit('partner_typing', status);
 }

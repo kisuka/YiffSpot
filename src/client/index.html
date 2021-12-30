@@ -146,6 +146,14 @@
                         </div>
                         <div class="row">
                             <div class="col-xl-12">
+                                <div class="btn-group partner-actions" role="group">
+                                    <button class="btn btn-danger btn-sm" id="clear-chat"
+                                        type="submit">Clear Chat Log</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-12">
                                 <div class="btn-group partner-actions d-flex" role="group">
                                     <button class="btn btn-default btn-sm flex-sm-fill" type="button"
                                         id="preferences">Preferences</button>
@@ -203,7 +211,7 @@
         </template>
 
         <div aria-live="polite" aria-atomic="true" class="position-relative">
-            <div class="toast-container position-absolute bottom-0 end-0 p-3" id="toast-container"></div>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
         </div>
     </body>
 

@@ -1,7 +1,8 @@
 @import "../../../node_modules/bootstrap/scss/functions";
-@import "../../../node_modules/bootstrap/scss/bootstrap";
-@import "../../../node_modules/slim-select/src/slim-select/slimselect.scss";
+
 @import "dark";
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+@import "../../../node_modules/tom-select/dist/scss/tom-select.bootstrap5.scss";
 
 // Global
 html {
@@ -87,15 +88,6 @@ p {
     display: none;
 }
 
-.placeholder {
-    background-color: transparent;
-    cursor: pointer;
-}
-
-.ss-single-selected .placeholder {
-    color: #000;
-}
-
 // Chat & Messages
 .message {
     position: relative;
@@ -103,14 +95,14 @@ p {
     padding: 1.5rem 0;
 }
 
-.ss-search input {
-    color: #000;
-}
-
 .message-partner:before {
     content: "Partner";
     font-weight: bold;
     display: block;
+}
+
+.contributor.message-partner:before {
+    content: "Partner (Contributor)";
 }
 
 .message-user:before {
@@ -177,8 +169,8 @@ label {
     }
 
 	.chat {
-		height: calc(100vh - 77px);
-		max-height: calc(100vh - 77px);
+		height: calc(100vh - 154px); // For some reason, On mobile, it have to be 77*2
+		max-height: calc(100vh - 154px);
 	}
 
     .logo {

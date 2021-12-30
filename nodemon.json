@@ -1,6 +1,6 @@
 {
     "verbose": true,
-    "watch": ["src/**/*"],
+    "watch": ["src/**/*", "app.js", "webpack.config.js", ".env", "nodemon.json"],
     "ext": "*",
     "exec": "npx webpack --mode development && node ."
 }

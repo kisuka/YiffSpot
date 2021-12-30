@@ -1,5 +1,5 @@
-module.exports = (users, token) => {
-  const currentUser = users.findClient(token);
+module.exports = (users, userId) => {
+  const currentUser = users.findClient(userId);
 
   if (!currentUser) {
     return;
@@ -12,12 +12,14 @@ module.exports = (users, token) => {
     // Disconnect user from partner.
     users.removePartner(currentUser.id);
 
-    if (partner.socket.readyState == 1) {
-      partner.socket.send(JSON.stringify({type: 'partner_disconnected', data: true}));
+    if (partner.socket.isAlive) {
+      partner.socket.emit('partner_disconnected');
     }
   }
 
   // Remove disconnected user from clients list
   users.removeClient(currentUser.id);
   users.decrementOnline();
+
+  console.log('User Disconnected... Total Users Online: %d', users.getOnline());
 }

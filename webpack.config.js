@@ -1,8 +1,8 @@
-const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
+const path = require('path'),
+	MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+	HtmlWebpackPlugin = require('html-webpack-plugin'),
+	{ CleanWebpackPlugin } = require('clean-webpack-plugin'),
+	Dotenv = require('dotenv-webpack');
 
 module.exports = {
 	entry: { main: './src/client/js/index.js' },
@@ -38,7 +38,6 @@ module.exports = {
 						}
 					}
 				}, {
-					// compiles Sass to CSS
 					loader: 'sass-loader'
 				}]
 			},

@@ -1,14 +1,5 @@
-const { Toast } = require('bootstrap');
-
-const tagsToReplace = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;'
-  };
-  
-  const replaceTag = (tag) => tagsToReplace[tag] || tag;
-  
-  const safe_tags_replace = (str) => str.replace(/[&<>]/g, replaceTag);
+const { Toast } = require('bootstrap'),
+    utility = require('./utility');
 
 module.exports = {
     toast: (text, color) => {
@@ -19,7 +10,7 @@ module.exports = {
             node.classList.add(color);
         }
         const toastBody = node.getElementsByClassName('d-flex')[0].getElementsByClassName('toast-body')[0];
-        toastBody.innerHTML = safe_tags_replace(text)+toastBody.innerHTML;
+        toastBody.innerHTML = utility.safe_tags_replace(text) + toastBody.innerHTML;
         document.getElementById('toast-container').appendChild(node);
         const toast = new Toast(node);
         node.addEventListener('hidden.bs.toast', () => node.remove());
@@ -30,7 +21,7 @@ module.exports = {
         const toastTemplate = document.getElementById('confirmToastTemplate');
         const node = toastTemplate.content.cloneNode(true).firstElementChild;
         const toastBody = node.getElementsByClassName('toast-body')[0];
-        toastBody.innerHTML = safe_tags_replace(text)+toastBody.innerHTML;
+        toastBody.innerHTML = utility.safe_tags_replace(text) + toastBody.innerHTML;
         document.getElementById('toast-container').appendChild(node);
         const toast = new Toast(node);
         let callbackCalled = false;
