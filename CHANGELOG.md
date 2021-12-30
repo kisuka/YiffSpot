@@ -8,6 +8,7 @@
 ### Fixes
 - Fixed a bug where toast appear in top right sometimes.
 ### Added
+- Secert id, used for re-connecting (Security).
 - Added reconnect feature, Give you 10 seconds to refresh your page if you got disconnected.
 - Added Contributor Tag, So when i ask people to test stuff, they won't run away.
 - Added Chat Log.
