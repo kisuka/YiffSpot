@@ -4,6 +4,7 @@ const genders = [
   'Gender Fluid',
   'Herm',
   'Transgender',
+  'Non-Binary',
   'Other'
 ];
 
