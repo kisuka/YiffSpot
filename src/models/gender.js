@@ -2,7 +2,7 @@ const genders = [
   'Male',
   'Female',
   'Gender Fluid',
-  'Herm',
+  'Intersex',
   'Transgender',
   'Non-Binary',
   'Other'
