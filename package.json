@@ -15,7 +15,7 @@
     "dev": "nodemon .",
     "build": "npx webpack --mode production",
     "server": "node .",
-    "start": "npm run buld && npm run server"
+    "start": "npm run build && npm run server"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
