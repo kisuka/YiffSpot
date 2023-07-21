@@ -8,6 +8,7 @@ const kinks = [
   'Bondage',
   'Bukkake',
   'Choking',
+  'CNC',
   'Condoms',
   'Creampie',
   'Crossdressing',
@@ -26,6 +27,7 @@ const kinks = [
   'Farting',
   'Fellatio',
   'Femboys',
+  'Feral',
   'Fisting',
   'Flexibility',
   'Foot Play',
@@ -63,7 +65,6 @@ const kinks = [
   'Pregnancy',
   'Prostitution',
   'Queefing',
-  'Rape',
   'Rimming',
   'Saliva',
   'Scat',
@@ -88,13 +89,12 @@ const kinks = [
   'Tomboys',
   'Transformation',
   'Urethra Play',
-  'Urine',
   'Vanilla Sex',
   'Virgin',
   'Vorarephilia',
   'Voyeurism',
   'Whipping',
-  'Zoophilia'
+  'Watersports',
 ];
 
 
