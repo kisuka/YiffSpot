@@ -15,7 +15,7 @@
     "dev": "nodemon .",
     "build": "npx webpack --mode production",
     "server": "node .",
-    "start": "npm run buld && npm run server"
+    "start": "npm run build && npm run server"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
@@ -31,7 +31,7 @@
     "html-webpack-plugin": "^5.5.0",
     "install": "^0.13.0",
     "mini-css-extract-plugin": "^2.4.5",
-    "npm": "^8.1.4",
+    "npm": "^9.8.1",
     "npm-run-all": "^4.1.5",
     "postcss-cli": "^9.0.2",
     "postcss-loader": "^6.2.1",
@@ -40,7 +40,7 @@
     "slim-select": "^1.26.2",
     "style-loader": "^3.3.1",
     "webpack": "^5.64.4",
-    "webpack-cli": "^4.9.1",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.6.0"
   },
   "dependencies": {
