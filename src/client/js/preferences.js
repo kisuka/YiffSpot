@@ -96,7 +96,7 @@ const initPreferences = () => {
 
   new SlimSelect({
     select: '#siteTheme',
-    data: [{ value: 'dark', text: 'Dark'}, { value: 'light', text: 'Light' }],
+    data: [{ value: 'dark', text: 'Dark'}, { value: 'oled-dark', text: 'OLED Dark' }, { value: 'light', text: 'Light' }],
     onChange: (theme) => {
       localStorage['theme'] = theme.value;
       loadTheme();
@@ -185,14 +185,26 @@ const loadSettings = () => {
 }
 
 const loadTheme = () => {
-  if (!localStorage['theme'] || localStorage['theme'] != 'light') {
-    document.body.classList.add('dark');
-    document.getElementById('navbar').classList.add('navbar-dark');
-    document.getElementById('navbar').classList.remove('navbar-light');
-  } else {
-    document.body.classList.remove('dark');
-    document.getElementById('navbar').classList.remove('navbar-dark');
-    document.getElementById('navbar').classList.add('navbar-light');
+  switch (localStorage['theme']) {
+    case 'oled-dark':
+      document.body.classList.remove('light', 'dark');
+      document.body.classList.add('oled-dark');
+      document.getElementById('navbar').classList.remove('navbar-light');
+      document.getElementById('navbar').classList.add('navbar-dark');
+      break;
+    case 'light':
+      document.body.classList.remove('dark', 'oled-dark');
+      document.body.classList.add('light');
+      document.getElementById('navbar').classList.remove('navbar-dark');
+      document.getElementById('navbar').classList.add('navbar-light');
+      break;
+    case 'dark':
+    default:
+      document.body.classList.remove('light', 'oled-dark');
+      document.body.classList.add('dark');
+      document.getElementById('navbar').classList.remove('navbar-light');
+      document.getElementById('navbar').classList.add('navbar-dark');
+      break;
   }
 }
 
