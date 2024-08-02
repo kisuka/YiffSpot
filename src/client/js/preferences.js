@@ -60,7 +60,8 @@ const initPreferences = () => {
     })],
     onChange: (kinks) => {
       _updateStorage('kinks', kinks);
-    }
+    },
+    closeOnSelect: false,
   });
 
   new SlimSelect({
@@ -70,7 +71,8 @@ const initPreferences = () => {
     })],
     onChange: (partnerGender) => {
       _updateStorage('partnerGender', partnerGender);
-    }
+    },
+    closeOnSelect: false,
   });
 
   new SlimSelect({
@@ -91,7 +93,8 @@ const initPreferences = () => {
     })],
     onChange: (species) => {
       _updateStorage('partnerSpecies', species);
-    }
+    },
+    closeOnSelect: false,
   });
 
   new SlimSelect({
