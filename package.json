@@ -47,7 +47,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "uuid": "^8.3.2",
-    "ws": "^8.3.0"
+    "ws": "^8.18.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.5",
