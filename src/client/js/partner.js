@@ -44,6 +44,9 @@ const connected = (data) => {
   const partnerKinks = data.kinks.split(', ').map(chat.safe_tags_replace);
   const formattedPartnerKinks = partnerKinks.map((kink) => userKinks.includes(kink) ? `<span class="common_kink">${kink}</span>` : kink);
 
+
+  chat.addChatMessage(`Your partner's language is  ${data.language}`,  { class: 'message-system'});
+
   chat.addChatMessage(`Your partner is a ${chat.safe_tags_replace(data.role)}, ${chat.safe_tags_replace(data.gender)}, ${chat.safe_tags_replace(data.species)} interested in: ${formattedPartnerKinks.join(', ')}.`,
     { class: 'message-system', alreadyStripped: true });
 

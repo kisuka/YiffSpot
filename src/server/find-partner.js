@@ -76,6 +76,18 @@ const matchedDesires = (userKinks, partnerKinks) => {
 }
 
 /**
+ * Match users language.
+ * 
+ * @param  String userLanguage  User's Language
+ * @param  String partnerLanguage Possible partner's kinks
+ * @return Boolean
+ */
+const matchedLanguage = (userLanguage, partnerLanguage) => {
+  return userLanguage.includes('any') || partnerLanguage.includes('any') || userLanguage === partnerLanguage
+}
+
+
+/**
  * Checks if the user and partner share a number of similar kinks.
  * @param  Object userKinks     The user's kink preferences.
  * @param  Object partnerKinks  The partner's kink preferences.
@@ -153,7 +165,7 @@ module.exports = (users, token, preferences) => {
       // Make sure not on blocked list for user.
       if (!users.checkBlocks(currentUser.id, client.id) && !users.checkBlocks(client.id, currentUser.id)) {
         // Match based off preferences.
-        if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences)) {
+        if (matchedDesires(preferences.kinks, client.preferences.kinks) && matchedPreferences(preferences, client.preferences) &&  matchedLanguage(preferences.user.language, client.preferences.user.language)) {
           partner = client;
           users.pairPartners(currentUser.id, client.id);
 
@@ -164,7 +176,8 @@ module.exports = (users, token, preferences) => {
                 gender: partner.preferences.user.gender,
                 species: partner.preferences.user.species,
                 kinks: partner.preferences.kinks.join(', '),
-                role: partner.preferences.user.role
+                role: partner.preferences.user.role,
+                language: partner.preferences.user.language
               }
             }));
 
