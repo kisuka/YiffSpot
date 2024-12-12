@@ -3,7 +3,8 @@ const SlimSelect = require('./../../../node_modules/slim-select/dist/slimselect'
 const genderRepo = require('./../../models/gender'),
   kinksRepo = require('./../../models/kinks'),
   roleRepo = require('./../../models/role'),
-  speciesRepo = require('./../../models/species');
+  speciesRepo = require('./../../models/species'),
+  languageRepo = require('./../../models/language');
 
 const toast = require('./toast');
 
@@ -106,6 +107,19 @@ const initPreferences = () => {
     }
   });
 
+  new SlimSelect({
+    select: '#userLanguage',
+    showSearch: false,
+    data: [{ value: 'any', text: 'Any / All'}, ...languageRepo.getAll().map(item => {
+      return { text: item };
+    })],
+    placeholder: true,
+    onChange: (userLanguage) => {
+      localStorage['language'] = userLanguage.value;
+    }
+  });
+
+
   loadPreferences();
   loadSettings();
   loadTheme();
@@ -118,7 +132,8 @@ const initPreferences = () => {
 const loadPreferences = () => {
   const gendersSelect = document.getElementById('partnerGender'),
     kinksSelect = document.getElementById('userKinks'),
-    speciesSelect = document.getElementById('partnerSpecies');
+    speciesSelect = document.getElementById('partnerSpecies'),
+    languageSelect = document.getElementById('userLanguage');
 
   if (localStorage['gender']) {
     document.getElementById('userGender').value = localStorage['gender'];
@@ -176,6 +191,12 @@ const loadPreferences = () => {
     }
   } else {
     kinksSelect.options[0].selected = 'selected';
+  }
+
+  if (localStorage['language']) {
+    document.getElementById('userLanguage').value = localStorage['language'];
+  }  else {
+    languageSelect.options[0].selected = 'selected';
   }
 }
 
@@ -242,7 +263,8 @@ const validatePreferences = () => {
     kinks = document.getElementById('userKinks'),
     matchGender = document.getElementById('partnerGender'),
     matchSpecies = document.getElementById('partnerSpecies'),
-    matchRole = document.getElementById('partnerRole').value;
+    matchRole = document.getElementById('partnerRole').value,
+    language = document.getElementById('userLanguage').value;
 
   const selectedKinks = [];
   const selectedGenders = [];
@@ -265,6 +287,7 @@ const validatePreferences = () => {
   validPreferences = validPreferences && assertToastMessage(matchSpecies !== '', 'Please select the species you\'re seeking.');
   validPreferences = validPreferences && assertToastMessage(matchRole !== '', 'Please select the role you\'re seeking.');
   validPreferences = validPreferences && assertToastMessage(kinks !== '', 'Please select the kinks you\'re interested in.');
+  validPreferences = validPreferences && assertToastMessage(language !== '', 'Please select a prefered language.');
 
   if (!validPreferences) {
     return false;
@@ -292,7 +315,8 @@ const validatePreferences = () => {
     'user': {
       'gender': gender,
       'species': species,
-      'role': role
+      'role': role,
+      'language': language
     },
     'partner': {
       'gender': selectedGenders,
