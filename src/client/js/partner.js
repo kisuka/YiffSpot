@@ -28,6 +28,8 @@ const left = () => {
   }
 }
 
+const replaceHtmlEntities = (str) => str.replace(/&amp;/g, '&');
+
 /**
  * [joined description]
  * @param  {[type]} data [description]
@@ -42,7 +44,7 @@ const connected = (data) => {
 
   const userKinks = preferences.validate().kinks;
   const partnerKinks = data.kinks.split(', ').map(chat.safe_tags_replace);
-  const formattedPartnerKinks = partnerKinks.map((kink) => userKinks.includes(kink) ? `<span class="common_kink">${kink}</span>` : kink);
+  const formattedPartnerKinks = partnerKinks.map((kink) => userKinks.includes(replaceHtmlEntities(kink)) ? `<span class="common_kink">${kink}</span>` : kink);
 
 
   chat.addChatMessage(`Your partner's language is  ${data.language}`,  { class: 'message-system'});
