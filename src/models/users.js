@@ -36,7 +36,9 @@ module.exports = {
         clients[id].previousPartner = clients[id].partner
       }
       clients[id].partner = null;
+      return true;
     }
+    return false;
   },
   blockPartner: (id, partner) => {
     if (!clients[id].blocks.includes(partner)) {
