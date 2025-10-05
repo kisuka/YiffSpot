@@ -141,6 +141,7 @@ const kinks = [
   'Public Humiliation',
   'Queefing',
   'Rimming',
+  'Rough Sex',
   'Rubber / Elastic / Latex',
   'Saliva',
   'Scat',
