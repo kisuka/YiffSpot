@@ -22,6 +22,7 @@ const kinks = [
   'Blood',
   'Bloodplay',
   'Body Swapping',
+  'Body Worship',
   'Body Writing',
   'Bondage',
   'Branding',
