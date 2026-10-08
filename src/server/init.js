@@ -23,14 +23,20 @@ module.exports = wss => {
     client.isAlive = true;
     client.clientId = token;
 
+    // Heartbeat reply. Browsers send it on their own, even while a background tab's timers are throttled.
+    client.on('pong', () => {
+      client.isAlive = true;
+    });
+
     const existingUser = users.findClient(token);
 
-    // Check if user already has an established connection
-    if (existingUser && client.readyState == 1) {
-      client.send(JSON.stringify({ type: 'connection_exists', data: true }));
-      return client.terminate();
+    // Same browser connecting again (refresh, new tab, or a dropped connection the server hasn't noticed yet).
+    // The newest connection wins, so the user is never locked out.
+    if (existingUser) {
+      disconnect(users, token, existingUser.socket);
+      existingUser.socket.terminate();
     }
-    
+
     users.addClient(client, token);
     users.incrementOnline();
 
@@ -109,7 +115,7 @@ module.exports = wss => {
 
     // Closed
     client.on('close', () => {
-      disconnect(users, token);
+      disconnect(users, token, client);
 
       broadcast(wss.clients, {
         type: 'update_user_count',

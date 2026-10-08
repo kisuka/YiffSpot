@@ -1,4 +1,5 @@
-const clients = {};
+// Keyed by browser id, which the browser picks, so no built-in keys: an id like __proto__ must be just an id.
+const clients = Object.create(null);
 let usersOnline = 0;
 
 module.exports = {

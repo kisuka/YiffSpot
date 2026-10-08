@@ -1,7 +1,8 @@
-module.exports = (users, token) => {
+module.exports = (users, token, socket) => {
   const currentUser = users.findClient(token);
 
-  if (!currentUser) {
+  // Only the socket that owns the session may end it, not an older one for the same browser closing late.
+  if (!currentUser || currentUser.socket !== socket) {
     return;
   }
 

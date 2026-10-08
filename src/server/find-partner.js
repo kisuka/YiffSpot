@@ -1,43 +1,55 @@
 const prefs = {
   gender: require('../models/gender'),
   kinks: require('../models/kinks'),
+  language: require('../models/language'),
   role: require('../models/role'),
-  species: require('../models/species'),
-  users: require('../models/users')
+  species: require('../models/species')
 }
 
 /**
- * Checks for any empty fields.
- * 
+ * Checks a single value: it must be text, and either 'any' or one of the allowed options.
+ *
+ * @param  Object model The allowed options.
+ * @param  Mixed  value The value sent.
+ * @return Boolean
+ */
+const isAllowed = (model, value) => typeof value === 'string' && (value === 'any' || model.find(value));
+
+/**
+ * Checks a list: it must hold at least one value, and every value must be allowed.
+ *
+ * @param  Object model  The allowed options.
+ * @param  Mixed  values The values sent.
+ * @return Boolean
+ */
+const allAllowed = (model, values) => values instanceof Array && values.length > 0 && values.every(value => isAllowed(model, value));
+
+/**
+ * Checks that every field is present, of the right type, and allowed.
+ * A bad request left waiting in the pool would break matching for everyone who reaches it.
+ *
  * @param  Object preferences The preference object.
  * @return Boolean
  */
-const checkEmpty = (preferences) => {
-  for (let key in preferences) {
-    if (0 >= preferences[key].length) return true;
-  }
-  return false;
+const checkValid = (preferences) => {
+  const { user, partner, kinks } = preferences || {};
+
+  return !!user && !!partner &&
+    isAllowed(prefs.gender, user.gender) && isAllowed(prefs.species, user.species) &&
+    isAllowed(prefs.role, user.role) && isAllowed(prefs.language, user.language) &&
+    allAllowed(prefs.gender, partner.gender) && allAllowed(prefs.species, partner.species) &&
+    isAllowed(prefs.role, partner.role) && allAllowed(prefs.kinks, kinks);
 }
 
 /**
- * Checks for invalid pairing options.
- * 
- * @param  Object preferences The preference object.
+ * Checks someone gets the role they asked for. A Switch can take either role,
+ * and asking for a Switch means either role is fine.
+ *
+ * @param  String wanted The role they asked for.
+ * @param  String role   The other person's role.
  * @return Boolean
  */
-const checkInvalid = (preferences) => {
-  for (let key in preferences) {
-    if (!prefs[key]) return true;
-    if (preferences[key] instanceof Array) {
-      for (let i = 0; i < preferences[key].length; i++) {
-        if (preferences[key][i] != 'any' && !prefs[key].find(preferences[key][i])) return true;
-      }
-    } else {
-      return preferences[key] != 'any' && !prefs[key].find(preferences[key])
-    }
-  }
-  return false;
-}
+const roleFits = (wanted, role) => wanted == 'Switch' || wanted == role || role == 'Switch';
 
 /**
  * Figure out if two users match each other's requirements.
@@ -57,7 +69,7 @@ const matchedPreferences = (user, partner) => {
     matchCount++;
   }
 
-  if ((user.partner['role'] == partner.user['role'] && partner.partner['role'] == user.user['role']) || (user.user['role'] == 'Switch' || partner.user['role'] == 'Switch')) {
+  if (roleFits(user.partner['role'], partner.user['role']) && roleFits(partner.partner['role'], user.user['role'])) {
     matchCount++;
   }
 
@@ -115,17 +127,13 @@ module.exports = (users, token, preferences) => {
   const clients = users.getAllClients();
   let partner = null;
 
-  // If user submitted any blank values, do not search for anything.
-  if (checkEmpty(preferences.user) || checkEmpty(preferences.partner) || checkEmpty(preferences.kinks)) {
-    if (currentUser.socket.readyState == 1) {
-      currentUser.socket.send(JSON.stringify({ type: 'invalid_preferences', data: true }));
-    }
-
-    return false;
+  // A page from before the language picker sends no language: treat that as any language.
+  if (preferences && preferences.user && preferences.user.language === undefined) {
+    preferences.user.language = 'any';
   }
 
-  // Make sure user didn't try to submit any values not allowed.
-  if (checkInvalid(preferences.user) || checkInvalid(preferences.partner) || checkInvalid({ kinks: preferences.kinks })) {
+  // Make sure every field is filled in and only holds allowed values.
+  if (!checkValid(preferences)) {
     if (currentUser.socket.readyState == 1) {
       currentUser.socket.send(JSON.stringify({ type: 'invalid_preferences', data: true }));
     }
